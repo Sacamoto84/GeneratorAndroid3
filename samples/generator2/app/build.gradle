@@ -1,0 +1,156 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+
+    kotlinOptions {
+
+        freeCompilerArgs += [
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                        project.buildDir.absolutePath + "/compose_metrics"
+        ]
+
+        freeCompilerArgs += [
+                "-P",
+                "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                        project.buildDir.absolutePath + "/compose_metrics"
+        ]
+
+    }
+
+
+
+    signingConfigs {
+        debug {
+            storeFile file('D:\\AndroidKey\\MyKey.jks')
+            //storeFile file('/home/ivan/Android/AndroidKey/MyKey.jks')
+            storePassword '11111111'
+            keyAlias 'Sakamoto'
+            keyPassword '11111111'
+        }
+        release {
+            storeFile file('D:\\AndroidKey\\MyKey.jks')
+            storePassword '11111111'
+            keyPassword '11111111'
+            keyAlias 'Sakamoto'
+        }
+    }
+
+    compileSdk 33
+
+    defaultConfig {
+        applicationId "com.example.generator2"
+        minSdk 23
+        targetSdk 33
+        versionCode 143
+        versionName "1.4.4"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary true
+        }
+        externalNativeBuild {
+            cmake {
+                cppFlags ''
+            }
+        }
+        signingConfig signingConfigs.release
+    }
+
+    buildTypes {
+
+        release {
+            minifyEnabled true //false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion compose_version
+    }
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.18.1'
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+
+
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.activity:activity-compose:1.6.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    implementation "androidx.compose.ui:ui-util:$compose_version"
+
+    implementation 'com.snatik:storage:2.1.0'
+    implementation 'com.github.flipagram:android-assetcopier:0.1.1'
+    implementation "com.orhanobut:hawk:2.0.1"
+
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+    implementation "com.google.accompanist:accompanist-drawablepainter:0.24.7-alpha"
+
+    implementation "androidx.appcompat:appcompat:1.5.1"
+    implementation "androidx.appcompat:appcompat-resources:1.5.1"
+
+    //implementation "com.github.skydoves:landscapist-coil:1.5.1"
+
+    implementation("io.coil-kt:coil-compose:2.0.0-rc03")
+    implementation("io.coil-kt:coil-gif:2.0.0-rc03")
+
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+
+    implementation 'com.github.SmartToolFactory:Compose-Colorful-Sliders:1.0.1'
+
+    implementation "com.github.krottv:compose-sliders:0.1.14"
+
+    implementation 'com.github.SmartToolFactory:Compose-Extended-Gestures:1.0.0'
+
+    implementation 'com.siddroid:holi:1.0.1' //Цвета
+
+    implementation 'com.github.seniorjoinu:reliable-udp:0.3.1' //Udp
+
+    implementation 'com.google.code.gson:gson:2.8.9'
+
+
+    implementation "androidx.navigation:navigation-compose:2.6.0-alpha02"
+    implementation "com.google.accompanist:accompanist-webview:0.26.5-rc"
+    implementation "com.google.accompanist:accompanist-pager:0.26.5-rc"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.5-rc"
+
+}
