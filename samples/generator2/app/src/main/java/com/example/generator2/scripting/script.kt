@@ -252,28 +252,26 @@ class Script {
 
         val chanel = listCMD[0].drop(2).toInt() //Номер канала
 
-        //var onoff = false
-
         //╭─ CH1 CH2 ─────────────────────────────────────────────────────────────────╮
         if ((listCMD[0] == "CH1") || (listCMD[0] == "CH2")) {                       //│                                                                       //│
             val onoff = listCMD[2] == "ON"                                          //│
-            //│
-            if (listCMD[1] == "CR")                                                 //│
-            {                                                                       //│
+            //───────────────────────────────────────────┬────────────────────────────┤
+            if (listCMD[1] == "CR")                    //│  CH1 CR ON   CH2 CR OFF  //│
+            {                                          //╰────────────────────────────┤
                 if (chanel == 1)                                                    //│
                     Global.ch1_EN.value = onoff                                     //│
                 else                                                                //│
                     Global.ch2_EN.value = onoff                                     //│
             }                                                                       //│
-            //│
-            if (listCMD[1] == "AM")                                                 //│
-            {                                                                       //│
+            //────────────────────────────────────────────┬───────────────────────────┤
+            if (listCMD[1] == "AM")                     //│  CH1 AM ON   CH2 AM OFF //│
+            {                                           //╰───────────────────────────┤
                 if (chanel == 1)                                                    //│
                     Global.ch1_AM_EN.value = onoff                                  //│
                 else                                                                //│
                     Global.ch2_AM_EN.value = onoff                                  //│
             }                                                                       //│
-            //│
+            //────────────────────────────────────────────────────────────────────────┤
             if (listCMD[1] == "FM")                                                 //│
             {                                                                       //│
                 if (chanel == 1)                                                    //│
@@ -281,7 +279,7 @@ class Script {
                 else                                                                //│
                     Global.ch2_FM_EN.value = onoff                                  //│
             }                                                                       //│
-            //│
+            //────────────────────────────────────────────────────────────────────────┤
             return                                                                  //│
         }                                                                           //│
         //╰───────────────────────────────────────────────────────────────────────────╯
@@ -293,95 +291,82 @@ class Script {
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 println(listCMD[2])                                                 //│
-                //│
-                if (chanel == 1) {                                                  //│
+                if (chanel == 1)
                     Global.ch1_Carrier_Filename.value = listCMD[2]                  //│
-                    Utils.Spinner_Send_Buffer("CH0", "CR", listCMD[2])     //│
-                }                                                                   //│
                 else                                                                //│
-                {                                                                   //│
                     Global.ch2_Carrier_Filename.value = listCMD[2]                  //│
-                    Utils.Spinner_Send_Buffer("CH1", "CR", listCMD[2])    //│
-                }                                                                   //│
-                //│
             }                                                                       //│
-            //│
+
             //CR[1 2] FR 1000.3                                                     //│
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F') {      //│
+                value = if (listCMD[2].first() == 'F') {                            //│
                     register[listCMD[2].drop(1).toInt()]                         //│
-                } else  //│
-                    listCMD[2].toFloat()  //│
+                } else                                                              //│
+                    listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)
-                    Global.ch1_Carrier_Fr.value = value                               //│
-                else                                                                  //│
-                    Global.ch2_Carrier_Fr.value = value                               //│
-                //│
-            }                                                                         //│
-            //│
-            return                                                                    //│
-        }                                                                             //│
-        //╰─────────────────────────────────────────────────────────────────────────────╯
+                    Global.ch1_Carrier_Fr.value = value                             //│
+                else                                                                //│
+                    Global.ch2_Carrier_Fr.value = value                             //│
+            }                                                                       //│
+            return                                                                  //│
+        }                                                                           //│
+        //╰───────────────────────────────────────────────────────────────────────────╯
 
-        //╭─ AM1 AM2 ───────────────────────────────────────────────────────────────────╮
-        if ((listCMD[0] == "AM1") || (listCMD[0] == "AM2"))                           //│
-        {                                                                             //│
-            //SEGGER_RTT_printf(0, "╭─ AM1 AM2 ─╮\n");                                //│
+        //╭─ AM1 AM2 ─────────────────────────────────────────────────────────────────╮
+        if ((listCMD[0] == "AM1") || (listCMD[0] == "AM2"))                         //│
+        {                                                                           //│
+            //SEGGER_RTT_printf(0, "╭─ AM1 AM2 ─╮\n");                              //│
             //│
-            //AM[1 2] FR 1000.3                                                       //│
-            if (listCMD[1] == "FR")                                                   //│
-            {                                                                         //│
-                value = if (listCMD[2].first() == 'F') {                              //│
-                    register[listCMD[2].drop(1).toInt()]                           //│
-                } else                                                                //│
-                    listCMD[2].toFloat()                                              //│
-                //│
-                if (chanel == 1)                                                      //│
-                    Global.ch1_AM_Fr.value = value                                    //│
-                else                                                                  //│
-                    Global.ch2_AM_Fr.value = value                                    //│
-            }                                                                         //│
-            //│
-            //AM[1 2] MOD 02_HWawe { 1.9ms }                                          //│
-            if (listCMD[1] == "MOD")                                                  //│
-            {                                                                         //│
-                if (chanel == 1) {                                                    //│
-                    Global.ch1_AM_Filename.value = listCMD[2]                         //│
-                    Utils.Spinner_Send_Buffer("CH0", "AM", listCMD[2])       //│
-                }                                                                     //│
-                else                                                                  //│
-                {                                                                     //│
-                    Global.ch2_AM_Filename.value = listCMD[2]                         //│
-                    Utils.Spinner_Send_Buffer("CH1", "AM", listCMD[2])       //│
-                }                                                                     //│
-            }                                                                         //│
-            return                                                                    //│
-        }                                                                             //│
-        //╰─────────────────────────────────────────────────────────────────────────────╯
-        //╭─ FM1 FM2 ───────────────────────────────────────────────────────────────────╮
-        if ((listCMD[0] == "FM1") || (listCMD[0] == "FM2"))                           //│
-        {                                                                             //│
-            //SEGGER_RTT_printf(0, "╭─ FM1 FM2 ─╮\n");                                //│
-            //│
-            //FM[1 2] BASE 1234.6                                                     //│
-            if (listCMD[1] == "BASE")                                                 //│
-            {                                                                         //│
-                value = if (listCMD[2].first() == 'F') {                              //│
-                    register[listCMD[2].drop(1).toInt()]                           //│
-                } else                                                                //│
-                    listCMD[2].toFloat()                                              //│
+            //AM[1 2] FR 1000.3                                                     //│
+            if (listCMD[1] == "FR")                                                 //│
+            {                                                                       //│
+                value = if (listCMD[2].first() == 'F') {                            //│
+                    register[listCMD[2].drop(1).toInt()]                         //│
+                } else                                                              //│
+                    listCMD[2].toFloat()                                            //│
 
-                if (chanel == 1)                                                      //│
-                    Global.ch1_FM_Base.value = value                                  //│
-                else                                                                  //│
-                    Global.ch2_FM_Base.value = value                                  //│
-            }                                                                         //│
-        }                                                                             //│
+                if (chanel == 1)                                                    //│
+                    Global.ch1_AM_Fr.value = value                                  //│
+                else                                                                //│
+                    Global.ch2_AM_Fr.value = value                                  //│
+            }                                                                       //│
+
+            //AM[1 2] MOD 02_HWawe { 1.9ms }                                        //│
+            if (listCMD[1] == "MOD")                                                //│
+            {                                                                       //│
+                if (chanel == 1) {                                                  //│
+                    Global.ch1_AM_Filename.value = listCMD[2]                       //│
+                }                                                                   //│
+                else                                                                //│
+                    Global.ch2_AM_Filename.value = listCMD[2]                       //│
+            }                                                                       //│
+            return                                                                  //│
+        }                                                                           //│
+        //╰───────────────────────────────────────────────────────────────────────────╯
+        //╭─ FM1 FM2 ─────────────────────────────────────────────────────────────────╮
+        if ((listCMD[0] == "FM1") || (listCMD[0] == "FM2"))                         //│
+        {                                                                           //│
+            //SEGGER_RTT_printf(0, "╭─ FM1 FM2 ─╮\n");                              //│
+
+            //FM[1 2] BASE 1234.6                                                   //│
+            if (listCMD[1] == "BASE")                                               //│
+            {                                                                       //│
+                value = if (listCMD[2].first() == 'F') {                            //│
+                    register[listCMD[2].drop(1).toInt()]                         //│
+                } else                                                              //│
+                    listCMD[2].toFloat()                                            //│
+
+                if (chanel == 1)                                                    //│
+                    Global.ch1_FM_Base.value = value                                //│
+                else                                                                //│
+                    Global.ch2_FM_Base.value = value                                //│
+            }                                                                       //│
+        }                                                                           //│
         //│
-        //FM[1 2] DEV  123.8                                                          //│
-        if (listCMD[1] == "DEV")                                                      //│
+        //FM[1 2] DEV  123.8                                                        //│
+        if (listCMD[1] == "DEV")                                                    //│
         {
             value = if (listCMD[2].first() == 'F') {
                 register[listCMD[2].drop(1).toInt()]
@@ -390,30 +375,22 @@ class Script {
 
             if (chanel == 1)
                 Global.ch1_FM_Dev.value = value
-            //│
-            else                                                                     //│
-                Global.ch2_FM_Dev.value = value                                      //│
+            else                                                                    //│
+                Global.ch2_FM_Dev.value = value                                     //│
+        }                                                                           //│
 
-
-        }                                                                       //│
-        //│
-        //FM[1 2] MOD 02_HWawe                                                  //│
-        if (listCMD[1] == "MOD")                                                //│
-        {                                                                       //│
-            if (chanel == 1) {
+        //FM[1 2] MOD 02_HWawe                                                      //│
+        if (listCMD[1] == "MOD")                                                    //│
+        {                                                                           //│
+            if (chanel == 1)
                 Global.ch1_FM_Filename.value = listCMD[2]
-                Utils.Spinner_Send_Buffer("CH0", "FM", listCMD[2])
-            }                                                                   //│
-            else                                                                //│
-            {                                                                   //│
-                Global.ch2_FM_Filename.value = listCMD[2]
-                Utils.Spinner_Send_Buffer("CH1", "FM", listCMD[2])    //│
-            }                                                                   //│
-        }                                                                       //│
+            else                                                                    //│
+                Global.ch2_FM_Filename.value = listCMD[2]                           //│
+        }                                                                           //│
 
-        //FM[1 2] FR   3.5                                                      //│
-        if (listCMD[1] == "FR")                                                 //│
-        {                                                                       //│
+        //FM[1 2] FR   3.5                                                          //│
+        if (listCMD[1] == "FR")                                                     //│
+        {                                                                           //│
             value = if (listCMD[2].first() == 'F') {
                 register[listCMD[2].drop(1).toInt()]
             } else
@@ -421,13 +398,11 @@ class Script {
 
             if (chanel == 1)
                 Global.ch1_FM_Fr.value = value
-            else                                                                 //│
-                Global.ch2_FM_Fr.value = value                                   //│
-        }                                                                        //│
-        return                                                                   //│
-    }                                                                            //│
-    //╰────────────────────────────────────────────────────────────────────────────╯
-}
-
+            else                                                                     //│
+                Global.ch2_FM_Fr.value = value                                       //│
+        }                                                                            //│
+        return                                                                       //│
+    }                                                                                //│
+    //╰────────────────────────────────────────────────────────────────────────────────╯
 
 }

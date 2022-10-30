@@ -189,6 +189,36 @@ object Global : ViewModel(){
             PlaybackEngine.CH_FM_fr(1, ch2_FM_Fr!!)
         }
 
+        ch1_Carrier_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH0", "CR", name ) //Читае м отсылаем массив
+        }
+
+        ch2_Carrier_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH1", "CR", name ) //Читае м отсылаем массив
+        }
+
+        ch1_AM_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH0", "AM", name ) //Читае м отсылаем массив
+        }
+
+        ch2_AM_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH1", "AM", name ) //Читае м отсылаем массив
+        }
+
+        ch1_FM_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH0", "FM", name ) //Читае м отсылаем массив
+        }
+
+        ch2_FM_Filename.observeForever{ name ->
+            Log.d("observeForever", "onClick")
+            Utils.Spinner_Send_Buffer( "CH1", "FM", name ) //Читае м отсылаем массив
+        }
+
     }
 
     fun sendAlltoGen()

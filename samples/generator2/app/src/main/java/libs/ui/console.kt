@@ -61,7 +61,7 @@ class Console {
                 { index, l ->
                     Row()
                     {
-                        var s = l.size
+                        val s = l.size
                         if (s > 0) {
                             val str: String = when (index) {
                                 in 0..9 -> String.format("   %d>", index)

@@ -125,41 +125,26 @@ object UIspinner {
                             onClick = {
                                 currentValue = it.name
                                 expanded.value = false
-
                                 if (CH == "CH0") {
                                     when (Mod) {
-                                        "CR" -> {
-                                            Global.ch1_Carrier_Filename.value = currentValue
-                                        }
-
-                                        "AM" -> {
-                                            Global.ch1_AM_Filename.value = currentValue
-                                        }
-
-                                        "FM" -> {
-                                            Global.ch1_FM_Filename.value = currentValue
-                                        }
+                                        "CR" -> Global.ch1_Carrier_Filename.value = currentValue
+                                        "AM" -> Global.ch1_AM_Filename.value = currentValue
+                                        "FM" -> Global.ch1_FM_Filename.value = currentValue
                                     }
                                 } else {
                                     when (Mod) {
-                                        "CR" -> {
-                                            Global.ch2_Carrier_Filename.value = currentValue
-                                        }
+                                        "CR" -> Global.ch2_Carrier_Filename.value = currentValue
+                                        "AM" -> Global.ch2_AM_Filename.value = currentValue
+                                        "FM" -> Global.ch2_FM_Filename.value = currentValue
 
-                                        "AM" -> {
-                                            Global.ch2_AM_Filename.value = currentValue
-                                        }
-
-                                        "FM" -> {
-                                            Global.ch2_FM_Filename.value = currentValue
-                                        }
                                     }
                                 }
-                                Utils.Spinner_Send_Buffer(
-                                    CH,
-                                    Mod,
-                                    it.name
-                                ) //Читае м отсылаем массив
+
+                                //Utils.Spinner_Send_Buffer(
+                                //    CH,
+                                //    Mod,
+                                //    it.name
+                                //) //Читае м отсылаем массив
                             }
                         ) {
                             Image(

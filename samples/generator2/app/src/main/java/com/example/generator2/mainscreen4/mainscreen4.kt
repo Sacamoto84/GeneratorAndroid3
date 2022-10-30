@@ -4,11 +4,7 @@ import BottomBarSave
 import CardCarrier
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Scaffold
@@ -18,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import colorDarkBackground
 import com.example.generator2.Global.bottomBarRoute
-import libs.modifier.recomposeHighlighter
+import com.example.generator2.scripting.ScreenScriptInfo
 
 
 //var bottomBarRoute : bottomBarEnum = bottomBarEnum.HOME
@@ -30,9 +26,9 @@ fun mainsreen4() {
         bottomBar = {
             when (bottomBarRoute.value) {
                 bottomBarEnum.HOME -> BottomBarGenerator()
-                bottomBarEnum.SAVE   -> BottomBarSave()
+                bottomBarEnum.SAVE -> BottomBarSave()
                 bottomBarEnum.SAVEAS -> BottomBarSave()
-                bottomBarEnum.LOAD   -> BottomBarLoad()
+                bottomBarEnum.LOAD -> BottomBarLoad()
                 bottomBarEnum.LOADAS -> BottomBarLoad()
                 else -> BottomBarGenerator()
             }
@@ -41,48 +37,67 @@ fun mainsreen4() {
     )
     {
 
+        when (bottomBarRoute.value) {
 
-        Column(
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = it.calculateBottomPadding())
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.SpaceEvenly
-        ) {
-
-            when (bottomBarRoute.value) {
-
-                bottomBarEnum.HOME -> {
+            bottomBarEnum.HOME -> {
+                Column(
+                    Modifier
+                        .fillMaxSize()
+                        .padding(bottom = it.calculateBottomPadding())
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
                     CardCarrier("CH0")
                     CardCarrier("CH1")
                 }
+            }
 
-                bottomBarEnum.SAVEAS -> {
+            bottomBarEnum.SAVEAS -> {
 
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Red))
-                    {
-                        Text("SAVEAS")
-                    }
-
-                }
-
-                bottomBarEnum.LOADAS -> {
-
-                    Box(modifier = Modifier.fillMaxSize().background(Color.Green))
-                    {
-                        Text("LOADAS")
-                    }
-
-                }
-
-                else -> {
-                    CardCarrier("CH0")
-                    CardCarrier("CH1")
+                Box(
+                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+                        .fillMaxSize()
+                        .background(Color.Red)
+                )
+                {
+                    Text("SAVEAS")
                 }
 
             }
 
+            bottomBarEnum.LOADAS -> {
+
+                Box(
+                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+                        .fillMaxSize()
+                        .background(Color.Green)
+
+                )
+                {
+                    Text("LOADAS")
+                }
+
+            }
+
+            bottomBarEnum.SCRIPT -> {
+                Box(
+                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+                        .fillMaxSize()
+                )
+                {
+                    ScreenScriptInfo()
+                }
+            }
+
+
+            else -> {
+                CardCarrier("CH0")
+                CardCarrier("CH1")
+            }
+
         }
+
+
     }
 }
 
