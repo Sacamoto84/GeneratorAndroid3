@@ -1,7 +1,11 @@
 package com.example.generator2.scripting
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.generator2.Global
 import com.example.generator2.screens.consoleLog
+
 
 /*
  * ----------------- Логика -----------------
@@ -67,16 +71,29 @@ class Script {
 
     var end = true
     var yield = false
-    var pc = 0
+
+    private var pc = 0
 
     var endTime = 0L              //Время > которого можно продолжать работу
 
-    var F = FloatArray(10)  //Массив регистров
+    //var F1 = FloatArray(10)  //Массив регистров
+    //var mutableF = mutableStateListOf<FloatArray>(F1)
+
+    //val F = MutableLiveData<FloatArray>( FloatArray(10))
+    //val _F : LiveData<FloatArray> = F
+
+    var F2 = mutableStateListOf<Float>()
+
+
 
     var str: String = ""
 
     //Временная строка
     private val list: MutableList<String> = mutableListOf<String>() //Список команд
+
+    init{
+        F2.addAll( FloatArray(10).toList())
+    }
 
 //╰─────────────────────────────╯
 
@@ -104,20 +121,20 @@ class Script {
                 return
         }
     }
-    
-    
-    
+
     fun openScript(path: String) {
 
     }
 
     fun start() {
         pc = 1
+        Global.script_pc.value = pc
         end = false
     }
 
     fun stop() {
         pc = 1
+        Global.script_pc.value = pc
         end = true
         println("Script Stop")
     }
@@ -154,6 +171,7 @@ class Script {
                 while (true) {
                     if (list[currentPC] == "ENDIF") {
                         pc = currentPC
+                        Global.script_pc.value = pc
                         break
                     }
                     currentPC++
@@ -162,7 +180,10 @@ class Script {
                 }
             }
 
-            "ENDIF" -> pc++
+            "ENDIF" -> {
+                pc++
+                Global.script_pc.value = pc
+            }
 
             "END" -> {
                 println("Скрипт окончен")
@@ -174,54 +195,58 @@ class Script {
             "CH1", "CH2", "CR1", "CR2", "AM1", "AM2", "FM1", "FM2" -> {
                 generatorComand()
                 pc++
+                Global.script_pc.value = pc
             }
 
             "MINUS", "PLUS" -> {
                 comandPlusMinus()
                 pc++
+                Global.script_pc.value = pc
             }
 
             //"PRINTF" -> { printF() pc++}
 
             "GOTO" -> {
                 pc = listCMD[1].toInt()
+                Global.script_pc.value = pc
             }
 
             "YIELD" -> {
                 yield = true
                 pc++
+                Global.script_pc.value = pc
             }
 
             "DELAY" -> {
                 val d = listCMD[1].toLong()
                 endTime = System.currentTimeMillis() + d
                 pc++
+                Global.script_pc.value = pc
             }
 
-            "TEXT" -> pc++
+            "TEXT" -> {
+                pc++
+                Global.script_pc.value = pc
+            }
 
             "LOAD" -> {
                 //LOAD F1 2344.0  │ 2344.0 -> F1
                 Load()
                 pc++
+                Global.script_pc.value = pc
             }
 
 
             else -> {
                 println("Script:? pc:$pc:$comand")
                 pc++
+                Global.script_pc.value = pc
                 if (pc >= PC_MAX)
                     end = true
             }
 
         }
 
-    }
-    
-    fun printF(): String {
-        val s =
-            "0:%F[0] 1:%F[0] 2:%F[0] 3:%F[0]4:%F[0] 5:%F[0] 6:%F[0] 7:%F[0] 8:%F[0] 9:%F[0]"
-        return s
     }
 
 
@@ -237,7 +262,7 @@ class Script {
         }
 
         val index = listCMD[1].drop(1).toInt()
-        F[index] = listCMD[2].toFloat()
+        F2[index] = listCMD[2].toFloat()
 
     }
 
@@ -255,10 +280,10 @@ class Script {
         }
 
         //IF Rxx Первый всегда R регистр
-        val f1value = F[listCMD[1].drop(1).toInt()]
+        val f1value =  F2[listCMD[1].drop(1).toInt()]
 
-        var f2value = if ((listCMD[3].first() == 'R'))
-            F[listCMD[3].drop(1).toInt()]
+        val f2value = if ((listCMD[3].first() == 'F'))
+            F2[listCMD[3].drop(1).toInt()]
         else
             listCMD[3].toFloat()
 
@@ -274,6 +299,7 @@ class Script {
 
         if (boolResult) {
             pc++ //Переход на следующую строку, ибо условие выполнено
+            Global.script_pc.value = pc
         } else {
             //Ищем первое ELSE или ENDIF, ибо условие не выполнено
             var currentPC = pc
@@ -281,11 +307,13 @@ class Script {
                 if (list[currentPC] == "ELSE") //+1 к ELSE
                 {
                     pc = currentPC + 1
+                    Global.script_pc.value = pc
                     break
                 }
 
                 if (list[currentPC] == "ENDIF") {
                     pc = currentPC
+                    Global.script_pc.value = pc
                     break
                 }
                 currentPC++
@@ -359,7 +387,7 @@ class Script {
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
                 value = if (listCMD[2].first() == 'F') {                            //│
-                    F[listCMD[2].drop(1).toInt()]                         //│
+                    F2[listCMD[2].drop(1).toInt()]                         //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
@@ -380,9 +408,9 @@ class Script {
             //AM[1 2] FR 1000.3                                                     //│
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F') {                            //│
-                    F[listCMD[2].drop(1).toInt()]                         //│
-                } else                                                              //│
+                value = if (listCMD[2].first() == 'F')
+                    F2[listCMD[2].drop(1).toInt()]                      //│
+                else                                                                //│
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
@@ -412,7 +440,7 @@ class Script {
             if (listCMD[1] == "BASE")                                               //│
             {                                                                       //│
                 value = if (listCMD[2].first() == 'F') {                            //│
-                    F[listCMD[2].drop(1).toInt()]                         //│
+                    F2[listCMD[2].drop(1).toInt()]                      //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
@@ -427,7 +455,7 @@ class Script {
         if (listCMD[1] == "DEV")                                                    //│
         {
             value = if (listCMD[2].first() == 'F') {
-                F[listCMD[2].drop(1).toInt()]
+                F2[listCMD[2].drop(1).toInt()]
             } else
                 listCMD[2].toFloat()
 
@@ -450,7 +478,7 @@ class Script {
         if (listCMD[1] == "FR")                                                     //│
         {                                                                           //│
             value = if (listCMD[2].first() == 'F') {
-                F[listCMD[2].drop(1).toInt()]
+                F2[listCMD[2].drop(1).toInt()]
             } else
                 listCMD[2].toFloat()
 
@@ -480,12 +508,12 @@ class Script {
             val secondIndex = listCMD[2].drop(1).toInt() //Индекс второго регистра
             //┌── MINUS ────────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
-                F[index] = F[index] - F[secondIndex]  //MINUS F* F*
+                F2[index] = F2[index] - F2[secondIndex]  //MINUS F* F*
             }
             //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
-                F[index] = F[index] + F[secondIndex]          //PLUS F* F*
+                F2[index] =  F2[index] + F2[secondIndex]          //PLUS F* F*
             }
             //└────────────────────────────────────────────┘
         } else {
@@ -494,12 +522,18 @@ class Script {
             val fvalue = listCMD[2].toFloat()
             //┌── MINUS ───────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
-                F[index] = F[index] - fvalue //MINUS F* F*
+                F2[index] = F2[index] - fvalue //MINUS F* F*
             }
             //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
-                F[index] = F[index] + fvalue //MINUS F* F*
+
+
+
+                F2[index] =  F2[index] + fvalue //MINUS F* F*
+
+
+
             }
             //└────────────────────────────────────────────┘
         }
@@ -515,7 +549,7 @@ class Script {
         list.add("IF F1 < 10000")
         list.add("CR1 FR F1")
         list.add("PLUS F1 100")
-        list.add("DELAY 1000")
+        list.add("DELAY 500")
         list.add("GOTO 3")
         list.add("ENDIF")
         list.add("T Выход")

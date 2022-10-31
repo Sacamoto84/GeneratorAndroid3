@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,11 +29,16 @@ import kotlinx.coroutines.delay
 
 class Console2 {
 
+    var SelectVisible = mutableStateOf(true)
+
+
+    var SelectLine = mutableStateOf(1) //Линия которую нужно подсвечивать
+
     //MARK: Показывать номер строки
     val isCheckedUselineVisible = mutableStateOf(false)
 
     //MARK: Размер строки
-    val textSizeDefault : TextUnit = 14.sp
+    val textSizeDefault: TextUnit = 14.sp
 
     val defaultTextColor: Color = Color.White
     val defaultBgColor: Color = Color.Black
@@ -54,6 +60,7 @@ class Console2 {
     )
 
     var colorlineAndText = mutableStateListOf<LineTextAndColor>()
+
 
     fun println(
         text: String,
@@ -113,7 +120,7 @@ class Console2 {
 
     @Composable
     //fun Lazy(messages: SnapshotStateList<LineTextAndColor>) {
-    fun Draw(modifier : Modifier = Modifier) {
+    fun Draw(modifier: Modifier = Modifier) {
         val messages: SnapshotStateList<LineTextAndColor> = colorlineAndText
 
 
@@ -136,7 +143,7 @@ class Console2 {
                 delay(200L)
                 //val s = messages.size
                 //if ((s > 20) && (telnetSlegenie.value == true)) {
-                //    lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
+                    lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
                 //}
             }
         }
@@ -144,7 +151,9 @@ class Console2 {
 
         Box(
             Modifier
-                .fillMaxSize().background(Color(0xFF090909)).then(modifier)
+                .fillMaxSize()
+                .background(Color(0xFF090909))
+                .then(modifier)
             //.weight(1f)
         )
         {
@@ -187,30 +196,45 @@ class Console2 {
                             )
                         }
 
+
                         for (i in 0 until s) {
-                            Text(
-                                text = item.pairList[i].text,
-                                color = if (!item.pairList[i].flash)
-                                    item.pairList[i].colorText
-                                else
-                                    if (update) item.pairList[i].colorText else Color(0xFF090909),
-                                modifier = Modifier.background(
-                                    if (!item.pairList[i].flash)
-                                        item.pairList[i].colorBg
-                                    else
-                                        if (update) item.pairList[i].colorBg else Color(
-                                            0xFF090909
-                                        )
-                                ),
-                                textDecoration = if (item.pairList[i].underline) TextDecoration.Underline else null,
-                                fontWeight = if (item.pairList[i].bold) FontWeight.Bold else null,
-                                fontStyle = if (item.pairList[i].italic) FontStyle.Italic else null,
-                                fontSize = item.pairList[i].textSize,
-                                fontFamily = FontFamily(
-                                    Font(R.font.jetbrains, FontWeight.Normal)
-                                )
+
+                            val colorSelect = if (SelectLine.value == index) Color.Magenta else Color.DarkGray
+
+                            Box(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .background(colorSelect)
                             )
+                            {
+
+                                Text(
+                                    text = item.pairList[i].text,
+                                    color = if (!item.pairList[i].flash)
+                                        item.pairList[i].colorText
+                                    else
+                                        if (update) item.pairList[i].colorText else Color(0xFF090909),
+                                    modifier = Modifier.background(
+                                        if (!item.pairList[i].flash)
+                                            item.pairList[i].colorBg
+                                        else
+                                            if (update) item.pairList[i].colorBg else Color(
+                                                0xFF090909
+                                            )
+                                    ),
+                                    textDecoration = if (item.pairList[i].underline) TextDecoration.Underline else null,
+                                    fontWeight = if (item.pairList[i].bold) FontWeight.Bold else null,
+                                    fontStyle = if (item.pairList[i].italic) FontStyle.Italic else null,
+                                    fontSize = item.pairList[i].textSize,
+                                    fontFamily = FontFamily(
+                                        Font(R.font.jetbrains, FontWeight.Normal)
+                                    )
+                                )
+                            }
+
                         }
+
+
                     }
                 }
             }

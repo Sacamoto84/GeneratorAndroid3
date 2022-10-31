@@ -5,10 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.mainscreen4.bottomBarEnum
@@ -16,14 +13,10 @@ import com.example.generator2.scripting.Script
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
-import java.util.ArrayList
 
 @SuppressLint("StaticFieldLeak")
 object Global : ViewModel(){
@@ -258,6 +251,7 @@ object Global : ViewModel(){
 
 
     val script : Script = Script()
+    var script_pc = MutableLiveData<Int>( 0)
 
     fun launchScriptScope() {
         viewModelScope.launch {
