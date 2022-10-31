@@ -12,11 +12,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.mainscreen4.bottomBarEnum
+import com.example.generator2.scripting.Script
 import flipagram.assetcopylib.AssetCopier
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.IOException
 import java.util.ArrayList
@@ -249,5 +253,31 @@ object Global : ViewModel(){
         Utils.Spinner_Send_Buffer("CH1","FM",   ch2_FM_Filename.value )
 
     }
+
+
+
+
+    val script : Script = Script()
+
+    fun launchScriptScope() {
+        viewModelScope.launch {
+            scriptRun()
+        }
+    }
+
+    private suspend fun scriptRun() = withContext(Dispatchers.Main)
+    {
+        while(true) {
+            script.run()
+            delay(10)
+        }
+    }
+
+
+
+
+
+
+
 
 }

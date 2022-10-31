@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import colorDarkBackground
 import com.example.generator2.Global.bottomBarRoute
+import com.example.generator2.screens.ScreenScriptCommon
 import com.example.generator2.scripting.ScreenScriptInfo
 
 
@@ -30,6 +31,7 @@ fun mainsreen4() {
                 bottomBarEnum.SAVEAS -> BottomBarSave()
                 bottomBarEnum.LOAD -> BottomBarLoad()
                 bottomBarEnum.LOADAS -> BottomBarLoad()
+                bottomBarEnum.SCRIPT -> bottomBarScript()
                 else -> BottomBarGenerator()
             }
         },
@@ -85,7 +87,7 @@ fun mainsreen4() {
                         .fillMaxSize()
                 )
                 {
-                    ScreenScriptInfo()
+                    ScreenScriptCommon()
                 }
             }
 

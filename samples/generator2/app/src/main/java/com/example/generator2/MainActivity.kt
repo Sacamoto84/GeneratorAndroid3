@@ -126,6 +126,11 @@ class MainActivity : ComponentActivity() {
 
         Global.sendAlltoGen()
 
+        Global.launchScriptScope() //Запуск скриптового потока
+
+        Global.script.unit5Load() //Загрузить тест
+
+
         setContent {
 
             val systemUiController = rememberSystemUiController()

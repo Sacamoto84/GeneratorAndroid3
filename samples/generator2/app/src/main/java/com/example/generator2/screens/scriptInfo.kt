@@ -1,22 +1,20 @@
 package com.example.generator2.scripting
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.example.generator2.Global
 import com.example.generator2.console.Console2
-
 
 
 //Экран описания языка
 @Composable
 fun ScreenScriptInfo()
 {
+
+    Global.script.start() //Запустить скрипт на выполнение
+
     val console = Console2()
     Info0(console)
-
 
     console.Draw()
 
@@ -31,7 +29,7 @@ fun ScreeScriptInfoReview(){
 @Composable
 fun Info0( console: Console2 )
 {
-    console.println("Описание работы скриптов")
+    console.println("Описание работы скрипов")
     console.println("╭─── Генератор ────────────────────╮")
     console.println("│ CH[1 2] [CR AM FM] [ON OFF]      │")
     console.println("├────────────────────────────      │")

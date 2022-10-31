@@ -1,8 +1,7 @@
 package com.example.generator2.scripting
 
-import androidx.compose.ui.input.key.Key.Companion.F
 import com.example.generator2.Global
-import com.example.generator2.Utils
+import com.example.generator2.screens.consoleLog
 
 /*
  * ----------------- Логика -----------------
@@ -70,23 +69,49 @@ class Script {
     var yield = false
     var pc = 0
 
-    var endTime = 0              //Время > которого можно продолжать работу
+    var endTime = 0L              //Время > которого можно продолжать работу
 
-    var register = FloatArray(10)  //Массив регистров
+    var F = FloatArray(10)  //Массив регистров
 
     var str: String = ""
 
     //Временная строка
     private val list: MutableList<String> = mutableListOf<String>() //Список команд
-    var line = 0;                                           //Текучая строка
+
 //╰─────────────────────────────╯
 
+    fun log( str : String)
+    {
+        consoleLog.println(str)
+    }
 
+
+    fun run() {
+
+        if (end)
+            return
+        end = false
+        yield = false
+
+        if (System.currentTimeMillis() <= endTime)
+            return
+
+        endTime = 0
+
+        while (!yield && !end) {
+            CMD_EXE()
+            if (System.currentTimeMillis() <= endTime)
+                return
+        }
+    }
+    
+    
+    
     fun openScript(path: String) {
 
     }
 
-    fun run() {
+    fun start() {
         pc = 1
         end = false
     }
@@ -106,11 +131,13 @@ class Script {
     }
 
     //Выполнить команду по строке pc
-    fun CMD_EXE() {
+    private fun CMD_EXE() {
 
         val comand: String = list[pc]
 
         println("Script: $pc $comand")
+
+        log("Script: $pc $comand")
 
         //Разобрать строку на список команд
         val listCMD = comand.split(" ")
@@ -149,28 +176,36 @@ class Script {
                 pc++
             }
 
-            //"MINUS", "PLUS" -> {comandPlusMinus() pc++}
+            "MINUS", "PLUS" -> {
+                comandPlusMinus()
+                pc++
+            }
+
             //"PRINTF" -> { printF() pc++}
-            //"GOTO" -> {  pc = comand.toUint(4); } ???????
+
+            "GOTO" -> {
+                pc = listCMD[1].toInt()
+            }
+
             "YIELD" -> {
                 yield = true
                 pc++
             }
-            //"DELAY" -> {uint32_t d = comand . toUint (5);
-            //    endTime = uwTick + d;
-            //    pc++;}
+
+            "DELAY" -> {
+                val d = listCMD[1].toLong()
+                endTime = System.currentTimeMillis() + d
+                pc++
+            }
 
             "TEXT" -> pc++
 
             "LOAD" -> {
-                //triple = excretionTripleOperand(comand);
-                //if (triple.operand0 == (char*)"LOAD")
-                // {
-                //    int index = triple.operand1.buf[1]-0x30;
-                //    F[index] = triple.operand2.toFloat();
-                //}
+                //LOAD F1 2344.0  │ 2344.0 -> F1
+                Load()
                 pc++
             }
+
 
             else -> {
                 println("Script:? pc:$pc:$comand")
@@ -180,6 +215,29 @@ class Script {
             }
 
         }
+
+    }
+    
+    fun printF(): String {
+        val s =
+            "0:%F[0] 1:%F[0] 2:%F[0] 3:%F[0]4:%F[0] 5:%F[0] 6:%F[0] 7:%F[0] 8:%F[0] 9:%F[0]"
+        return s
+    }
+
+
+    fun Load() {
+        //LOAD F1 2344.0  │ 2344.0 -> F1
+        val comand: String = list[pc]
+
+        //Разобрать строку на список команд
+        val listCMD = comand.split(" ")
+        if (listCMD.isEmpty()) {
+            println("Script: Error Load размер listCMD == 0")
+            return
+        }
+
+        val index = listCMD[1].drop(1).toInt()
+        F[index] = listCMD[2].toFloat()
 
     }
 
@@ -197,10 +255,10 @@ class Script {
         }
 
         //IF Rxx Первый всегда R регистр
-        val f1value = register[listCMD[1].drop(1).toInt()]
+        val f1value = F[listCMD[1].drop(1).toInt()]
 
         var f2value = if ((listCMD[3].first() == 'R'))
-            register[listCMD[3].drop(1).toInt()]
+            F[listCMD[3].drop(1).toInt()]
         else
             listCMD[3].toFloat()
 
@@ -301,7 +359,7 @@ class Script {
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
                 value = if (listCMD[2].first() == 'F') {                            //│
-                    register[listCMD[2].drop(1).toInt()]                         //│
+                    F[listCMD[2].drop(1).toInt()]                         //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
@@ -323,7 +381,7 @@ class Script {
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
                 value = if (listCMD[2].first() == 'F') {                            //│
-                    register[listCMD[2].drop(1).toInt()]                         //│
+                    F[listCMD[2].drop(1).toInt()]                         //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
@@ -354,7 +412,7 @@ class Script {
             if (listCMD[1] == "BASE")                                               //│
             {                                                                       //│
                 value = if (listCMD[2].first() == 'F') {                            //│
-                    register[listCMD[2].drop(1).toInt()]                         //│
+                    F[listCMD[2].drop(1).toInt()]                         //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
@@ -369,7 +427,7 @@ class Script {
         if (listCMD[1] == "DEV")                                                    //│
         {
             value = if (listCMD[2].first() == 'F') {
-                register[listCMD[2].drop(1).toInt()]
+                F[listCMD[2].drop(1).toInt()]
             } else
                 listCMD[2].toFloat()
 
@@ -392,7 +450,7 @@ class Script {
         if (listCMD[1] == "FR")                                                     //│
         {                                                                           //│
             value = if (listCMD[2].first() == 'F') {
-                register[listCMD[2].drop(1).toInt()]
+                F[listCMD[2].drop(1).toInt()]
             } else
                 listCMD[2].toFloat()
 
@@ -404,5 +462,64 @@ class Script {
         return                                                                       //│
     }                                                                                //│
     //╰────────────────────────────────────────────────────────────────────────────────╯
+
+    fun comandPlusMinus() {
+        //MINUS F1 5000.0
+        //MINUS F1 F2
+        val comand: String = list[pc]
+        //Разобрать строку на список команд
+        val listCMD = comand.split(" ")
+        if (listCMD.isEmpty()) {
+            println("Script: Error comandPlusMinus размер listCMD == 0")
+            return
+        }
+        val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9
+        //MINUS F1 F2
+        if (listCMD[2].first() == 'F') {
+            //Втокой операнд это регистор
+            val secondIndex = listCMD[2].drop(1).toInt() //Индекс второго регистра
+            //┌── MINUS ────────────────────────────────────┐
+            if (listCMD[0] == "MINUS") {
+                F[index] = F[index] - F[secondIndex]  //MINUS F* F*
+            }
+            //└────────────────────────────────────────────┘
+            //┌── PLUS ────────────────────────────────────┐
+            if (listCMD[0] == "PLUS") {
+                F[index] = F[index] + F[secondIndex]          //PLUS F* F*
+            }
+            //└────────────────────────────────────────────┘
+        } else {
+            //Второй операнд это константа
+            //MINUS F1 5000.0
+            val fvalue = listCMD[2].toFloat()
+            //┌── MINUS ───────────────────────────────────┐
+            if (listCMD[0] == "MINUS") {
+                F[index] = F[index] - fvalue //MINUS F* F*
+            }
+            //└────────────────────────────────────────────┘
+            //┌── PLUS ────────────────────────────────────┐
+            if (listCMD[0] == "PLUS") {
+                F[index] = F[index] + fvalue //MINUS F* F*
+            }
+            //└────────────────────────────────────────────┘
+        }
+    }
+
+    //Тесты
+    fun unit5Load()
+    {
+        list.clear()
+        list.add("Unit test")
+        list.add("T Юнит тест")
+        list.add("LOAD F1 1000")
+        list.add("IF F1 < 10000")
+        list.add("CR1 FR F1")
+        list.add("PLUS F1 100")
+        list.add("DELAY 1000")
+        list.add("GOTO 3")
+        list.add("ENDIF")
+        list.add("T Выход")
+        list.add("END")
+    }
 
 }

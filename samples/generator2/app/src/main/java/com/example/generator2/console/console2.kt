@@ -113,7 +113,7 @@ class Console2 {
 
     @Composable
     //fun Lazy(messages: SnapshotStateList<LineTextAndColor>) {
-    fun Draw() {
+    fun Draw(modifier : Modifier = Modifier) {
         val messages: SnapshotStateList<LineTextAndColor> = colorlineAndText
 
 
@@ -144,7 +144,7 @@ class Console2 {
 
         Box(
             Modifier
-                .fillMaxSize().background(Color(0xFF090909))
+                .fillMaxSize().background(Color(0xFF090909)).then(modifier)
             //.weight(1f)
         )
         {
