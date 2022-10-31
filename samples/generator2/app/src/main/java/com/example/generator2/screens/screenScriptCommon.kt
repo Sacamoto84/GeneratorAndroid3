@@ -19,112 +19,24 @@ import com.example.generator2.scripting.scriptCore
 import libs.modifier.recomposeHighlighter
 import kotlin.math.absoluteValue
 
-val consoleLog = Console2()
+
 
 //Основной экран для скриптов
 @Composable
 fun ScreenScriptCommon() {
 
-    val consoleUp = Console2()
 
-    consoleUp.println("Up")
-    consoleUp.println("Up1")
-    consoleUp.println("2")
-    consoleUp.println("Up3")
-    consoleUp.println("Up4")
-    consoleUp.println("Up5")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
-    consoleUp.println("Up6")
+    Global.script.LoadScriptToConsoleView()
 
-    consoleLog.println("Down1")
-    consoleLog.println("Down2")
-    consoleLog.println("Down3")
-    consoleLog.println("Down4")
+    Column(Modifier.recomposeHighlighter()) {
 
-    Global.script_pc.observeForever { pc ->
-        consoleUp.SelectLine.value = pc
-        println("Global.script_pc.observeForever pc= $pc")
+        Global.script.ConsoleViewDraw(Modifier.weight(1f))
+
+        //Консоль Логов
+        Global.script.ConsoleLogDraw(Modifier.weight(1f))
+
+        Global.script.RegisterViewDraw()
     }
-
-    consoleUp.isCheckedUselineVisible.value = true
-    consoleLog.isCheckedUselineVisible.value = true
-
-    Column() {
-
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(Color.Green)
-                .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .weight(1f)
-        )
-        {
-            consoleUp.Draw()
-        }
-
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(Color.Red)
-                .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .weight(1f)
-        )
-        {
-            Column() {
-
-                Text(
-                    "Логи",
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-
-                consoleLog.Draw(
-                    Modifier
-                        .padding(4.dp)
-                )
-            }
-        }
-
-
-
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth()
-                //.background(Color.Red)
-                //.border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .height(100.dp)
-        ){
-
-            Column(Modifier.recomposeHighlighterOneLine()) {
-                Row() {
-                    Text(text = "F0[${Global.script.F2[0]}]", color = Color.White)
-                    Text(text = "F1[${Global.script.F2[1]}]", color = Color.White)
-
-                }
-
-            }
-
-
-
-        }
-
-
-
-    }
-
-
 }
 
 

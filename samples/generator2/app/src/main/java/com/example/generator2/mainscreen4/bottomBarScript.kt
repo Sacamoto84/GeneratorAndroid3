@@ -12,7 +12,7 @@ private fun Key0() {
     TemplateButtonBottomBar(
         str = "Запуск",
         onClick = {
-          Global.script.start()
+            Global.script.start()
         })
 }
 
@@ -21,7 +21,7 @@ private fun Key1() {
     TemplateButtonBottomBar(
         str = "Пауза",
         onClick = {
-
+            Global.script.pause()
         })
 }
 
@@ -30,7 +30,7 @@ private fun Key2() {
     TemplateButtonBottomBar(
         str = "Стоп",
         onClick = {
-
+            Global.script.stop()
         })
 }
 

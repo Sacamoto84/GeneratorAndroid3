@@ -251,11 +251,11 @@ object Global : ViewModel(){
 
 
     val script : Script = Script()
-    var script_pc = MutableLiveData<Int>( 0)
 
     fun launchScriptScope() {
         viewModelScope.launch {
             scriptRun()
+
         }
     }
 
