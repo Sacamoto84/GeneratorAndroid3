@@ -250,6 +250,15 @@ object Global : ViewModel(){
 
 
 
+
+
+
+    ////////////////////////////////////////////////////////
+
+
+
+
+
     val script : Script = Script()
 
     fun launchScriptScope() {

@@ -101,7 +101,7 @@ class Script {
     var str: String = ""
 
     //Временная строка
-    private val list: MutableList<String> = mutableListOf<String>() //Список команд
+    val list: MutableList<String> = mutableListOf<String>() //Список команд
 
     init {
         f.addAll(FloatArray(10).toList())
