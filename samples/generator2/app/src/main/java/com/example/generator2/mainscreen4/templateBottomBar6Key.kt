@@ -1,20 +1,19 @@
 package com.example.generator2.mainscreen4
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import colorDarkBackground
+import com.example.generator2.R
 
 //Шаблон на 6 кнопок
 @Composable
@@ -119,9 +118,9 @@ fun TemplateButtonBottomBar(
             backgroundColor = backgroundColor,
             contentColor = Color.White
         ),
-        border = BorderStroke(1.dp, Color.LightGray)
+        border = BorderStroke(1.dp, Color.LightGray),contentPadding = PaddingValues(2.dp)
     ) {
-        Text(str)
+        Text(str, maxLines = 2, fontFamily = FontFamily(Font(R.font.jetbrains)), fontSize = 14.sp)
     }
 
 }

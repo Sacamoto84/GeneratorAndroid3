@@ -7,40 +7,39 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.MutableLiveData
-import com.example.generator2.Global
-import com.example.generator2.mainscreen4.bottomBarEnum
+import colorDarkBackground
+import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import java.util.*
 
-
 //Экраны для нижнего меню
-enum class routeKeyboardEnum {
+enum class RouteKeyboardEnum {
     HOME,
-    NUMDER,
+    NUMBER,
     F,
     ONOFF,
     CRAMFM,
     CRAMValue,
-    FMValue(),
+    FMValue,
+    FPADFM,
+    Comparison,
+    IFValue
 }
 
 //Клавиатурка
-class scriptKeyboard(index: Int) {
+class ScriptKeyboard(index: Int) {
 
 
     //Пути для отрисовки нижнего меню
-    var route = mutableStateOf(routeKeyboardEnum.HOME)
-    val routeStack = Stack<routeKeyboardEnum>() //Стек для отработки назад
+    private var route = mutableStateOf(RouteKeyboardEnum.HOME)
+    private val routeStack = Stack<RouteKeyboardEnum>() //Стек для отработки назад
 
-
-    var text = MutableLiveData<String>("")
-    private val listComand: MutableList<String> = mutableListOf<String>() //Список команд
+    var text = MutableLiveData("")
+    private val listCommand: MutableList<String> = mutableListOf() //Список команд
 
     init {
-        listComand.clear()
+        listCommand.clear()
 
         //routeStack.push(routeKeyboardEnum.HOME) //Положили хоум
 
@@ -52,38 +51,36 @@ class scriptKeyboard(index: Int) {
         //}
     }
 
-    fun routeTo(r: routeKeyboardEnum) {
+    private fun routeTo(r: RouteKeyboardEnum) {
         routeStack.push(route.value)
         route.value = r
     }
 
 
     //На кнопку назад, вытянуть из стека экран
-    fun backRoute() {
-
-        print("backRoute")
-        print(routeStack)
-
+    private fun backRoute() {
         if (routeStack.empty()) {
-            route.value = routeKeyboardEnum.HOME
+            route.value = RouteKeyboardEnum.HOME
             return
         }
         route.value = routeStack.pop()
-
     }
 
 
     @Composable
-    fun core() {
+    fun Core() {
         when (route.value) {
-            routeKeyboardEnum.HOME -> screenHOME()
-            routeKeyboardEnum.NUMDER -> screenNUMBERPAD()
-            routeKeyboardEnum.F -> screenFPAD()
-            routeKeyboardEnum.ONOFF -> screenONOFF()
-            routeKeyboardEnum.CRAMFM -> screenCRAMFM()
-            routeKeyboardEnum.CRAMValue -> screenCRAMValue()
-            routeKeyboardEnum.FMValue   -> screenFMValue()
-            else -> screenHOME()
+            RouteKeyboardEnum.HOME -> ScreenHOME()
+            RouteKeyboardEnum.NUMBER -> ScreenNUMBERPAD()
+            RouteKeyboardEnum.F -> ScreenFPAD()
+            RouteKeyboardEnum.ONOFF -> ScreenONOFF()
+            RouteKeyboardEnum.CRAMFM -> ScreenCRAMFM()
+            RouteKeyboardEnum.CRAMValue -> ScreenCRAMValue()
+            RouteKeyboardEnum.FMValue -> ScreenFMValue()
+            RouteKeyboardEnum.FPADFM -> ScreenFPADFM()
+            RouteKeyboardEnum.Comparison -> ScreenComparison()
+            RouteKeyboardEnum.IFValue -> ScreenIFValue()
+            //else -> ScreenHOME()
         }
 
 
@@ -91,7 +88,6 @@ class scriptKeyboard(index: Int) {
 
 
     //show hide
-
 
     @Composable
     fun Draw(
@@ -112,9 +108,15 @@ class scriptKeyboard(index: Int) {
         k14: (@Composable () -> Unit)? = null,
         k15: (@Composable () -> Unit)? = null,
     ) {
-        Column(modifier = Modifier.fillMaxWidth()) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(colorDarkBackground)
+        )
+        {
             Row(horizontalArrangement = Arrangement.SpaceAround) {
-                if (k0 != null) {
+
+                if (k0 != null)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -122,8 +124,8 @@ class scriptKeyboard(index: Int) {
                     ) {
                         k0()
                     }
-                }
-                if (k1 != null) {
+
+                if (k1 != null)
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -131,7 +133,7 @@ class scriptKeyboard(index: Int) {
                     ) {
                         k1()
                     }
-                }
+
                 if (k2 != null) {
                     Box(
                         modifier = Modifier
@@ -152,7 +154,10 @@ class scriptKeyboard(index: Int) {
                 }
 
             }
-            Row() {
+
+            Row()
+            {
+
                 if (k4 != null) {
                     Box(
                         modifier = Modifier
@@ -162,6 +167,7 @@ class scriptKeyboard(index: Int) {
                         k4()
                     }
                 }
+
                 if (k5 != null) {
                     Box(
                         modifier = Modifier
@@ -171,6 +177,7 @@ class scriptKeyboard(index: Int) {
                         k5()
                     }
                 }
+
                 if (k6 != null) {
                     Box(
                         modifier = Modifier
@@ -180,6 +187,7 @@ class scriptKeyboard(index: Int) {
                         k6()
                     }
                 }
+
                 if (k7 != null) {
                     Box(
                         modifier = Modifier
@@ -189,7 +197,9 @@ class scriptKeyboard(index: Int) {
                         k7()
                     }
                 }
+
             }
+
             Row() {
                 if (k8 != null) {
                     Box(
@@ -201,7 +211,6 @@ class scriptKeyboard(index: Int) {
                     }
                 }
                 if (k9 != null) {
-
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -229,6 +238,7 @@ class scriptKeyboard(index: Int) {
                     }
                 }
             }
+
             Row() {
                 if (k12 != null) {
                     Box(
@@ -270,218 +280,273 @@ class scriptKeyboard(index: Int) {
         }
     }
 
-
     //label текст кнопки
     //route перейти на экран с нужным именем
     //Выполнить действие, выполняется или действие или onClick
     @Composable
-    fun keyX(label: String, route: String? = null, onClick: () -> Unit) {
-        Button(onClick = {
+    fun KeyX(label: String, onClick: () -> Unit) {
 
-            //Переход на нужный экран
-            if (route != null) {
-
+        TemplateButtonBottomBar(str = label,
+            onClick = {
+                onClick()
             }
-            onClick()
-        }) {
-            Text(label)
-        }
+        )
     }
 
-
     @Composable
-    fun keyEnter() {
-        Button(onClick = { /*TODO*/ }) {
-            Text("E")
-        }
+    fun KeyEnter() {
+        TemplateButtonBottomBar(str = "Enter",
+            onClick = {
+            }
+        )
     }
 
     /////////////////////////////////////////////////////
 
     @Composable
-    fun screenHOME() {
+    fun ScreenHOME() {
         Draw(
-            k0 = { keyX("CH1", onClick = {routeTo(routeKeyboardEnum.CRAMFM)}) },
-            k1 = { keyX("CR1", onClick = {routeTo(routeKeyboardEnum.CRAMValue)}) },
-            k2 = { keyX("AM1", onClick = {routeTo(routeKeyboardEnum.CRAMValue)}) },
-            k3 = { keyX("FM1", onClick = {routeTo(routeKeyboardEnum.FMValue)}) },
-            k4 = { keyX("CH2", onClick = {routeTo(routeKeyboardEnum.CRAMFM)}) },
-            k5 = { keyX("CR2", onClick = {routeTo(routeKeyboardEnum.CRAMValue)}) },
-            k6 = { keyX("AM2", onClick = {routeTo(routeKeyboardEnum.CRAMValue)}) },
-            k7 = { keyX("FM2", onClick = {routeTo(routeKeyboardEnum.FMValue)}) },
-            k8 = { keyX("GOTO", onClick = {routeTo(routeKeyboardEnum.NUMDER)}) },
+            k0 = { KeyX("CH1", onClick = { routeTo(RouteKeyboardEnum.CRAMFM) }) },
+            k1 = { KeyX("CR1", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
+            k2 = { KeyX("AM1", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
+            k3 = { KeyX("FM1", onClick = { routeTo(RouteKeyboardEnum.FMValue) }) },
+            k4 = { KeyX("CH2", onClick = { routeTo(RouteKeyboardEnum.CRAMFM) }) },
+            k5 = { KeyX("CR2", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
+            k6 = { KeyX("AM2", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
+            k7 = { KeyX("FM2", onClick = { routeTo(RouteKeyboardEnum.FMValue) }) },
+            k8 = { KeyX("GOTO", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
             k9 = {
-                keyX("IF", onClick = {
-                    routeTo(routeKeyboardEnum.F)
+                KeyX("IF", onClick = {
+                    routeTo(RouteKeyboardEnum.FPADFM)
                 })
             },
-            k10 = { keyX("ELSE", onClick = {}) },
-            k11 = { keyX("<", onClick = {}) },
+            k10 = { KeyX("ELSE", onClick = {}) },
+            k11 = { KeyX("<", onClick = {}) },
             k12 = {
-                keyX(
+                KeyX(
                     "DELAY",
                     onClick = {
-                        routeTo(routeKeyboardEnum.NUMDER)
+                        routeTo(RouteKeyboardEnum.NUMBER)
                     })
             },
-            k13 = { keyX("ENDIF", onClick = {}) },
-            k14 = { keyX("LOAD", onClick = {}) },
-            k15 = { keyEnter() })
+            k13 = { KeyX("ENDIF", onClick = {}) },
+            k14 = { KeyX("LOAD", onClick = {}) },
+            k15 = { KeyEnter() })
 
     }
 
-
     //Экран числовой клавиатуры
     @Composable
-    fun screenNUMBERPAD() {
+    fun ScreenNUMBERPAD() {
         Draw(
-            k0 = { keyX("1", onClick = {}) },
-            k1 = { keyX("2", onClick = {}) },
-            k2 = { keyX("3", onClick = {}) },
-            k3 = { keyX("DEL", onClick = {}) },
-            k4 = { keyX("4", onClick = {}) },
-            k5 = { keyX("5", onClick = {}) },
-            k6 = { keyX("6", onClick = {}) },
+            k0 = { KeyX("1", onClick = {}) },
+            k1 = { KeyX("2", onClick = {}) },
+            k2 = { KeyX("3", onClick = {}) },
+            k3 = { KeyX("DEL", onClick = {}) },
+            k4 = { KeyX("4", onClick = {}) },
+            k5 = { KeyX("5", onClick = {}) },
+            k6 = { KeyX("6", onClick = {}) },
             k7 = { },
-            k8 = { keyX("7", onClick = {}) },
-            k9 = { keyX("8", onClick = {}) },
-            k10 = { keyX("9", onClick = {}) },
-            k11 = { keyX("<", onClick = { backRoute() }) },
-            k12 = { keyX(".", onClick = {}) },
-            k13 = { keyX("0", onClick = {}) },
+            k8 = { KeyX("7", onClick = {}) },
+            k9 = { KeyX("8", onClick = {}) },
+            k10 = { KeyX("9", onClick = {}) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
+            k12 = { KeyX(".", onClick = {}) },
+            k13 = { KeyX("0", onClick = {}) },
             k14 = { },
-            k15 = { keyEnter() }
+            k15 = { KeyEnter() }
         )
     }
 
     //Экран выбора регистра
     @Composable
-    fun screenFPAD() {
+    fun ScreenFPAD() {
         Draw(
-            k0 = { keyX("F1", onClick = {}) },
-            k1 = { keyX("F2", onClick = {}) },
-            k2 = { keyX("F3", onClick = {}) },
-            k3 = { keyX("DEL", onClick = {}) },
-            k4 = { keyX("F4", onClick = {}) },
-            k5 = { keyX("F5", onClick = {}) },
-            k6 = { keyX("F6", onClick = {}) },
+            k0 = { KeyX("F1", onClick = {}) },
+            k1 = { KeyX("F2", onClick = {}) },
+            k2 = { KeyX("F3", onClick = {}) },
+            k3 = { KeyX("DEL", onClick = {}) },
+            k4 = { KeyX("F4", onClick = {}) },
+            k5 = { KeyX("F5", onClick = {}) },
+            k6 = { KeyX("F6", onClick = {}) },
             k7 = { },
-            k8 = { keyX("F7", onClick = {}) },
-            k9 = { keyX("F8", onClick = {}) },
-            k10 = { keyX("F9", onClick = {}) },
-            k11 = { keyX("<", onClick = { backRoute() }) },
+            k8 = { KeyX("F7", onClick = {}) },
+            k9 = { KeyX("F8", onClick = {}) },
+            k10 = { KeyX("F9", onClick = {}) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
             k12 = { },
-            k13 = { keyX("F0", onClick = {}) },
+            k13 = { KeyX("F0", onClick = {}) },
             k14 = { },
-            k15 = { keyEnter() }
+            k15 = { KeyEnter() }
+        )
+    }
+
+    //Экран выбора регистра
+    @Composable
+    fun ScreenFPADFM() {
+        Draw(
+            k0 = { KeyX("F1", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k1 = { KeyX("F2", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k2 = { KeyX("F3", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k3 = { },
+            k4 = { KeyX("F4", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k5 = { KeyX("F5", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k6 = { KeyX("F6", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k7 = { },
+            k8 = { KeyX("F7", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k9 = { KeyX("F8", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k10 = { KeyX("F9", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
+            k12 = { },
+            k13 = { KeyX("F0", onClick = { routeTo(RouteKeyboardEnum.Comparison) }) },
+            k14 = { },
+            k15 = { KeyEnter() }
         )
     }
 
     @Composable
-    fun screenONOFF() {
+    fun ScreenComparison() {
         Draw(
-            k0 = { keyX("ON", onClick = {}) },
+            k0 = { KeyX("<", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
+            k1 = { KeyX(">", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k2 = { },
+            k3 = { },
+            k4 = { KeyX("<=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k5 = { KeyX(">=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k6 = { },
+            k7 = { },
+            k8 = { KeyX("==", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k9 = { KeyX("!=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k10 = { },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
+            k12 = { },
+            k13 = { },
+            k14 = { },
+            k15 = { KeyEnter() }
+        )
+
+    }
+
+
+    @Composable
+    fun ScreenONOFF() {
+        Draw(
+            k0 = { KeyX("ON", onClick = {}) },
             k1 = { },
             k2 = { },
             k3 = { },
-            k4 = { keyX("OFF", onClick = {}) },
+            k4 = { KeyX("OFF", onClick = {}) },
             k5 = { },
             k6 = { },
             k7 = { },
             k8 = { },
             k9 = { },
             k10 = { },
-            k11 = { keyX("<", onClick = { backRoute() }) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
             k12 = { },
             k13 = { },
             k14 = { },
-            k15 = { keyEnter() }
+            k15 = { KeyEnter() }
         )
     }
 
     @Composable
-    fun screenCRAMFM() {
+    fun ScreenCRAMFM() {
         Draw(
-            k0 = { keyX("CR", onClick = { routeTo(routeKeyboardEnum.ONOFF)}) },
+            k0 = { KeyX("CR", onClick = { routeTo(RouteKeyboardEnum.ONOFF) }) },
             k1 = { },
             k2 = { },
             k3 = { },
-            k4 = { keyX("AM", onClick = {routeTo(routeKeyboardEnum.ONOFF)}) },
+            k4 = { KeyX("AM", onClick = { routeTo(RouteKeyboardEnum.ONOFF) }) },
             k5 = { },
             k6 = { },
             k7 = { },
-            k8 = { keyX("FM", onClick = {routeTo(routeKeyboardEnum.ONOFF)}) },
+            k8 = { KeyX("FM", onClick = { routeTo(RouteKeyboardEnum.ONOFF) }) },
             k9 = { },
             k10 = { },
-            k11 = { keyX("<", onClick = { backRoute() }) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
             k12 = { },
             k13 = { },
             k14 = { },
-            k15 = { keyEnter() }
+            k15 = { KeyEnter() }
+        )
+    }
+
+    @Composable
+    fun ScreenFMValue() {
+        Draw(
+            k0 = { KeyX("FR Fx", onClick = { routeTo(RouteKeyboardEnum.F) }) },
+            k1 = { KeyX("FR xx", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k2 = { },
+            k3 = { },
+            k4 = { KeyX("MOD", onClick = {}) },
+            k5 = { },
+            k6 = { },
+            k7 = { },
+            k8 = { KeyX("BASE Fx", onClick = { routeTo(RouteKeyboardEnum.F) }) },
+            k9 = { KeyX("BASE xx", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k10 = { },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
+            k12 = { KeyX("DEV Fx", onClick = { routeTo(RouteKeyboardEnum.F) }) },
+            k13 = { KeyX("DEV xx", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k14 = { },
+            k15 = { KeyEnter() }
         )
     }
 
 
     @Composable
-    fun screenFMValue() {
+    fun ScreenIFValue() {
         Draw(
-            k0 = { keyX("FR Fx", onClick = { routeTo(routeKeyboardEnum.F)}) },
-            k1 = { keyX("FR xxxx.x", onClick = { routeTo(routeKeyboardEnum.NUMDER)})},
+            k0 = { KeyX("Fx", onClick = { routeTo(RouteKeyboardEnum.F) }) },
+            k1 = { },
             k2 = { },
             k3 = { },
-            k4 = { keyX("MOD", onClick = {}) },
+            k4 = { KeyX("xxxx.x",onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
             k5 = { },
             k6 = { },
             k7 = { },
-            k8 = {  keyX("BASE Fx", onClick = { routeTo(routeKeyboardEnum.F)}) },
-            k9 = { keyX("BASE xxxx.x", onClick = { routeTo(routeKeyboardEnum.NUMDER)})},
-            k10 = { },
-            k11 = { keyX("<", onClick = { backRoute() }) },
-            k12 = { keyX("DEV Fx", onClick = { routeTo(routeKeyboardEnum.F)})},
-            k13 = { keyX("DEV xxxx.x", onClick = { routeTo(routeKeyboardEnum.NUMDER)})},
-            k14 = { },
-            k15 = { keyEnter() }
-        )
-    }
-    
-    @Composable
-    fun screenCRAMValue() {
-        Draw(
-            k0 = { keyX("FR Fx", onClick = { routeTo(routeKeyboardEnum.F)}) },
-            k1 = { keyX("FR xxxx.x", onClick = { routeTo(routeKeyboardEnum.NUMDER)})},
-            k2 = { },
-            k3 = { },
-            k4 = { keyX("MOD", onClick = {}) },
-            k5 = { },
-            k6 = { },
-            k7 = { },
-            k8 = {  },
+            k8 = { },
             k9 = { },
             k10 = { },
-            k11 = { keyX("<", onClick = { backRoute() }) },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
             k12 = { },
             k13 = { },
             k14 = { },
-            k15 = { keyEnter() }
+            k15 = { KeyEnter() }
         )
     }
-    
 
+
+    @Composable
+    fun ScreenCRAMValue() {
+        Draw(
+            k0 = { KeyX("FR Fx", onClick = { routeTo(RouteKeyboardEnum.F) }) },
+            k1 = { KeyX("FR xx.x", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k2 = { },
+            k3 = { },
+            k4 = { KeyX("MOD", onClick = {}) },
+            k5 = { },
+            k6 = { },
+            k7 = { },
+            k8 = { },
+            k9 = { },
+            k10 = { },
+            k11 = { KeyX("<", onClick = { backRoute() }) },
+            k12 = { },
+            k13 = { },
+            k14 = { },
+            k15 = { KeyEnter() }
+        )
+    }
 
 }
 
 @Preview
 @Composable
-fun keyboard_preview() {
-
-    val keyboard = scriptKeyboard(0)
-    Column() {
-        keyboard.core()
-        //keyboard.screenHOME()
-        //keyboard.screenNUMBERPAD()
-    }
-
-
+fun KeyboardPreview() {
+    val keyboard = ScriptKeyboard(0)
+    keyboard.Core()
 }
 
 
