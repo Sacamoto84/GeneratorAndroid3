@@ -28,49 +28,33 @@ data class PairTextAndColor(
     var italic: Boolean = false,
     var underline: Boolean = false,
     var flash: Boolean = false,
-    var textSize: TextUnit = 16.sp
+    var textSize: TextUnit = 12.sp
 )
 
 class ScriptItem {
 
-    var text : String = ""
     private var pairList = mutableStateListOf<PairTextAndColor>()
 
-    init {
-        pairList.add(
-            PairTextAndColor(
-                text = "1",
-                colorText = Color.Black,
-                colorBg = Color.White
-            )
-        )
-
-        pairList.add(
-            PairTextAndColor(
-                text = "2",
-                colorText = Color.Green,
-                colorBg = Color.White
-            )
-        )
-    }
-
     @Composable
-    fun Draw(str: String, index: Int = 0) {
+    fun Draw(str: String, index: Int = 0, select : Boolean = false) {
         convertStringToPairTextAndColor(str, index)
+
         Box(
             modifier = Modifier
-                .width(200.dp)
-                .wrapContentSize()
-                .background(Color.DarkGray)
+                .fillMaxWidth()
+                .background(if (select) Color.Blue else Color.Transparent)
         )
         {
             val s = pairList.size
             Row()
             {
+
                 for (i in 0 until s) {
                     Box(
                         modifier = Modifier
-                            .wrapContentSize()
+                            .padding(1.dp)
+                            //.wrapContentSize()
+                            .height(24.dp)
                             .clip(shape = RoundedCornerShape(8.dp))
                             .background(pairList[i].colorBg)
                     )
@@ -97,13 +81,11 @@ class ScriptItem {
     //Конвертируем строку и индекс в красивый вид
     private fun convertStringToPairTextAndColor(str: String, index: Int) {
 
-        text = "I=$index $str"
-
         pairList.clear()
 
         pairList.add(
             PairTextAndColor(
-                text = "I=$index",
+                text = "$index",
                 colorText = Color.Black,
                 colorBg = Color.White
             )
@@ -116,7 +98,7 @@ class ScriptItem {
             return
         }
 
-
+/////////////////////
         when (listCMD[0]) {
 
             "CH1", "CH2" -> pairList.add(
@@ -143,17 +125,27 @@ class ScriptItem {
                 )
             )
 
-            else -> {
+            "LOAD" -> pairList.add(
                 PairTextAndColor(
                     text = listCMD[0],
-                    colorText = Color.Black,
-                    colorBg = Color.White
+                    colorText = Color.Green,
+                    colorBg = Color.Magenta
+                )
+            )
+
+            else -> {
+                pairList.add(
+                    PairTextAndColor(
+                        text = listCMD[0],
+                        colorText = Color.Black,
+                        colorBg = Color.Green
+                    )
                 )
             }
 
         }
-
-        if (listCMD.size > 1)
+/////////////////////////////////////
+        if (listCMD.size >= 2)
             when (listCMD[1]) {
 
                 "CR", "AM", "FM" -> pairList.add(
@@ -165,15 +157,20 @@ class ScriptItem {
                 )
 
                 else -> {
-                    PairTextAndColor(
-                        text = listCMD[1],
-                        colorText = Color.Black,
-                        colorBg = Color.White
+
+                    pairList.add(
+                        PairTextAndColor(
+                            text = listCMD[1],
+                            colorText = Color.Black,
+                            colorBg = Color.Green
+                        )
                     )
                 }
+
+
             }
 
-        if (listCMD.size > 2)
+        if (listCMD.size >= 3)
             when (listCMD[2]) {
 
                 "ON" -> pairList.add(
@@ -192,22 +189,38 @@ class ScriptItem {
                     )
                 )
 
-                else -> {}
+                else -> {
+                    pairList.add(
+                        PairTextAndColor(
+                            text = listCMD[2],
+                            colorText = Color.Black,
+                            colorBg = Color.Green
+                        )
+                    )
+                }
             }
 
 
-        if (listCMD.size > 3)
+        if (listCMD.size >= 4)
             when (listCMD[3]) {
 
                 "CH1", "CH2" -> pairList.add(
                     PairTextAndColor(
-                        text = listCMD[0],
+                        text = listCMD[3],
                         colorText = Color.Green,
                         colorBg = Color.Magenta
                     )
                 )
 
-                else -> {}
+                else -> {
+                    pairList.add(
+                        PairTextAndColor(
+                            text = listCMD[3],
+                            colorText = Color.Black,
+                            colorBg = Color.Green
+                        )
+                    )
+                }
             }
 
     }
@@ -225,5 +238,4 @@ fun Xxx_preview() {
         items.Draw("CH1 CR ON")
         items.Draw("CH1 CR ON")
     }
-
 }

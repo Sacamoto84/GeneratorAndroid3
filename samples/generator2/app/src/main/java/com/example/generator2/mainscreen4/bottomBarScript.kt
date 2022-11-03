@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.example.generator2.Global
 import com.example.generator2.Global.bottomBarRoute
+import com.example.generator2.scripting.StateCommandScript
 
 @Composable
 private fun Key0() {
@@ -12,7 +13,7 @@ private fun Key0() {
     TemplateButtonBottomBar(
         str = "Запуск",
         onClick = {
-            Global.script.start()
+            Global.script.command(StateCommandScript.START)
         })
 }
 
@@ -21,7 +22,7 @@ private fun Key1() {
     TemplateButtonBottomBar(
         str = "Пауза",
         onClick = {
-            Global.script.pause()
+            Global.script.command(StateCommandScript.PAUSE)
         })
 }
 
@@ -30,7 +31,7 @@ private fun Key2() {
     TemplateButtonBottomBar(
         str = "Стоп",
         onClick = {
-            Global.script.stop()
+            Global.script.command(StateCommandScript.STOP)
         })
 }
 

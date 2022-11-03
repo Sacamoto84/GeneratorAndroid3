@@ -32,3 +32,17 @@ fun Context.findActivity(): Activity? {
 
 
 
+
+
+// Function to generate a Toast
+@Composable
+fun MToast(text: String){
+    val mContext = LocalContext.current
+    Toast.makeText(mContext, text, Toast.LENGTH_LONG).show()
+}
+
+
+
+
+
+

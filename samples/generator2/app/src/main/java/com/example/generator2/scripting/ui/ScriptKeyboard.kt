@@ -7,9 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.MutableLiveData
 import colorDarkBackground
-import com.example.generator2.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import java.util.*
 
@@ -28,7 +26,7 @@ enum class RouteKeyboardEnum {
 }
 
 //Клавиатурка
-class ScriptKeyboard(index : Int, private val list: SnapshotStateList<String>) {
+class ScriptKeyboard(selectIndex : Int, private val list: SnapshotStateList<String>) {
 
     //val list1 = list
     //Пути для отрисовки нижнего меню
@@ -41,8 +39,8 @@ class ScriptKeyboard(index : Int, private val list: SnapshotStateList<String>) {
 
     init {
         listCommand.clear()
-        listCommand = list[index].split(" ").toMutableList()
-        list[10] = "Превед"
+        listCommand = list[selectIndex].split(" ").toMutableList()
+        //list[10] = "Превед"
     }
 
     private fun routeTo(r: RouteKeyboardEnum) {

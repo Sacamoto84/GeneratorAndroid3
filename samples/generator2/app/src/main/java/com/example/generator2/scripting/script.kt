@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,8 +18,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.Global
 import com.example.generator2.console.Console2
+import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.recomposeHighlighterOneLine
-import com.example.generator2.scripting.ui.ScriptItem
+import com.example.generator2.scripting.ui.ScriptConsole
 import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
@@ -78,6 +81,20 @@ import libs.modifier.recomposeHighlighter
 
 const val PC_MAX = 128 //Максимальный размер скрипта..При динамическом списке не имеет смысла
 
+//Экраны для нижнего меню
+enum class StateCommandScript {
+    IDLE,
+    START,
+    PAUSE,
+    RESUME,
+    STOP,
+    EDIT, //Перевести в режим редактирования
+    //Состояния
+    isRUNNUNG,
+    isSTOPING,
+    isEDITTING, //Сейчас режим редактирования
+}
+
 //Основной класс скриптовой системы
 class Script {
 
@@ -86,38 +103,44 @@ class Script {
 
     var end = true
     var yield = false
-
-
     var endTime = 0L              //Время > которого можно продолжать работу
 
     var f = mutableStateListOf<Float>()
     private var pc = mutableStateOf(0)
-
-
     var str: String = ""
-
-    //Временная строка
-    //val list: MutableList<String> = mutableListOf() //Список команд
-
     var list = mutableStateListOf<String>()
-
+    var state by mutableStateOf(StateCommandScript.isSTOPING)
 
     init {
         f.addAll(FloatArray(10).toList())
     }
 
+    fun command(s: StateCommandScript) {
 
+        when (s) {
+            StateCommandScript.STOP -> {
+                stop()
+            }
+            StateCommandScript.PAUSE -> {
+                pause()            }
+            StateCommandScript.RESUME -> {
+                resume()
+            }
 
-
-
+            StateCommandScript.START -> {
+                start()
+                state = StateCommandScript.isRUNNUNG
+            }
+            else -> {}
+        }
+    }
 //╰─────────────────────────────╯
 
     fun log(str: String) {
         consoleLog.println(str)
     }
 
-
-     suspend fun run() {
+    suspend fun run() {
 
         if (end)
             return
@@ -148,17 +171,15 @@ class Script {
         end = false
     }
 
-    fun stop() {
+    private fun stop() {
         pc.value = 1
         end = true
         println("Script Stop")
     }
-
-    fun pause() {
+    private fun pause() {
         end = true
     }
-
-    fun resume() {
+    private fun resume() {
         end = false
     }
 
@@ -570,13 +591,11 @@ class Script {
     }
 
     @Composable
-    fun LoadScriptToConsoleView()
-    {
+    fun LoadScriptToConsoleView() {
         consoleUp.colorlineAndText.clear()
         //consoleUp.println("SCRIPT_NAME")
-        for(str in list)
-        {
-           consoleUp.println(str)
+        for (str in list) {
+            consoleUp.println(str)
         }
     }
 
@@ -594,12 +613,12 @@ class Script {
         {
             Column() {
 
-                Text(
-                    "Логи",
-                    color = Color.White,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
+//                Text(
+//                    "Логи",
+//                    color = Color.White,
+//                    modifier = Modifier.fillMaxWidth(),
+//                    textAlign = TextAlign.Center
+//                )
 
                 consoleLog.Draw(
                     Modifier
@@ -611,9 +630,6 @@ class Script {
 
     @Composable
     fun ConsoleViewDraw(modifier: Modifier = Modifier) {
-
-
-
         Box(
             modifier = Modifier
                 .padding(8.dp)
@@ -623,19 +639,14 @@ class Script {
                 .then(modifier)
         )
         {
-
             consoleUp.SelectLine = pc
             consoleUp.Draw()
-
-
         }
 
         Box(modifier = Modifier.background(Color.Green), contentAlignment = Alignment.BottomEnd)
         {
             Text("PC ${pc.value}")
         }
-
-
     }
 
     @Composable
@@ -685,7 +696,8 @@ class Script {
         {
 
             Row(
-                horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
                 Box(
@@ -717,24 +729,55 @@ class Script {
     }
 
 
-
-
-
-
 ////////////////////////////////////////////////////////////
+
+
+    /////////////////////////////////////////////////////////
 
     //Показать клавиатуру и привязать ее к индексу
     @Composable
-    fun ShowKeyBoard(index: Int)
-    {
-        val items = ScriptItem()
-        items.Draw(list[index])
-        val keyboard = ScriptKeyboard( index , list )
-        keyboard.Core()
-        //list[index] = keyboard.updateString()
+    fun ScriptTable(index: Int) {
+        Box(modifier = Modifier.fillMaxSize(1f))
+        {
+            Column() {
+                Row() {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .weight(1f), contentAlignment = Alignment.BottomEnd
+                    )
+                    {
+                        ScriptConsole(list, pc.value).Draw()
+                        Text(text = "PC:${pc.value}", color = Color.Red)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(100.dp)
+                            .background(Color.LightGray), contentAlignment = Alignment.TopCenter
+                    )
+                    {
+
+                        Column() {
+                            TemplateButtonBottomBar(str = "New")
+                            TemplateButtonBottomBar(str = "Edit")
+                            TemplateButtonBottomBar(str = "Редактирование")
+                        }
+                    }
+                }
+                Box()
+                {
+                    val keyboard = ScriptKeyboard(index, list)
+                    keyboard.Core()
+                }
+
+
+            }
+
+
+        }
+
     }
-
-
 
 
 }
