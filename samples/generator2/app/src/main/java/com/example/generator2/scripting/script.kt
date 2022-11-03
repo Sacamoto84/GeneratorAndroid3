@@ -1,5 +1,6 @@
 package com.example.generator2.scripting
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -24,6 +25,7 @@ import com.example.generator2.scripting.ui.ScriptConsole
 import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
+import java.sql.Struct
 
 /*
  * ----------------- Логика -----------------
@@ -89,6 +91,7 @@ enum class StateCommandScript {
     RESUME,
     STOP,
     EDIT, //Перевести в режим редактирования
+
     //Состояния
     isRUNNUNG,
     isSTOPING,
@@ -120,21 +123,47 @@ class Script {
         when (s) {
             StateCommandScript.STOP -> {
                 stop()
+                state = StateCommandScript.isSTOPING
             }
             StateCommandScript.PAUSE -> {
-                pause()            }
+                pause()
+                state = StateCommandScript.isSTOPING
+            }
             StateCommandScript.RESUME -> {
                 resume()
+                state = StateCommandScript.isRUNNUNG
             }
 
             StateCommandScript.START -> {
                 start()
                 state = StateCommandScript.isRUNNUNG
             }
+
+            StateCommandScript.EDIT -> {
+                stop()
+                state = StateCommandScript.isEDITTING
+            }
+
             else -> {}
         }
     }
-//╰─────────────────────────────╯
+
+    //╰─────────────────────────────╯
+    fun StateToString(): String {
+        val s =
+            when (state) {
+                StateCommandScript.IDLE -> "IDLE"
+                StateCommandScript.START -> "START"
+                StateCommandScript.PAUSE -> "PAUSE"
+                StateCommandScript.RESUME -> "RESUME"
+                StateCommandScript.STOP -> "STOP"
+                StateCommandScript.EDIT -> "EDIT"
+                StateCommandScript.isRUNNUNG -> "isRUNNUNG"
+                StateCommandScript.isSTOPING -> "isSTOPING"
+                StateCommandScript.isEDITTING -> "isEDITTING"
+            }
+        return s
+    }
 
     fun log(str: String) {
         consoleLog.println(str)
@@ -166,7 +195,7 @@ class Script {
 
     }
 
-    fun start() {
+    private fun start() {
         pc.value = 1
         end = false
     }
@@ -176,9 +205,11 @@ class Script {
         end = true
         println("Script Stop")
     }
+
     private fun pause() {
         end = true
     }
+
     private fun resume() {
         end = false
     }
@@ -573,7 +604,6 @@ class Script {
         list.add("END")
     }
 
-
     /*
      *╭──────────────────────────────────╮
      *│    Область Compose компонентов   │
@@ -598,7 +628,6 @@ class Script {
             consoleUp.println(str)
         }
     }
-
 
     @Composable
     fun ConsoleLogDraw(modifier: Modifier = Modifier) {
@@ -731,16 +760,20 @@ class Script {
 
 ////////////////////////////////////////////////////////////
 
-
-    /////////////////////////////////////////////////////////
-
     //Показать клавиатуру и привязать ее к индексу
     @Composable
     fun ScriptTable(index: Int) {
+
         Box(modifier = Modifier.fillMaxSize(1f))
         {
             Column() {
-                Row() {
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                ) {
+
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
@@ -750,28 +783,35 @@ class Script {
                         ScriptConsole(list, pc.value).Draw()
                         Text(text = "PC:${pc.value}", color = Color.Red)
                     }
+
                     Box(
                         modifier = Modifier
                             .fillMaxHeight()
-                            .width(100.dp)
+                            .width(160.dp)
                             .background(Color.LightGray), contentAlignment = Alignment.TopCenter
                     )
                     {
-
                         Column() {
-                            TemplateButtonBottomBar(str = "New")
-                            TemplateButtonBottomBar(str = "Edit")
-                            TemplateButtonBottomBar(str = "Редактирование")
+                            if (state != StateCommandScript.isEDITTING) {
+                                TemplateButtonBottomBar(str = "New")
+                                TemplateButtonBottomBar(str = "Редактирование", onClick = {
+                                    command(StateCommandScript.EDIT)
+                                })
+                                TemplateButtonBottomBar(str = StateToString())
+                            }
+                            if (state == StateCommandScript.isEDITTING) {
+                                TemplateButtonBottomBar(str = "STOP", onClick = {
+                                    command(StateCommandScript.STOP)
+                                })
+                                TemplateButtonBottomBar(str = StateToString())
+                            }
                         }
                     }
                 }
-                Box()
-                {
-                    val keyboard = ScriptKeyboard(index, list)
-                    keyboard.Core()
+
+                AnimatedVisibility(visible = state == StateCommandScript.isEDITTING) {
+                    ScriptKeyboard(index, list).Core()
                 }
-
-
             }
 
 

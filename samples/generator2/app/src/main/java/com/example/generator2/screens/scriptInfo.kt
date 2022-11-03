@@ -10,14 +10,9 @@ import com.example.generator2.console.Console2
 @Composable
 fun ScreenScriptInfo()
 {
-
-    Global.script.start() //Запустить скрипт на выполнение
-
     val console = Console2()
     Info0(console)
-
     console.Draw()
-
 }
 
 @Preview
