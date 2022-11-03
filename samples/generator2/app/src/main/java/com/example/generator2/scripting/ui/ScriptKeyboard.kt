@@ -1,15 +1,15 @@
-package com.example.generator2.scripting
+package com.example.generator2.scripting.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.MutableLiveData
 import colorDarkBackground
+import com.example.generator2.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import java.util.*
 
@@ -28,27 +28,21 @@ enum class RouteKeyboardEnum {
 }
 
 //Клавиатурка
-class ScriptKeyboard(index: Int) {
+class ScriptKeyboard(index : Int, private val list: SnapshotStateList<String>) {
 
-
+    //val list1 = list
     //Пути для отрисовки нижнего меню
     private var route = mutableStateOf(RouteKeyboardEnum.HOME)
     private val routeStack = Stack<RouteKeyboardEnum>() //Стек для отработки назад
 
-    var text = MutableLiveData("")
-    private val listCommand: MutableList<String> = mutableListOf() //Список команд
+    var text = mutableStateOf("")
+
+    private var listCommand: MutableList<String> = mutableListOf() //Список команд
 
     init {
         listCommand.clear()
-
-        //routeStack.push(routeKeyboardEnum.HOME) //Положили хоум
-
-        //Разобрать строку на список команд
-        //val listComand = Global.script.list[index].split(" ").toMutableList()
-        //определяем какой экран показать
-        // when (listComand.size) {
-        //0 -> Пустая строка ничего нет поэтому начальный экран //TODO("Начальный экран")
-        //}
+        listCommand = list[index].split(" ").toMutableList()
+        list[10] = "Превед"
     }
 
     private fun routeTo(r: RouteKeyboardEnum) {
@@ -66,7 +60,6 @@ class ScriptKeyboard(index: Int) {
         route.value = routeStack.pop()
     }
 
-
     @Composable
     fun Core() {
         when (route.value) {
@@ -82,10 +75,7 @@ class ScriptKeyboard(index: Int) {
             RouteKeyboardEnum.IFValue -> ScreenIFValue()
             //else -> ScreenHOME()
         }
-
-
     }
-
 
     //show hide
 
@@ -314,7 +304,15 @@ class ScriptKeyboard(index: Int) {
             k5 = { KeyX("CR2", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
             k6 = { KeyX("AM2", onClick = { routeTo(RouteKeyboardEnum.CRAMValue) }) },
             k7 = { KeyX("FM2", onClick = { routeTo(RouteKeyboardEnum.FMValue) }) },
-            k8 = { KeyX("GOTO", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k8 = {
+                KeyX(
+                    "GOTO",
+                    onClick = {
+
+                        list[12] = "GOTO"
+
+                        routeTo (RouteKeyboardEnum.NUMBER) })
+            },
             k9 = {
                 KeyX("IF", onClick = {
                     routeTo(RouteKeyboardEnum.FPADFM)
@@ -408,15 +406,15 @@ class ScriptKeyboard(index: Int) {
     fun ScreenComparison() {
         Draw(
             k0 = { KeyX("<", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
-            k1 = { KeyX(">", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k1 = { KeyX(">", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
             k2 = { },
             k3 = { },
-            k4 = { KeyX("<=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
-            k5 = { KeyX(">=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k4 = { KeyX("<=", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
+            k5 = { KeyX(">=", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
             k6 = { },
             k7 = { },
-            k8 = { KeyX("==", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
-            k9 = { KeyX("!=", onClick = {routeTo(RouteKeyboardEnum.IFValue)}) },
+            k8 = { KeyX("==", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
+            k9 = { KeyX("!=", onClick = { routeTo(RouteKeyboardEnum.IFValue) }) },
             k10 = { },
             k11 = { KeyX("<", onClick = { backRoute() }) },
             k12 = { },
@@ -502,7 +500,7 @@ class ScriptKeyboard(index: Int) {
             k1 = { },
             k2 = { },
             k3 = { },
-            k4 = { KeyX("xxxx.x",onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
+            k4 = { KeyX("xxxx.x", onClick = { routeTo(RouteKeyboardEnum.NUMBER) }) },
             k5 = { },
             k6 = { },
             k7 = { },
@@ -545,8 +543,8 @@ class ScriptKeyboard(index: Int) {
 @Preview
 @Composable
 fun KeyboardPreview() {
-    val keyboard = ScriptKeyboard(0)
-    keyboard.Core()
+    //val keyboard = ScriptKeyboard(0)
+    //keyboard.Core()
 }
 
 

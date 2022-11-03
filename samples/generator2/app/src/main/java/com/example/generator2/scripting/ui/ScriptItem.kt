@@ -1,4 +1,4 @@
-package com.example.generator2.scripting
+package com.example.generator2.scripting.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -6,7 +6,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -32,9 +31,9 @@ data class PairTextAndColor(
     var textSize: TextUnit = 16.sp
 )
 
-class items {
+class ScriptItem {
 
-    var text: String = ""
+    var text : String = ""
     private var pairList = mutableStateListOf<PairTextAndColor>()
 
     init {
@@ -55,25 +54,20 @@ class items {
         )
     }
 
-
     @Composable
-    fun draw() {
-
-        convertStringToPairTextAndColor("CH1 CR ON", 10)
-
+    fun Draw(str: String, index: Int = 0) {
+        convertStringToPairTextAndColor(str, index)
         Box(
             modifier = Modifier
                 .width(200.dp)
-                .height(50.dp)
+                .wrapContentSize()
                 .background(Color.DarkGray)
         )
         {
             val s = pairList.size
             Row()
             {
-
                 for (i in 0 until s) {
-
                     Box(
                         modifier = Modifier
                             .wrapContentSize()
@@ -94,19 +88,17 @@ class items {
                             )
                         )
                     }
-
                 }
-
             }
-
         }
-
-
     }
 
 
     //Конвертируем строку и индекс в красивый вид
-    fun convertStringToPairTextAndColor(str: String, index: Int) {
+    private fun convertStringToPairTextAndColor(str: String, index: Int) {
+
+        text = "I=$index $str"
+
         pairList.clear()
 
         pairList.add(
@@ -151,9 +143,6 @@ class items {
                 )
             )
 
-
-
-
             else -> {
                 PairTextAndColor(
                     text = listCMD[0],
@@ -161,8 +150,6 @@ class items {
                     colorBg = Color.White
                 )
             }
-
-
 
         }
 
@@ -205,7 +192,6 @@ class items {
                     )
                 )
 
-
                 else -> {}
             }
 
@@ -215,7 +201,7 @@ class items {
 
                 "CH1", "CH2" -> pairList.add(
                     PairTextAndColor(
-                        text = "${listCMD[0]}",
+                        text = listCMD[0],
                         colorText = Color.Green,
                         colorBg = Color.Magenta
                     )
@@ -231,11 +217,13 @@ class items {
 
 @Preview
 @Composable
-fun xxx_preview() {
-
-    val items = items()
-    items.draw()
-
-
+fun Xxx_preview() {
+    val items = ScriptItem()
+    Column() {
+        items.Draw("CH1 CR ON")
+        items.Draw("CH1 CR ON")
+        items.Draw("CH1 CR ON")
+        items.Draw("CH1 CR ON")
+    }
 
 }

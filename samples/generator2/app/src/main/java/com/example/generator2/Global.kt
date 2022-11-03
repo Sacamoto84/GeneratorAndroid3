@@ -2,6 +2,7 @@ package com.example.generator2
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.icu.text.AlphabeticIndex
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.mainscreen4.bottomBarEnum
 import com.example.generator2.scripting.Script
+import com.example.generator2.scripting.ui.ScriptKeyboard
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -275,8 +277,6 @@ object Global : ViewModel(){
             delay(10)
         }
     }
-
-
 
 
 

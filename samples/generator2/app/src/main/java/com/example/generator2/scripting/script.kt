@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.sp
 import com.example.generator2.Global
 import com.example.generator2.console.Console2
 import com.example.generator2.recomposeHighlighterOneLine
+import com.example.generator2.scripting.ui.ScriptItem
+import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
 
@@ -88,12 +90,6 @@ class Script {
 
     var endTime = 0L              //Время > которого можно продолжать работу
 
-    //var F1 = FloatArray(10)  //Массив регистров
-    //var mutableF = mutableStateListOf<FloatArray>(F1)
-
-    //val F = MutableLiveData<FloatArray>( FloatArray(10))
-    //val _F : LiveData<FloatArray> = F
-
     var f = mutableStateListOf<Float>()
     private var pc = mutableStateOf(0)
 
@@ -101,11 +97,18 @@ class Script {
     var str: String = ""
 
     //Временная строка
-    val list: MutableList<String> = mutableListOf<String>() //Список команд
+    //val list: MutableList<String> = mutableListOf() //Список команд
+
+    var list = mutableStateListOf<String>()
+
 
     init {
         f.addAll(FloatArray(10).toList())
     }
+
+
+
+
 
 //╰─────────────────────────────╯
 
@@ -712,4 +715,27 @@ class Script {
             }
         }
     }
+
+
+
+
+
+
+////////////////////////////////////////////////////////////
+
+    //Показать клавиатуру и привязать ее к индексу
+    @Composable
+    fun ShowKeyBoard(index: Int)
+    {
+        val items = ScriptItem()
+        items.Draw(list[index])
+        val keyboard = ScriptKeyboard( index , list )
+        keyboard.Core()
+        //list[index] = keyboard.updateString()
+    }
+
+
+
+
 }
+

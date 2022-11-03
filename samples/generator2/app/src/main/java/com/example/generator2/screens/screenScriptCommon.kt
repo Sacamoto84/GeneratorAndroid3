@@ -16,6 +16,9 @@ fun ScreenScriptCommon() {
 
     Column(Modifier.recomposeHighlighter()) {
 
+        Global.script.ShowKeyBoard(index = 2)
+
+        
         Global.script.ConsoleViewDraw(Modifier.weight(1f))
 
         //Консоль Логов
