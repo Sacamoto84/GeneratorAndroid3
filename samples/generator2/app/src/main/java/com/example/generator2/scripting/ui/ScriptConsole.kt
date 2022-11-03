@@ -9,15 +9,29 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import com.example.generator2.Global
+import libs.MToast
 
-class ScriptConsole(private val list: SnapshotStateList<String>, private val selectLine : Int) {
+class ScriptConsole(private val list: SnapshotStateList<String>, private val selectLine: Int) {
+
+
     @Composable
     fun Draw(modifier: Modifier = Modifier) {
+
+        val indexSelect = remember {
+            mutableStateOf(selectLine)
+        }
+        indexSelect.value = selectLine
+
         val lazyListState: LazyListState = rememberLazyListState()
         Box(
             Modifier
@@ -37,7 +51,21 @@ class ScriptConsole(private val list: SnapshotStateList<String>, private val sel
                         horizontalArrangement = Arrangement.Start
                     )
                     {
-                        ScriptItem().Draw(str = item, index = index, selectLine == index)
+
+                        Box(modifier = Modifier.selectable(
+                            selected = selectLine == index,
+                            onClick = {
+                                //indexSelect.value = index
+                                Global.script.pc.value = index
+                                MToast(Global.contextActivity!!, text = "$index")
+                            }
+                        ))
+                        {
+
+                            ScriptItem().Draw(str = item, index = index, indexSelect.value == index)
+
+                        }
+
                     }
                 }
             }

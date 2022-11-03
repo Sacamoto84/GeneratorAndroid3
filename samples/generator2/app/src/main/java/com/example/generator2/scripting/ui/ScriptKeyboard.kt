@@ -26,7 +26,7 @@ enum class RouteKeyboardEnum {
 }
 
 //Клавиатурка
-class ScriptKeyboard(selectIndex : Int, private val list: SnapshotStateList<String>) {
+class ScriptKeyboard(private val selectIndex : Int, private val list: SnapshotStateList<String>) {
 
     //val list1 = list
     //Пути для отрисовки нижнего меню
@@ -317,7 +317,7 @@ class ScriptKeyboard(selectIndex : Int, private val list: SnapshotStateList<Stri
                 })
             },
             k10 = { KeyX("ELSE", onClick = {}) },
-            k11 = { KeyX("<", onClick = {}) },
+            k11 = { KeyX("Удалить", onClick = { list.removeAt(selectIndex)}) },
             k12 = {
                 KeyX(
                     "DELAY",
@@ -327,7 +327,7 @@ class ScriptKeyboard(selectIndex : Int, private val list: SnapshotStateList<Stri
             },
             k13 = { KeyX("ENDIF", onClick = {}) },
             k14 = { KeyX("LOAD", onClick = {}) },
-            k15 = { KeyEnter() })
+            k15 = { KeyX("Добавить", onClick = {list.add("?")}) })
 
     }
 

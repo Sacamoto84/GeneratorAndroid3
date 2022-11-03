@@ -25,7 +25,7 @@ fun ScreenScriptCommon() {
 
         Box(Modifier.weight(1f))
         {
-            Global.script.ScriptTable(index = 2)
+            Global.script.ScriptTable()
         }
 
 

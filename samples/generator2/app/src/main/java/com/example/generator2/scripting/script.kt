@@ -109,7 +109,7 @@ class Script {
     var endTime = 0L              //Время > которого можно продолжать работу
 
     var f = mutableStateListOf<Float>()
-    private var pc = mutableStateOf(0)
+    var pc = mutableStateOf(0)
     var str: String = ""
     var list = mutableStateListOf<String>()
     var state by mutableStateOf(StateCommandScript.isSTOPING)
@@ -762,7 +762,7 @@ class Script {
 
     //Показать клавиатуру и привязать ее к индексу
     @Composable
-    fun ScriptTable(index: Int) {
+    fun ScriptTable() {
 
         Box(modifier = Modifier.fillMaxSize(1f))
         {
@@ -803,6 +803,12 @@ class Script {
                                 TemplateButtonBottomBar(str = "STOP", onClick = {
                                     command(StateCommandScript.STOP)
                                 })
+                                TemplateButtonBottomBar(str = "Добавить", onClick = {
+                                    list.add("?")
+                                })
+                                TemplateButtonBottomBar(str = "Удалить", onClick = {
+                                    command(StateCommandScript.STOP)
+                                })
                                 TemplateButtonBottomBar(str = StateToString())
                             }
                         }
@@ -810,7 +816,7 @@ class Script {
                 }
 
                 AnimatedVisibility(visible = state == StateCommandScript.isEDITTING) {
-                    ScriptKeyboard(index, list).Core()
+                    ScriptKeyboard(pc.value, list).Core()
                 }
             }
 
