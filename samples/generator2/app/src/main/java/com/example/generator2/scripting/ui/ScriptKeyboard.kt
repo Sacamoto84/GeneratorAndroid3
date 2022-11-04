@@ -48,7 +48,6 @@ class ScriptKeyboard(private val selectIndex : Int, private val list: SnapshotSt
         route.value = r
     }
 
-
     //На кнопку назад, вытянуть из стека экран
     private fun backRoute() {
         if (routeStack.empty()) {
@@ -423,7 +422,6 @@ class ScriptKeyboard(private val selectIndex : Int, private val list: SnapshotSt
 
     }
 
-
     @Composable
     fun ScreenONOFF() {
         Draw(
@@ -490,7 +488,6 @@ class ScriptKeyboard(private val selectIndex : Int, private val list: SnapshotSt
         )
     }
 
-
     @Composable
     fun ScreenIFValue() {
         Draw(
@@ -512,7 +509,6 @@ class ScriptKeyboard(private val selectIndex : Int, private val list: SnapshotSt
             k15 = { KeyEnter() }
         )
     }
-
 
     @Composable
     fun ScreenCRAMValue() {

@@ -26,6 +26,7 @@ import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
 import java.sql.Struct
+import java.util.*
 
 /*
  * ----------------- Логика -----------------
@@ -799,18 +800,41 @@ class Script {
                                 })
                                 TemplateButtonBottomBar(str = StateToString())
                             }
+
                             if (state == StateCommandScript.isEDITTING) {
                                 TemplateButtonBottomBar(str = "STOP", onClick = {
                                     command(StateCommandScript.STOP)
                                 })
+
+                                TemplateButtonBottomBar(str = "Up", onClick = {
+                                    if (pc.value > 0) {
+                                        Collections.swap(list, pc.value - 1, pc.value)
+                                        pc.value--
+                                    }
+                                })
+
+                                TemplateButtonBottomBar(str = "Down", onClick = {
+                                    if (pc.value < list.lastIndex) {
+                                        Collections.swap(list, pc.value + 1, pc.value)
+                                        pc.value++
+                                    }
+                                })
+
                                 TemplateButtonBottomBar(str = "Добавить", onClick = {
+                                    list.add(pc.value + 1, "?")
+                                })
+
+                                TemplateButtonBottomBar(str = "Добавить в конец", onClick = {
                                     list.add("?")
                                 })
+
                                 TemplateButtonBottomBar(str = "Удалить", onClick = {
-                                    command(StateCommandScript.STOP)
+                                    list.removeAt(pc.value)
                                 })
+
                                 TemplateButtonBottomBar(str = StateToString())
                             }
+
                         }
                     }
                 }
