@@ -31,7 +31,6 @@ class Console2 {
 
     var SelectVisible = mutableStateOf(true)
 
-
     var SelectLine = mutableStateOf(1) //Линия которую нужно подсвечивать
 
     //MARK: Показывать номер строки

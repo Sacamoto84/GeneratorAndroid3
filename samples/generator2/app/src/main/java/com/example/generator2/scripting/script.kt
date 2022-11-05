@@ -6,11 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,7 +21,6 @@ import com.example.generator2.scripting.ui.ScriptConsole
 import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
-import java.sql.Struct
 import java.util.*
 
 /*
@@ -86,7 +81,6 @@ const val PC_MAX = 128 //Максимальный размер скрипта..�
 
 //Экраны для нижнего меню
 enum class StateCommandScript {
-    IDLE,
     START,
     PAUSE,
     RESUME,
@@ -94,9 +88,10 @@ enum class StateCommandScript {
     EDIT, //Перевести в режим редактирования
 
     //Состояния
-    isRUNNUNG,
-    isSTOPING,
-    isEDITTING, //Сейчас режим редактирования
+    ISRUNNING,
+    ISPAUSE,
+    ISTOPPING,
+    ISEDITTING, //Сейчас режим редактирования
 }
 
 //Основной класс скриптовой системы
@@ -106,17 +101,18 @@ class Script {
     var scriptName: String = ""    //Имя текущего скрипта
 
     var end = true
-    var yield = false
-    var endTime = 0L              //Время > которого можно продолжать работу
+    private var yield = false
+    private var endTime = 0L              //Время > которого можно продолжать работу
 
-    var f = mutableStateListOf<Float>()
+    private var f = mutableStateListOf<Float>()
     var pc = mutableStateOf(0)
     var str: String = ""
-    var list = mutableStateListOf<String>()
-    var state by mutableStateOf(StateCommandScript.isSTOPING)
+    private var list = mutableStateListOf<String>()
+    var state by mutableStateOf(StateCommandScript.ISTOPPING)
 
     init {
         f.addAll(FloatArray(10).toList())
+        command(StateCommandScript.STOP)
     }
 
     fun command(s: StateCommandScript) {
@@ -124,25 +120,25 @@ class Script {
         when (s) {
             StateCommandScript.STOP -> {
                 stop()
-                state = StateCommandScript.isSTOPING
+                state = StateCommandScript.ISTOPPING
             }
             StateCommandScript.PAUSE -> {
                 pause()
-                state = StateCommandScript.isSTOPING
+                state = StateCommandScript.ISPAUSE
             }
             StateCommandScript.RESUME -> {
                 resume()
-                state = StateCommandScript.isRUNNUNG
+                state = StateCommandScript.ISRUNNING
             }
 
             StateCommandScript.START -> {
                 start()
-                state = StateCommandScript.isRUNNUNG
+                state = StateCommandScript.ISRUNNING
             }
 
             StateCommandScript.EDIT -> {
                 stop()
-                state = StateCommandScript.isEDITTING
+                state = StateCommandScript.ISEDITTING
             }
 
             else -> {}
@@ -150,18 +146,19 @@ class Script {
     }
 
     //╰─────────────────────────────╯
+
     fun StateToString(): String {
         val s =
             when (state) {
-                StateCommandScript.IDLE -> "IDLE"
                 StateCommandScript.START -> "START"
                 StateCommandScript.PAUSE -> "PAUSE"
                 StateCommandScript.RESUME -> "RESUME"
                 StateCommandScript.STOP -> "STOP"
                 StateCommandScript.EDIT -> "EDIT"
-                StateCommandScript.isRUNNUNG -> "isRUNNUNG"
-                StateCommandScript.isSTOPING -> "isSTOPING"
-                StateCommandScript.isEDITTING -> "isEDITTING"
+                StateCommandScript.ISRUNNING -> "isRUNNING"
+                StateCommandScript.ISTOPPING -> "isSTOPPING"
+                StateCommandScript.ISEDITTING -> "isEDITTING"
+                StateCommandScript.ISPAUSE -> "isPAUSE"
             }
         return s
     }
@@ -176,25 +173,20 @@ class Script {
             return
         end = false
         yield = false
-
         if (System.currentTimeMillis() <= endTime)
             return
-
         endTime = 0
-
         while (!yield && !end) {
-            CMD_EXE()
+
+            cmdExecute(list[pc.value])
             if (System.currentTimeMillis() <= endTime)
                 return
-
             delay(10)
 
         }
     }
 
-    fun openScript(path: String) {
-
-    }
+    //fun openScript(path: String) { }
 
     private fun start() {
         pc.value = 1
@@ -215,10 +207,10 @@ class Script {
         end = false
     }
 
-    //Выполнить команду по строке pc
-    private fun CMD_EXE() {
+    //Выполнить команду по строке
+    private fun cmdExecute(comand: String) {
 
-        val comand: String = list[pc.value]
+        //val comand: String = list[pc.value]
 
         println("Script: ${pc.value} $comand")
 
@@ -256,7 +248,7 @@ class Script {
                 end = true
             }
 
-            "IF" -> ifComand()
+            "IF" -> ifCommand()
 
             "CH1", "CH2", "CR1", "CR2", "AM1", "AM2", "FM1", "FM2" -> {
                 generatorComand()
@@ -325,12 +317,12 @@ class Script {
     }
 
     // IF R1 < 5500
-    private fun ifComand() {
+    private fun ifCommand() {
 
-        val comand: String = list[pc.value]
+        val command: String = list[pc.value]
 
         //Разобрать строку на список команд
-        val listCMD = comand.split(" ")
+        val listCMD = command.split(" ")
         if (listCMD.isEmpty()) {
             println("Script: Error ifComand размер listCMD == 0")
             return
@@ -377,12 +369,12 @@ class Script {
         }
     }
 
-    fun generatorComand() {
+    private fun generatorComand() {
 
-        val comand: String = list[pc.value]
+        val command: String = list[pc.value]
 
         //Разобрать строку на список команд
-        val listCMD = comand.split(" ")
+        val listCMD = command.split(" ")
         if (listCMD.isEmpty()) {
             println("Script: Error generatorComand размер listCMD == 0")
             return
@@ -558,7 +550,7 @@ class Script {
         val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9
         //MINUS F1 F2
         if (listCMD[2].first() == 'F') {
-            //Втокой операнд это регистор
+            //Второй операнд это регистор
             val secondIndex = listCMD[2].drop(1).toInt() //Индекс второго регистра
             //┌── MINUS ────────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
@@ -610,33 +602,21 @@ class Script {
      *│    Область Compose компонентов   │
      *╰──────────────────────────────────╯
      */
-    val consoleLog = Console2()
-    val consoleUp = Console2()
+    private val consoleLog = Console2()
 
     init {
-        consoleUp.isCheckedUselineVisible.value = true
         consoleLog.isCheckedUselineVisible.value = true
-
-        consoleUp.println("Up6")
         consoleLog.println("Down1")
     }
 
-    @Composable
-    fun LoadScriptToConsoleView() {
-        consoleUp.colorlineAndText.clear()
-        //consoleUp.println("SCRIPT_NAME")
-        for (str in list) {
-            consoleUp.println(str)
-        }
-    }
-
+    //Нарисовать консоль Log
     @Composable
     fun ConsoleLogDraw(modifier: Modifier = Modifier) {
         Box(
             modifier = Modifier
                 .padding(8.dp)
                 .background(Color.Red)
-                .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
+                .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
                 .recomposeHighlighter()
                 .then(modifier)
         )
@@ -658,27 +638,7 @@ class Script {
         }
     }
 
-    @Composable
-    fun ConsoleViewDraw(modifier: Modifier = Modifier) {
-        Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(Color.Green)
-                .border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                //.recomposeHighlighter()
-                .then(modifier)
-        )
-        {
-            consoleUp.SelectLine = pc
-            consoleUp.Draw()
-        }
-
-        Box(modifier = Modifier.background(Color.Green), contentAlignment = Alignment.BottomEnd)
-        {
-            Text("PC ${pc.value}")
-        }
-    }
-
+    //Блок регистров
     @Composable
     fun RegisterViewDraw(modifier: Modifier = Modifier) {
         Box(
@@ -711,6 +671,7 @@ class Script {
         }
     }
 
+    //Ячейка регистра
     @Composable
     private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier) {
         Box(
@@ -758,10 +719,8 @@ class Script {
         }
     }
 
-
 ////////////////////////////////////////////////////////////
 
-    //Показать клавиатуру и привязать ее к индексу
     @Composable
     fun ScriptTable() {
 
@@ -792,8 +751,9 @@ class Script {
                             .background(Color.LightGray), contentAlignment = Alignment.TopCenter
                     )
                     {
+
                         Column() {
-                            if (state != StateCommandScript.isEDITTING) {
+                            if (state != StateCommandScript.ISEDITTING) {
                                 TemplateButtonBottomBar(str = "New")
                                 TemplateButtonBottomBar(str = "Редактирование", onClick = {
                                     command(StateCommandScript.EDIT)
@@ -801,7 +761,7 @@ class Script {
                                 TemplateButtonBottomBar(str = StateToString())
                             }
 
-                            if (state == StateCommandScript.isEDITTING) {
+                            if (state == StateCommandScript.ISEDITTING) {
                                 TemplateButtonBottomBar(str = "STOP", onClick = {
                                     command(StateCommandScript.STOP)
                                 })
@@ -839,7 +799,7 @@ class Script {
                     }
                 }
 
-                AnimatedVisibility(visible = state == StateCommandScript.isEDITTING) {
+                AnimatedVisibility(visible = state == StateCommandScript.ISEDITTING) {
                     ScriptKeyboard(pc.value, list).Core()
                 }
             }
@@ -848,7 +808,6 @@ class Script {
         }
 
     }
-
-
+    
 }
 
