@@ -19,8 +19,8 @@ fun ScreenScriptCommon() {
     //Global.script.LoadScriptToConsoleView()
 
     Column(
-        Modifier
-            .recomposeHighlighter()
+        //Modifier
+          //  .recomposeHighlighter()
         //.background(Color.Cyan)
     ) {
 
@@ -31,7 +31,7 @@ fun ScreenScriptCommon() {
 
         if (Global.script.state != StateCommandScript.ISEDITTING) {
             //Консоль Логов
-            Global.script.ConsoleLogDraw(Modifier.weight(0.1f))
+            Global.script.ConsoleLogDraw(Modifier.weight(0.2f))
             //Блок регистров
             Global.script.RegisterViewDraw()
         }
