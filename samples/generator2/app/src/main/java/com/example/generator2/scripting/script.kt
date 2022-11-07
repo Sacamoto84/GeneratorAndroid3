@@ -81,21 +81,15 @@ const val PC_MAX = 128 //Максимальный размер скрипта..�
 
 //Экраны для нижнего меню
 enum class StateCommandScript {
-    START,
-    PAUSE,
-    RESUME,
-    STOP,
-    EDIT, //Перевести в режим редактирования
+    START, PAUSE, RESUME, STOP, EDIT, //Перевести в режим редактирования
 
     //Состояния
-    ISRUNNING,
-    ISPAUSE,
-    ISTOPPING,
-    ISEDITTING, //Сейчас режим редактирования
+    ISRUNNING, ISPAUSE, ISTOPPING, ISEDITTING, //Сейчас режим редактирования
 }
 
 //Основной класс скриптовой системы
 class Script {
+
 
     //╭─ Генератор ───────────────────────╮
     var scriptName: String = ""    //Имя текущего скрипта
@@ -107,22 +101,25 @@ class Script {
     private var f = mutableStateListOf<Float>()
     var pc = mutableStateOf(0)
     var str: String = ""
-    private var list = mutableStateListOf<String>()
+    var list = mutableStateListOf<String>()
     var state by mutableStateOf(StateCommandScript.ISTOPPING)
+
 
     init {
         f.addAll(FloatArray(10).toList())
         command(StateCommandScript.STOP)
+
     }
+
 
     fun command(s: StateCommandScript) {
 
         when (s) {
-            StateCommandScript.STOP -> {
+            StateCommandScript.STOP   -> {
                 stop()
                 state = StateCommandScript.ISTOPPING
             }
-            StateCommandScript.PAUSE -> {
+            StateCommandScript.PAUSE  -> {
                 pause()
                 state = StateCommandScript.ISPAUSE
             }
@@ -131,35 +128,34 @@ class Script {
                 state = StateCommandScript.ISRUNNING
             }
 
-            StateCommandScript.START -> {
+            StateCommandScript.START  -> {
                 start()
                 state = StateCommandScript.ISRUNNING
             }
 
-            StateCommandScript.EDIT -> {
+            StateCommandScript.EDIT   -> {
                 stop()
                 state = StateCommandScript.ISEDITTING
             }
 
-            else -> {}
+            else                      -> {}
         }
     }
 
     //╰─────────────────────────────╯
 
-    fun StateToString(): String {
-        val s =
-            when (state) {
-                StateCommandScript.START -> "START"
-                StateCommandScript.PAUSE -> "PAUSE"
-                StateCommandScript.RESUME -> "RESUME"
-                StateCommandScript.STOP -> "STOP"
-                StateCommandScript.EDIT -> "EDIT"
-                StateCommandScript.ISRUNNING -> "isRUNNING"
-                StateCommandScript.ISTOPPING -> "isSTOPPING"
-                StateCommandScript.ISEDITTING -> "isEDITTING"
-                StateCommandScript.ISPAUSE -> "isPAUSE"
-            }
+    private fun StateToString(): String {
+        val s = when (state) {
+            StateCommandScript.START      -> "START"
+            StateCommandScript.PAUSE      -> "PAUSE"
+            StateCommandScript.RESUME     -> "RESUME"
+            StateCommandScript.STOP       -> "STOP"
+            StateCommandScript.EDIT       -> "EDIT"
+            StateCommandScript.ISRUNNING  -> "isRUNNING"
+            StateCommandScript.ISTOPPING  -> "isSTOPPING"
+            StateCommandScript.ISEDITTING -> "isEDITTING"
+            StateCommandScript.ISPAUSE    -> "isPAUSE"
+        }
         return s
     }
 
@@ -169,18 +165,15 @@ class Script {
 
     suspend fun run() {
 
-        if (end)
-            return
+        if (end) return
         end = false
         yield = false
-        if (System.currentTimeMillis() <= endTime)
-            return
+        if (System.currentTimeMillis() <= endTime) return
         endTime = 0
         while (!yield && !end) {
 
             cmdExecute(list[pc.value])
-            if (System.currentTimeMillis() <= endTime)
-                return
+            if (System.currentTimeMillis() <= endTime) return
             delay(10)
 
         }
@@ -225,8 +218,7 @@ class Script {
 
         when (listCMD[0]) {
 
-            "ELSE" -> {
-                //Ищем первое ENDIF
+            "ELSE"                                                 -> { //Ищем первое ENDIF
                 var currentPC = pc.value
                 while (true) {
                     if (list[currentPC] == "ENDIF") {
@@ -234,65 +226,62 @@ class Script {
                         break
                     }
                     currentPC++
-                    if (currentPC > (PC_MAX - 1))
-                        break
+                    if (currentPC > (PC_MAX - 1)) break
                 }
             }
 
-            "ENDIF" -> {
+            "ENDIF"                                                -> {
                 pc.value++
             }
 
-            "END" -> {
+            "END"                                                  -> {
                 println("Скрипт окончен")
                 end = true
             }
 
-            "IF" -> ifCommand()
+            "IF"                                                   -> ifCommand()
 
             "CH1", "CH2", "CR1", "CR2", "AM1", "AM2", "FM1", "FM2" -> {
                 generatorComand()
                 pc.value++
             }
 
-            "MINUS", "PLUS" -> {
+            "MINUS", "PLUS"                                        -> {
                 comandPlusMinus()
                 pc.value++
             }
 
             //"PRINTF" -> { printF() pc++}
 
-            "GOTO" -> {
+            "GOTO"                                                 -> {
                 pc.value = listCMD[1].toInt()
             }
 
-            "YIELD" -> {
+            "YIELD"                                                -> {
                 yield = true
                 pc.value++
             }
 
-            "DELAY" -> {
+            "DELAY"                                                -> {
                 val d = listCMD[1].toLong()
                 endTime = System.currentTimeMillis() + d
                 pc.value++
             }
 
-            "TEXT" -> {
+            "TEXT"                                                 -> {
                 pc.value++
             }
 
-            "LOAD" -> {
-                //LOAD F1 2344.0  │ 2344.0 -> F1
+            "LOAD"                                                 -> { //LOAD F1 2344.0  │ 2344.0 -> F1
                 Load()
                 pc.value++
             }
 
 
-            else -> {
+            else                                                   -> {
                 println("Script:? pc:$pc.value:$comand")
                 pc.value++
-                if (pc.value >= PC_MAX)
-                    end = true
+                if (pc.value >= PC_MAX) end = true
             }
 
         }
@@ -300,8 +289,7 @@ class Script {
 
     }
 
-    fun Load() {
-        //LOAD F1 2344.0  │ 2344.0 -> F1
+    fun Load() { //LOAD F1 2344.0  │ 2344.0 -> F1
         val comand: String = list[pc.value]
 
         //Разобрать строку на список команд
@@ -331,10 +319,8 @@ class Script {
         //IF Rxx Первый всегда R регистр
         val f1value = f[listCMD[1].drop(1).toInt()]
 
-        val f2value = if ((listCMD[3].first() == 'F'))
-            f[listCMD[3].drop(1).toInt()]
-        else
-            listCMD[3].toFloat()
+        val f2value = if ((listCMD[3].first() == 'F')) f[listCMD[3].drop(1).toInt()]
+        else listCMD[3].toFloat()
 
         // имеем f1value и f2value
         var boolResult = false //Результат сравнения true or false чтобы решить куда дальше
@@ -348,8 +334,7 @@ class Script {
 
         if (boolResult) {
             pc.value++ //Переход на следующую строку, ибо условие выполнено
-        } else {
-            //Ищем первое ELSE или ENDIF, ибо условие не выполнено
+        } else { //Ищем первое ELSE или ENDIF, ибо условие не выполнено
             var currentPC = pc.value
             while (true) {
                 if (list[currentPC] == "ELSE") //+1 к ELSE
@@ -363,8 +348,7 @@ class Script {
                     break
                 }
                 currentPC++
-                if (currentPC > (PC_MAX - 1))
-                    break
+                if (currentPC > (PC_MAX - 1)) break
             }
         }
     }
@@ -386,8 +370,8 @@ class Script {
 
         //╭─ CH1 CH2 ─────────────────────────────────────────────────────────────────╮
         if ((listCMD[0] == "CH1") || (listCMD[0] == "CH2")) {                       //│                                                                       //│
-            val onoff = listCMD[2] == "ON"                                          //│
-            //───────────────────────────────────────────┬────────────────────────────┤
+            val onoff =
+                listCMD[2] == "ON"                                          //│ //───────────────────────────────────────────┬────────────────────────────┤
             if (listCMD[1] == "CR")                    //│  CH1 CR ON   CH2 CR OFF  //│
             {                                          //╰────────────────────────────┤
                 if (chanel == 1)                                                    //│
@@ -423,8 +407,7 @@ class Script {
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 println(listCMD[2])                                                 //│
-                if (chanel == 1)
-                    Global.ch1_Carrier_Filename.value = listCMD[2]                  //│
+                if (chanel == 1) Global.ch1_Carrier_Filename.value = listCMD[2]                  //│
                 else                                                                //│
                     Global.ch2_Carrier_Filename.value = listCMD[2]                  //│
             }                                                                       //│
@@ -437,8 +420,7 @@ class Script {
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
-                if (chanel == 1)
-                    Global.ch1_Carrier_Fr.value = value                             //│
+                if (chanel == 1) Global.ch1_Carrier_Fr.value = value                             //│
                 else                                                                //│
                     Global.ch2_Carrier_Fr.value = value                             //│
             }                                                                       //│
@@ -454,8 +436,8 @@ class Script {
             //AM[1 2] FR 1000.3                                                     //│
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F')
-                    f[listCMD[2].drop(1).toInt()]                      //│
+                value = if (listCMD[2].first() == 'F') f[listCMD[2].drop(1)
+                    .toInt()]                      //│
                 else                                                                //│
                     listCMD[2].toFloat()                                            //│
 
@@ -502,11 +484,9 @@ class Script {
         {
             value = if (listCMD[2].first() == 'F') {
                 f[listCMD[2].drop(1).toInt()]
-            } else
-                listCMD[2].toFloat()
+            } else listCMD[2].toFloat()
 
-            if (chanel == 1)
-                Global.ch1_FM_Dev.value = value
+            if (chanel == 1) Global.ch1_FM_Dev.value = value
             else                                                                    //│
                 Global.ch2_FM_Dev.value = value                                     //│
         }                                                                           //│
@@ -514,8 +494,7 @@ class Script {
         //FM[1 2] MOD 02_HWawe                                                      //│
         if (listCMD[1] == "MOD")                                                    //│
         {                                                                           //│
-            if (chanel == 1)
-                Global.ch1_FM_Filename.value = listCMD[2]
+            if (chanel == 1) Global.ch1_FM_Filename.value = listCMD[2]
             else                                                                    //│
                 Global.ch2_FM_Filename.value = listCMD[2]                           //│
         }                                                                           //│
@@ -525,57 +504,44 @@ class Script {
         {                                                                           //│
             value = if (listCMD[2].first() == 'F') {
                 f[listCMD[2].drop(1).toInt()]
-            } else
-                listCMD[2].toFloat()
+            } else listCMD[2].toFloat()
 
-            if (chanel == 1)
-                Global.ch1_FM_Fr.value = value
+            if (chanel == 1) Global.ch1_FM_Fr.value = value
             else                                                                     //│
                 Global.ch2_FM_Fr.value = value                                       //│
         }                                                                            //│
         return                                                                       //│
-    }                                                                                //│
-    //╰────────────────────────────────────────────────────────────────────────────────╯
+    }                                                                                //│ //╰────────────────────────────────────────────────────────────────────────────────╯
 
-    private fun comandPlusMinus() {
-        //MINUS F1 5000.0
+    private fun comandPlusMinus() { //MINUS F1 5000.0
         //MINUS F1 F2
-        val comand: String = list[pc.value]
-        //Разобрать строку на список команд
+        val comand: String = list[pc.value] //Разобрать строку на список команд
         val listCMD = comand.split(" ")
         if (listCMD.isEmpty()) {
             println("Script: Error comandPlusMinus размер listCMD == 0")
             return
         }
-        val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9
-        //MINUS F1 F2
-        if (listCMD[2].first() == 'F') {
-            //Второй операнд это регистор
-            val secondIndex = listCMD[2].drop(1).toInt() //Индекс второго регистра
-            //┌── MINUS ────────────────────────────────────┐
+        val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9 //MINUS F1 F2
+        if (listCMD[2].first() == 'F') { //Второй операнд это регистор
+            val secondIndex = listCMD[2].drop(1)
+                .toInt() //Индекс второго регистра //┌── MINUS ────────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - f[secondIndex]  //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + f[secondIndex]          //PLUS F* F*
-            }
-            //└────────────────────────────────────────────┘
-        } else {
-            //Второй операнд это константа
+            } //└────────────────────────────────────────────┘
+        } else { //Второй операнд это константа
             //MINUS F1 5000.0
-            val fvalue = listCMD[2].toFloat()
-            //┌── MINUS ───────────────────────────────────┐
+            val fvalue = listCMD[2].toFloat() //┌── MINUS ───────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - fvalue //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + fvalue //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
         }
     }
 
@@ -613,26 +579,21 @@ class Script {
     @Composable
     fun ConsoleLogDraw(modifier: Modifier = Modifier) {
         Box(
-            modifier = Modifier
-                .padding(8.dp)
-                .background(Color.Red)
+            modifier = Modifier.padding(8.dp).background(Color.Red)
                 .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .recomposeHighlighter()
-                .then(modifier)
-        )
-        {
+                .recomposeHighlighter().then(modifier)
+        ) {
             Column() {
 
-//                Text(
-//                    "Логи",
-//                    color = Color.White,
-//                    modifier = Modifier.fillMaxWidth(),
-//                    textAlign = TextAlign.Center
-//                )
+                //                Text(
+                //                    "Логи",
+                //                    color = Color.White,
+                //                    modifier = Modifier.fillMaxWidth(),
+                //                    textAlign = TextAlign.Center
+                //                )
 
                 consoleLog.Draw(
-                    Modifier
-                        .padding(4.dp)
+                    Modifier.padding(4.dp)
                 )
             }
         }
@@ -642,19 +603,14 @@ class Script {
     @Composable
     fun RegisterViewDraw(modifier: Modifier = Modifier) {
         Box(
-            modifier = Modifier
-                .padding(start = 6.dp, end = 6.dp)
-                .fillMaxWidth()
-                //.background(Color.Red)
+            modifier = Modifier.padding(start = 6.dp, end = 6.dp)
+                .fillMaxWidth() //.background(Color.Red)
                 //.border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
                 //.wrapContentHeight()
-                .recomposeHighlighter()
-                .then(modifier)
+                .recomposeHighlighter().then(modifier)
         ) {
             Column(
-                Modifier
-                    .recomposeHighlighterOneLine()
-                    .height(50.dp)
+                Modifier.recomposeHighlighterOneLine().height(50.dp)
             ) {
                 Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     repeat(5) {
@@ -675,16 +631,11 @@ class Script {
     @Composable
     private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier) {
         Box(
-            modifier = Modifier
-                .padding(start = 1.dp, end = 1.dp)
-                .height(25.dp)
-                .fillMaxWidth()
+            modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
                 .border(1.dp, Color.White, RoundedCornerShape(4.dp))
-                .then(modifier)
-            //, contentAlignment = Alignment.CenterStart
+                .then(modifier) //, contentAlignment = Alignment.CenterStart
 
-        )
-        {
+        ) {
 
             Row(
                 horizontalArrangement = Arrangement.Center,
@@ -692,13 +643,9 @@ class Script {
             ) {
 
                 Box(
-                    modifier = Modifier
-                        .width(12.dp)
-                        .height(25.dp)
-                        .background(Color.DarkGray),
+                    modifier = Modifier.width(12.dp).height(25.dp).background(Color.DarkGray),
                     contentAlignment = Alignment.Center
-                )
-                {
+                ) {
                     Text(
                         text = "$index",
                         color = Color.White,
@@ -719,38 +666,32 @@ class Script {
         }
     }
 
-////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////
 
     @Composable
     fun ScriptTable() {
 
-        Box(modifier = Modifier.fillMaxSize(1f))
-        {
+
+
+        Box(modifier = Modifier.fillMaxSize(1f)) {
             Column() {
 
                 Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(1f)
+                    modifier = Modifier.fillMaxSize().weight(1f)
                 ) {
 
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .weight(1f), contentAlignment = Alignment.BottomEnd
-                    )
-                    {
+                        modifier = Modifier.fillMaxSize().weight(1f),
+                        contentAlignment = Alignment.BottomEnd
+                    ) {
                         ScriptConsole(list, pc.value).Draw()
                         Text(text = "PC:${pc.value}", color = Color.Red)
                     }
 
                     Box(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(160.dp)
+                        modifier = Modifier.fillMaxHeight().width(160.dp)
                             .background(Color.LightGray), contentAlignment = Alignment.TopCenter
-                    )
-                    {
+                    ) {
 
                         Column() {
                             if (state != StateCommandScript.ISEDITTING) {
@@ -799,8 +740,12 @@ class Script {
                     }
                 }
 
-                AnimatedVisibility(visible = state == StateCommandScript.ISEDITTING) {
-                    ScriptKeyboard(pc.value, list).Core()
+                if (state == StateCommandScript.ISEDITTING) {
+                    Box(Modifier.recomposeHighlighter()) {
+                        Global.keyboard.Core()
+                    }
+
+
                 }
             }
 
@@ -808,6 +753,6 @@ class Script {
         }
 
     }
-    
+
 }
 

@@ -21,85 +21,87 @@ import java.io.File
 import java.io.IOException
 
 @SuppressLint("StaticFieldLeak")
-object Global : ViewModel(){
+object Global : ViewModel() {
 
-    var contextActivity   : Context? = null
-    var componentActivity : ComponentActivity? = null
+    var contextActivity: Context? = null
+    var componentActivity: ComponentActivity? = null
 
-    var patchDocument =  ""
-    var patchCarrier  = "$patchDocument/Carrier/"
-    var patchMod      = "$patchDocument/Mod/"
+    var patchDocument = ""
+    var patchCarrier = "$patchDocument/Carrier/"
+    var patchMod = "$patchDocument/Mod/"
 
-    var ch1_EN                 = MutableLiveData<Boolean>( true)          //: MutableState<Int> = mutableStateOf( 1)
-    var ch1_Carrier_Filename   = MutableLiveData<String> ( "03_HWave2")
-    var ch1_Carrier_Fr         = MutableLiveData<Float>    ( 2000.0f)     //Частота несущей
+    var ch1_EN = MutableLiveData<Boolean>(true)          //: MutableState<Int> = mutableStateOf( 1)
+    var ch1_Carrier_Filename = MutableLiveData<String>("03_HWave2")
+    var ch1_Carrier_Fr = MutableLiveData<Float>(2000.0f)     //Частота несущей
 
-    var ch1_AM_EN              = MutableLiveData<Boolean>( false)
-    var ch1_AM_Filename        = MutableLiveData<String> ( "09_Ramp")
-    var ch1_AM_Fr              = MutableLiveData<Float>  ( 8.7f)
-    var ch1_FM_EN              = MutableLiveData<Boolean>( false)
-    var ch1_FM_Filename        = MutableLiveData<String> ( "06_CHIRP")
-    var ch1_FM_Base            = MutableLiveData<Float>  ( 2500f)       //Частота базы
-    var ch1_FM_Dev             = MutableLiveData<Float>  ( 1100f)       //Частота базы
-    var ch1_FM_Fr              = MutableLiveData<Float>  ( 5.1f)
+    var ch1_AM_EN = MutableLiveData<Boolean>(false)
+    var ch1_AM_Filename = MutableLiveData<String>("09_Ramp")
+    var ch1_AM_Fr = MutableLiveData<Float>(8.7f)
+    var ch1_FM_EN = MutableLiveData<Boolean>(false)
+    var ch1_FM_Filename = MutableLiveData<String>("06_CHIRP")
+    var ch1_FM_Base = MutableLiveData<Float>(2500f)       //Частота базы
+    var ch1_FM_Dev = MutableLiveData<Float>(1100f)       //Частота базы
+    var ch1_FM_Fr = MutableLiveData<Float>(5.1f)
 
-    var ch2_EN                 = MutableLiveData<Boolean>( false)
-    var ch2_Carrier_Filename   = MutableLiveData<String> ( "03_HWave2")
-    var ch2_Carrier_Fr         = MutableLiveData<Float>  ( 2000.0f) //Частота несущей
-    var ch2_AM_EN              = MutableLiveData<Boolean>( false)
-    var ch2_AM_Filename        = MutableLiveData<String> ( "09_Ramp")
-    var ch2_AM_Fr              = MutableLiveData<Float>  ( 8.7f)
-    var ch2_FM_EN              = MutableLiveData<Boolean>( false)
-    var ch2_FM_Filename        = MutableLiveData<String> ( "06_CHIRP")
-    var ch2_FM_Base            = MutableLiveData<Float>  ( 2500f) //Частота базы
-    var ch2_FM_Dev             = MutableLiveData<Float>  ( 1100f)//Частота базы
-    var ch2_FM_Fr              = MutableLiveData<Float>  ( 5.1f)
+    var ch2_EN = MutableLiveData<Boolean>(false)
+    var ch2_Carrier_Filename = MutableLiveData<String>("03_HWave2")
+    var ch2_Carrier_Fr = MutableLiveData<Float>(2000.0f) //Частота несущей
+    var ch2_AM_EN = MutableLiveData<Boolean>(false)
+    var ch2_AM_Filename = MutableLiveData<String>("09_Ramp")
+    var ch2_AM_Fr = MutableLiveData<Float>(8.7f)
+    var ch2_FM_EN = MutableLiveData<Boolean>(false)
+    var ch2_FM_Filename = MutableLiveData<String>("06_CHIRP")
+    var ch2_FM_Base = MutableLiveData<Float>(2500f) //Частота базы
+    var ch2_FM_Dev = MutableLiveData<Float>(1100f) //Частота базы
+    var ch2_FM_Fr = MutableLiveData<Float>(5.1f)
 
     var itemlistCarrier: ArrayList<itemList> = ArrayList() //Создать список
-    var itemlistAM     : ArrayList<itemList> = ArrayList() //Создать список
-    var itemlistFM     : ArrayList<itemList> = ArrayList() //Создать список
+    var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
+    var itemlistFM: ArrayList<itemList> = ArrayList() //Создать список
 
-    val onoffconfig  : ConfigOnOff = ConfigOnOff()
-    val onoffconfig1 : ConfigOnOff = ConfigOnOff()
-
+    val onoffconfig: ConfigOnOff = ConfigOnOff()
+    val onoffconfig1: ConfigOnOff = ConfigOnOff()
 
     //Пути для отрисовки нижнего меню
-    var bottomBarRoute = mutableStateOf( bottomBarEnum.HOME)
+    var bottomBarRoute = mutableStateOf(bottomBarEnum.HOME)
 
-    fun init()
-    {
+    //lateinit var script : Script
+
+    val script = Script()
+    lateinit var keyboard : ScriptKeyboard
+
+    fun init() {
 
         val file = contextActivity!!.getExternalFilesDir("") //Создать если нет папку generator2
         contextActivity!!.getExternalFilesDir("/Carrier")
         contextActivity!!.getExternalFilesDir("/Mod")
         patchDocument = file!!.toString()
-        patchCarrier  = "$patchDocument/Carrier/"
-        patchMod      = "$patchDocument/Mod/"
+        patchCarrier = "$patchDocument/Carrier/"
+        patchMod = "$patchDocument/Mod/"
 
         Utils.patchDocument = patchDocument
-        Utils.patchCarrier  = patchCarrier
-        Utils.patchMod      = patchMod
+        Utils.patchCarrier = patchCarrier
+        Utils.patchMod = patchMod
 
         try {
             AssetCopier(contextActivity) //.withFileScanning()
                 .copy("Carrier", File(patchCarrier))
-        }
-        catch (e: IOException) {
-            Log.d("Init",e.printStackTrace().toString())
+        } catch (e: IOException) {
+            Log.d("Init", e.printStackTrace().toString())
         }
 
         try {
             AssetCopier(contextActivity) //.withFileScanning()
                 .copy("Mod", File(patchMod))
+        } catch (e: IOException) {
+            Log.d("Init", e.printStackTrace().toString())
         }
-        catch (e: IOException) {
-            Log.d("Init",e.printStackTrace().toString())
-        }
+
+        keyboard = ScriptKeyboard(script)
 
     }
 
-    fun observe()
-    {
+    fun observe() {
 
         ch1_EN.observeForever { ch1_EN ->
             Log.d("observeForever", "onClick")
@@ -188,40 +190,39 @@ object Global : ViewModel(){
             PlaybackEngine.CH_FM_fr(1, ch2_FM_Fr!!)
         }
 
-        ch1_Carrier_Filename.observeForever{ name ->
+        ch1_Carrier_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH0", "CR", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH0", "CR", name) //Читае м отсылаем массив
         }
 
-        ch2_Carrier_Filename.observeForever{ name ->
+        ch2_Carrier_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH1", "CR", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH1", "CR", name) //Читае м отсылаем массив
         }
 
-        ch1_AM_Filename.observeForever{ name ->
+        ch1_AM_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH0", "AM", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH0", "AM", name) //Читае м отсылаем массив
         }
 
-        ch2_AM_Filename.observeForever{ name ->
+        ch2_AM_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH1", "AM", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH1", "AM", name) //Читае м отсылаем массив
         }
 
-        ch1_FM_Filename.observeForever{ name ->
+        ch1_FM_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH0", "FM", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH0", "FM", name) //Читае м отсылаем массив
         }
 
-        ch2_FM_Filename.observeForever{ name ->
+        ch2_FM_Filename.observeForever { name ->
             Log.d("observeForever", "onClick")
-            Utils.Spinner_Send_Buffer( "CH1", "FM", name ) //Читае м отсылаем массив
+            Utils.Spinner_Send_Buffer("CH1", "FM", name) //Читае м отсылаем массив
         }
 
     }
 
-    fun sendAlltoGen()
-    {
+    fun sendAlltoGen() {
         PlaybackEngine.CH_EN(0, ch1_EN.value!!)
         PlaybackEngine.CH_EN(1, ch2_EN.value!!)
         PlaybackEngine.CH_AM_EN(0, ch1_AM_EN.value!!)
@@ -239,48 +240,32 @@ object Global : ViewModel(){
         PlaybackEngine.CH_FM_fr(0, ch1_FM_Fr.value!!)
         PlaybackEngine.CH_FM_fr(1, ch2_FM_Fr.value!!)
 
-        Utils.Spinner_Send_Buffer("CH0","CR",   ch1_Carrier_Filename.value )
-        Utils.Spinner_Send_Buffer("CH0","AM",   ch1_AM_Filename.value )
-        Utils.Spinner_Send_Buffer("CH0","FM",   ch1_FM_Filename.value )
+        Utils.Spinner_Send_Buffer("CH0", "CR", ch1_Carrier_Filename.value)
+        Utils.Spinner_Send_Buffer("CH0", "AM", ch1_AM_Filename.value)
+        Utils.Spinner_Send_Buffer("CH0", "FM", ch1_FM_Filename.value)
 
-        Utils.Spinner_Send_Buffer("CH1","CR",   ch2_Carrier_Filename.value )
-        Utils.Spinner_Send_Buffer("CH1","AM",   ch2_AM_Filename.value )
-        Utils.Spinner_Send_Buffer("CH1","FM",   ch2_FM_Filename.value )
+        Utils.Spinner_Send_Buffer("CH1", "CR", ch2_Carrier_Filename.value)
+        Utils.Spinner_Send_Buffer("CH1", "AM", ch2_AM_Filename.value)
+        Utils.Spinner_Send_Buffer("CH1", "FM", ch2_FM_Filename.value)
 
     }
-
-
-
-
-
 
 
     ////////////////////////////////////////////////////////
 
 
-
-
-
-    val script : Script = Script()
-
     fun launchScriptScope() {
         viewModelScope.launch {
             scriptRun()
-
         }
     }
 
-    private suspend fun scriptRun() = withContext(Dispatchers.Main)
-    {
-        while(true) {
+    private suspend fun scriptRun() = withContext(Dispatchers.Main) {
+        while (true) {
             script.run()
             delay(10)
         }
     }
-
-
-
-
 
 
 }

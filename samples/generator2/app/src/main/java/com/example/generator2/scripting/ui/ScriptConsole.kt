@@ -23,7 +23,6 @@ import libs.MToast
 
 class ScriptConsole(private val list: SnapshotStateList<String>, private val selectLine: Int) {
 
-
     @Composable
     fun Draw(modifier: Modifier = Modifier) {
 
@@ -31,7 +30,6 @@ class ScriptConsole(private val list: SnapshotStateList<String>, private val sel
             mutableStateOf(selectLine)
         }
         indexSelect.value = selectLine
-
         val lazyListState: LazyListState = rememberLazyListState()
         Box(
             Modifier
@@ -51,19 +49,16 @@ class ScriptConsole(private val list: SnapshotStateList<String>, private val sel
                         horizontalArrangement = Arrangement.Start
                     )
                     {
-
                         Box(modifier = Modifier.selectable(
                             selected = selectLine == index,
                             onClick = {
                                 //indexSelect.value = index
                                 Global.script.pc.value = index
-                                MToast(Global.contextActivity!!, text = "$index")
+                                //MToast(Global.contextActivity!!, text = "$index")
                             }
                         ))
                         {
-
                             ScriptItem().Draw(str = item, index = index, indexSelect.value == index)
-
                         }
 
                     }
@@ -71,4 +66,5 @@ class ScriptConsole(private val list: SnapshotStateList<String>, private val sel
             }
         }
     }
+
 }

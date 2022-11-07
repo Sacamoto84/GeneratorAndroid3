@@ -77,7 +77,6 @@ class ScriptItem {
         }
     }
 
-
     //Конвертируем строку и индекс в красивый вид
     private fun convertStringToPairTextAndColor(str: String, index: Int) {
 
@@ -224,7 +223,6 @@ class ScriptItem {
             }
 
     }
-
 
 }
 

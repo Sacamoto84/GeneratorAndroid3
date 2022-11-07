@@ -17,7 +17,7 @@ object UImodifier {
 
     inline fun Modifier.noRippleClickable(
         enabled: Boolean = true,
-        noinline onClick: () -> Unit
+        noinline onClick: () -> Unit = {}
     ): Modifier = composed {
         clickable(
             enabled = enabled,
