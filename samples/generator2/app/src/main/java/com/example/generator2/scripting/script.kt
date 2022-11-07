@@ -741,17 +741,13 @@ class Script {
                 }
 
                 if (state == StateCommandScript.ISEDITTING) {
-                    Box(Modifier.recomposeHighlighter()) {
+                    Box() {
                         Global.keyboard.Core()
                     }
-
-
+                    
                 }
             }
-
-
         }
-
     }
 
 }
