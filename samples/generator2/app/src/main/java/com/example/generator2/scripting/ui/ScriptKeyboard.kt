@@ -2,8 +2,15 @@ package com.example.generator2.scripting.ui
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.OutlinedButton
 import androidx.compose.material.Text
@@ -11,24 +18,31 @@ import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import colorDarkBackground
+import com.example.generator2.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.scripting.Script
 import com.example.generator2.ui.theme.NoRippleTheme
-import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import java.util.*
 
 //Экраны для нижнего меню
 enum class RouteKeyboardEnum {
-    HOME, NUMBER, F, ONOFF, CRAMFM, CRAMValue, FMValue, Comparison, IFValue
+    HOME, NUMBER, F, ONOFF, CRAMFM, CRAMValue, FMValue, Comparison, IFValue, MODCR, MODAM, MODFM
 }
 
 //Если есть NoHomeRoute то мы идем по нему а не на Home используем для F для создания альтернативного маршрута
-data class RouteKeyboard(var argument: Int = 0, var route: RouteKeyboardEnum, var NoHomeRoute: RouteKeyboardEnum? = null)
+data class RouteKeyboard(
+    var argument: Int = 0, var route: RouteKeyboardEnum, var NoHomeRoute: RouteKeyboardEnum? = null
+)
 
 
 //Клавиатурка
@@ -131,7 +145,10 @@ class ScriptKeyboard(private val s: Script) {
             RouteKeyboardEnum.CRAMValue  -> ScreenCRAMValue(route.value.argument)
             RouteKeyboardEnum.FMValue    -> ScreenFMValue(route.value.argument)
             RouteKeyboardEnum.Comparison -> ScreenComparison(route.value.argument)
-            RouteKeyboardEnum.IFValue    -> ScreenIFValue(route.value.argument) //else -> ScreenHOME()
+            RouteKeyboardEnum.IFValue    -> ScreenIFValue(route.value.argument)
+            RouteKeyboardEnum.MODCR      -> ScreenMod(route.value.argument, "CR")
+            RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM")
+            RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM")
         }
     }
 
@@ -151,9 +168,66 @@ class ScriptKeyboard(private val s: Script) {
 
 
     /////////////////////////////////////////////////////
+    //var itemlistCarrier: ArrayList<itemList> = ArrayList() //Создать список
+    //var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
+
+    @Composable
+    fun ScreenMod(arg: Int, type: String = "CR") {
+        val lazyListState: LazyListState = rememberLazyListState()
+        val selectedIndex = remember { mutableStateOf(0) }
+        Row {
+            LazyColumn(
+                modifier = Modifier.height(192.dp).fillMaxWidth().weight(1f)
+                    .background(colorDarkBackground),
+                state = lazyListState                          //
+            ) {
+                itemsIndexed(
+                    when (type) {
+                        "CR" -> Global.itemlistCarrier.toList()
+                        "AM" -> Global.itemlistAM.toList()
+                        else -> Global.itemlistFM.toList()
+                    }
+                ) { index, item ->
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().border(0.2.dp, Color.Magenta)
+                            .selectable(selected = selectedIndex.value == index, onClick = {
+                                listCommandAddToIndex(arg, item.name)
+                                list[selectIndex] = listCommandToText()
+                                routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
+                                routeStack.clear()
+                            })
+                    ) {
+                        Image(
+                            bitmap = item.bitmap.asImageBitmap(),
+                            contentDescription = null,
+                            modifier = Modifier.padding(
+                                start = 6.dp, top = 2.dp, bottom = 2.dp, end = 20.dp
+                            ).height(40.dp)
+                        )
+                        Text(
+                            text = item.name,
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontFamily = FontFamily(Font(com.example.generator2.R.font.jetbrains))
+                        )
+                    }
+                }
+            }
+            Box(Modifier.width(64.dp)) {
+                KeyBack()
+            }
+        }
+    }
+
 
     @Composable
     fun ScreenHOME(arg: Int) {
+
+
+        //Global.contextActivity?.let { MToast(it, text = "$size") }
+
+
         Draw(k0 = {
             KeyX("CH1", onClick = {
                 listCommand.clear()
@@ -225,8 +299,8 @@ class ScriptKeyboard(private val s: Script) {
                 KeyX("IF", onClick = {
                     listCommand.clear()
                     listCommandAddToIndex(0, "IF")
-                    list[selectIndex] = listCommandToText()
-                    //(RouteKeyboard(1, RouteKeyboardEnum.FPADFM))
+                    list[selectIndex] =
+                        listCommandToText() //(RouteKeyboard(1, RouteKeyboardEnum.FPADFM))
                     routeTo(RouteKeyboard(1, RouteKeyboardEnum.F, RouteKeyboardEnum.Comparison))
                 })
             },
@@ -372,10 +446,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -387,10 +459,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -402,10 +472,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
             })
         }, k3 = {
@@ -418,10 +486,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -433,10 +499,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -448,10 +512,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -463,10 +525,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -478,10 +538,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -493,10 +551,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -508,10 +564,8 @@ class ScriptKeyboard(private val s: Script) {
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
-                }
-                else
-                {
-                    routeTo(RouteKeyboard(arg+1, route.value.NoHomeRoute!!))
+                } else {
+                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
                 }
 
             })
@@ -677,7 +731,15 @@ class ScriptKeyboard(private val s: Script) {
             },
             k2 = { },
             k3 = { KeyBack() },
-            k4 = { KeyX("MOD", onClick = {}) },
+            k4 = { KeyX("MOD", onClick = {
+                
+                listCommandRemoveToIndex(arg)
+                listCommandAddToIndex(arg, "MOD")
+                list[selectIndex] = listCommandToText()
+
+                routeTo(RouteKeyboard(arg + 1, RouteKeyboardEnum.MODFM))
+
+            }) },
             k5 = { },
             k6 = { },
             k7 = { },
@@ -766,24 +828,32 @@ class ScriptKeyboard(private val s: Script) {
                 })
             },
             k2 = { },
-            k3 = { },
+            k3 = { KeyBack() },
             k4 = {
                 KeyX("MOD", onClick = {
+
+                    listCommandRemoveToIndex(arg)
                     listCommandAddToIndex(arg, "MOD")
                     list[selectIndex] = listCommandToText()
+                    if ((listCommand[0] == "CR1") || (listCommand[0] == "CR2"))
+                        routeTo(RouteKeyboard(arg + 1, RouteKeyboardEnum.MODCR))
+                    else
+                        routeTo(RouteKeyboard(arg + 1, RouteKeyboardEnum.MODAM))
+
+
                 })
             },
             k5 = { },
             k6 = { },
-            k7 = { },
+            k7 = { KeyBlank() },
             k8 = { },
             k9 = { },
             k10 = { },
-            k11 = { KeyBack() },
+            k11 = { KeyBlank() },
             k12 = { },
             k13 = { },
             k14 = { },
-            k15 = { KeyEnter() })
+            k15 = { KeyBlank() })
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -974,14 +1044,3 @@ class ScriptKeyboard(private val s: Script) {
     }
 
 }
-
-@Preview
-@Composable
-fun KeyboardPreview() { //val keyboard = ScriptKeyboard(0)
-    //keyboard.Core()
-}
-
-
-
-
-

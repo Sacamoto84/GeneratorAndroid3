@@ -10,6 +10,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
+import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -672,7 +675,6 @@ class Script {
     fun ScriptTable() {
 
 
-
         Box(modifier = Modifier.fillMaxSize(1f)) {
             Column() {
 
@@ -741,14 +743,14 @@ class Script {
                 }
 
                 if (state == StateCommandScript.ISEDITTING) {
-                    Box() {
+
+                    Column(
+                    ) {
                         Global.keyboard.Core()
                     }
-                    
                 }
             }
         }
     }
-
-}
+    }
 
