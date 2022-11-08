@@ -16,7 +16,7 @@ import com.example.generator2.Global
 import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.recomposeHighlighterOneLine
-import com.example.generator2.screens.screenFileManager.DialiogSaveAs
+import com.example.generator2.screens.screenFileManager.DialogSaveAs
 import com.example.generator2.scripting.ui.ScriptConsole
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
@@ -670,6 +670,7 @@ class Script {
     @Composable
     fun ScriptTable() {
 
+        val openDialog = remember { mutableStateOf(false) }
 
         Box(modifier = Modifier.fillMaxSize(1f)) {
             Column() {
@@ -682,7 +683,9 @@ class Script {
                         modifier = Modifier.fillMaxSize().weight(1f),
                         contentAlignment = Alignment.BottomEnd
                     ) {
-                        ScriptConsole(list, pc.value).Draw()
+
+                        ScriptConsole(list, pc.value)
+
                         Text(text = "PC:${pc.value}", color = Color.Red)
                     }
 
@@ -695,9 +698,9 @@ class Script {
                             if (state != StateCommandScript.ISEDITTING) {
 
 
-                                TemplateButtonBottomBar(str = "Сохранить",
+                                TemplateButtonBottomBar(str = "Сохранить как",
 
-                                   onClick = {  }
+                                   onClick = { openDialog.value = true }
 
                                     )
 
@@ -745,10 +748,9 @@ class Script {
                     }
                 }
 
+                DialogSaveAs( openDialog )
+
                 if (state == StateCommandScript.ISEDITTING) {
-
-                    DialiogSaveAs()
-
                     Column(
                     ) {
                         Global.keyboard.Core()

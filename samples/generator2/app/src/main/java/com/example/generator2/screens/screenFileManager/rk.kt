@@ -1,10 +1,8 @@
 package com.example.generator2.screens.screenFileManager
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
@@ -14,19 +12,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.BaselineShift
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,16 +27,13 @@ import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.filesInDirToList
-import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import kotlinx.coroutines.delay
 import libs.MToast
 
 @Composable
-fun DialiogSaveAs() {
+fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
 
-
-    val openDialog = remember { mutableStateOf(true) }
-
+    //val openDialog = remember { mutableStateOf(true) }
 
     val context = LocalContext.current
 
@@ -143,13 +131,5 @@ fun DialiogSaveAs() {
 
 
     }
-
-}
-
-@Preview
-@Composable
-fun prew() {
-
-    DialiogSaveAs()
 
 }
