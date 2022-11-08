@@ -1,11 +1,7 @@
 package com.example.generator2.mainscreen4
 
 import androidx.compose.runtime.Composable
-import com.example.generator2.Global
 import com.example.generator2.Global.bottomBarRoute
-import com.example.generator2.mainscreen4.TemplateBottomBar6Key
-import com.example.generator2.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.mainscreen4.bottomBarEnum
 
 @Composable
 private fun Key0() {

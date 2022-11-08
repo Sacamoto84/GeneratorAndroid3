@@ -1,6 +1,5 @@
 package com.example.generator2.scripting
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
@@ -10,9 +9,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.positionInRoot
-import androidx.compose.ui.layout.positionInWindow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -20,8 +16,8 @@ import com.example.generator2.Global
 import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.recomposeHighlighterOneLine
+import com.example.generator2.screens.screenFileManager.DialiogSaveAs
 import com.example.generator2.scripting.ui.ScriptConsole
-import com.example.generator2.scripting.ui.ScriptKeyboard
 import kotlinx.coroutines.delay
 import libs.modifier.recomposeHighlighter
 import java.util.*
@@ -697,7 +693,14 @@ class Script {
 
                         Column() {
                             if (state != StateCommandScript.ISEDITTING) {
-                                TemplateButtonBottomBar(str = "New")
+
+
+                                TemplateButtonBottomBar(str = "Сохранить",
+
+                                   onClick = {  }
+
+                                    )
+
                                 TemplateButtonBottomBar(str = "Редактирование", onClick = {
                                     command(StateCommandScript.EDIT)
                                 })
@@ -743,6 +746,8 @@ class Script {
                 }
 
                 if (state == StateCommandScript.ISEDITTING) {
+
+                    DialiogSaveAs()
 
                     Column(
                     ) {

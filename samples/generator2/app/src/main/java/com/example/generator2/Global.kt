@@ -75,6 +75,7 @@ object Global : ViewModel() {
         val file = contextActivity!!.getExternalFilesDir("") //Создать если нет папку generator2
         contextActivity!!.getExternalFilesDir("/Carrier")
         contextActivity!!.getExternalFilesDir("/Mod")
+        contextActivity!!.getExternalFilesDir("/Script")
         patchDocument = file!!.toString()
         patchCarrier = "$patchDocument/Carrier/"
         patchMod = "$patchDocument/Mod/"

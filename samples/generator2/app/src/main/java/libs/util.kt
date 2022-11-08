@@ -31,15 +31,13 @@ fun Context.findActivity(): Activity? {
 }
 
 
-
-
-
 // Function to generate a Toast
-
 fun MToast(contex :Context, text: String){
     //val mContext = LocalContext.current
     Toast.makeText(contex, text, Toast.LENGTH_LONG).show()
 }
+
+
 
 
 

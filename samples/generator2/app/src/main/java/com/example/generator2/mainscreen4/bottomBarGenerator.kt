@@ -1,7 +1,6 @@
 package com.example.generator2.mainscreen4
 
 import androidx.compose.runtime.Composable
-import com.example.generator2.Global
 import com.example.generator2.Global.bottomBarRoute
 import kotlin.system.exitProcess
 

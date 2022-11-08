@@ -153,4 +153,8 @@ dependencies {
     implementation "com.google.accompanist:accompanist-pager:0.26.5-rc"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.5-rc"
 
+
+
+    implementation 'com.alexstyl:warden:1.0.0-alpha2'
+
 }
