@@ -31,7 +31,7 @@ class Console2 {
 
     var SelectVisible = mutableStateOf(true)
 
-    var SelectLine = mutableStateOf(1) //Линия которую нужно подсвечивать
+    var SelectLine = mutableStateOf(0) //Линия которую нужно подсвечивать
 
     //MARK: Показывать номер строки
     val isCheckedUselineVisible = mutableStateOf(false)
@@ -203,7 +203,7 @@ class Console2 {
                             Box(
                                 Modifier
                                     .fillMaxWidth()
-                                    .background(colorSelect)
+                                    //.background(colorSelect)
                             )
                             {
 

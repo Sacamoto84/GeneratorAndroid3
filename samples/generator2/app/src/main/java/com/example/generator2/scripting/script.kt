@@ -1,34 +1,11 @@
 package com.example.generator2.scripting
 
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.generator2.*
-import com.example.generator2.R
-import com.example.generator2.console.Console2
-import com.example.generator2.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.screens.DialogSaveAs
-import com.example.generator2.scripting.ui.ScriptConsole
+import com.example.generator2.Global.consoleLog
 import kotlinx.coroutines.delay
-import libs.MToast
-import libs.modifier.recomposeHighlighter
 import java.util.*
 
 /*
@@ -106,7 +83,7 @@ class Script {
     private var yield = false
     private var endTime = 0L              //Время > которого можно продолжать работу
 
-    private var f = mutableStateListOf<Float>()
+    var f = mutableStateListOf<Float>()
     var pc = mutableStateOf(0)
     var str: String = ""
     var list = mutableStateListOf<String>()
@@ -152,7 +129,7 @@ class Script {
 
     //╰─────────────────────────────╯
 
-    private fun StateToString(): String {
+    fun StateToString(): String {
         val s = when (state) {
             StateCommandScript.START      -> "START"
             StateCommandScript.PAUSE      -> "PAUSE"
@@ -215,7 +192,7 @@ class Script {
 
         println("Script: ${pc.value} $comand")
 
-        log("Script: ${pc.value} $comand")
+        log("${pc.value} $comand")
 
         //Разобрать строку на список команд
         val listCMD = comand.split(" ")
@@ -571,274 +548,5 @@ class Script {
         list.add("END")
     }
 
-    /*
-     *╭──────────────────────────────────╮
-     *│    Область Compose компонентов   │
-     *╰──────────────────────────────────╯
-     */
-    private val consoleLog = Console2()
-
-    init {
-        consoleLog.isCheckedUselineVisible.value = true
-        consoleLog.println("Down1")
-    }
-
-    //Нарисовать консоль Log
-    @Composable
-    fun ConsoleLogDraw(modifier: Modifier = Modifier) {
-        Box(
-            modifier = Modifier.padding(8.dp).background(Color.Red)
-                .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .then(modifier)
-        ) {
-            Column() {
-                consoleLog.Draw(
-                    Modifier.padding(4.dp)
-                )
-            }
-        }
-    }
-
-    //Блок регистров
-    @Composable
-    fun RegisterViewDraw(modifier: Modifier = Modifier) {
-        Box(
-            modifier = Modifier.padding(start = 6.dp, end = 6.dp)
-                .fillMaxWidth() //.background(Color.Red)
-                //.border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                //.wrapContentHeight()
-                .then(modifier)
-        ) {
-            Column(
-                Modifier.height(50.dp)
-            ) {
-                Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    repeat(5) {
-                        ComposeBoxForF(it, Modifier.weight(1f))
-                    }
-                }
-
-                Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    repeat(5) {
-                        ComposeBoxForF(it + 5, Modifier.weight(1f))
-                    }
-                }
-            }
-        }
-    }
-
-    //Ячейка регистра
-    @Composable
-    private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier) {
-        Box(
-            modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
-                .border(1.dp, Color.White, RoundedCornerShape(4.dp))
-                .then(modifier) //, contentAlignment = Alignment.CenterStart
-
-        ) {
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                Box(
-                    modifier = Modifier.width(12.dp).height(25.dp).background(Color.DarkGray),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "$index",
-                        color = Color.White,
-                        fontSize = 14.sp,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                }
-
-                Text(
-                    text = "${f[index]}",
-                    color = Color.White,
-                    fontSize = 14.sp,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center
-                )
-            }
-        }
-    }
-
-    ////////////////////////////////////////////////////////////
-
-    @Composable
-    fun ScriptTable() {
-
-        val openDialog = remember { mutableStateOf(false) }
-
-        val context = LocalContext.current
-
-        Box(modifier = Modifier.fillMaxSize(1f)) {
-            Column() {
-
-                Row(
-                    modifier = Modifier.fillMaxSize().weight(1f)
-                ) {
-
-                    Box(
-                        modifier = Modifier.fillMaxSize().weight(1f),
-                        contentAlignment = Alignment.BottomEnd
-                    ) {
-
-                        if (pc.value > list.lastIndex) pc.value = list.lastIndex
-
-                        ScriptConsole(list, pc.value)
-
-                        Text(text = "PC:${pc.value}", color = Color.Red)
-                    }
-
-                    Box(
-                        modifier = Modifier.fillMaxHeight().width(160.dp)
-                            .background(Color.LightGray), contentAlignment = Alignment.TopCenter
-                    ) {
-
-                        Column() {
-
-
-                            if (state != StateCommandScript.ISEDITTING) {
-
-
-                                TemplateButtonBottomBar(str = "New", onClick = {
-
-
-                                })
-
-                                TemplateButtonBottomBar(str = "Edit", onClick = {
-                                    command(StateCommandScript.EDIT)
-                                })
-
-                                //
-
-                                val files = filesInDirToList(context, "/Script").map { it.dropLast(3) }
-
-
-                                Column(
-                                    Modifier.fillMaxSize().weight(1f).padding(4.dp)
-                                        .background(Color(0x8B1D1C1C))
-                                        .verticalScroll(rememberScrollState())
-                                ) {
-
-                                    Spacer(modifier = Modifier.height(4.dp))
-
-                                    for (index in files.indices) {
-                                        Text(
-                                            text = files[index],
-                                            color = Color.DarkGray,
-                                            modifier = Modifier.fillMaxWidth().height(32.dp)
-                                                .padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(
-                                                    RoundedCornerShape(8.dp)
-                                                ).background(Color.LightGray)
-                                                .clickable(onClick = {
-
-                                                    stop()
-                                                    state = StateCommandScript.ISTOPPING
-
-                                                    val l = readScriptFileToList(files[index])
-                                                    list.clear()
-                                                    list.addAll(l)
-
-                                                }).offset(0.dp,(0).dp),
-                                            fontFamily = FontFamily(Font(R.font.jetbrains)),
-                                            fontWeight = FontWeight.Bold,
-                                            textAlign = TextAlign.Center, fontSize = 18.sp
-                                        )
-                                    }
-
-
-                                }
-
-
-
-                                TemplateButtonBottomBar(str = StateToString())
-                            }
-
-
-
-
-
-                            if (state == StateCommandScript.ISEDITTING) {
-
-                                TemplateButtonBottomBar(
-                                    str = "Назад",
-                                    onClick = { command(StateCommandScript.STOP) })
-
-                                TemplateButtonBottomBar(str = "Save", onClick = {
-                                    if (list[0] == "New") openDialog.value = true
-                                    else {
-                                        saveListToScriptFile(list, list[0])
-                                        MToast(contex = Global.contextActivity!!, "Сохранено")
-                                    }
-                                })
-
-                                TemplateButtonBottomBar(str = "Save As", onClick = {
-                                    openDialog.value = true
-                                })
-
-                                TemplateButtonBottomBar(str = "Add", onClick = {
-                                    list.add(pc.value + 1, "?")
-                                })
-
-                                TemplateButtonBottomBar(str = "Add to end", onClick = {
-                                    list.add("?")
-                                })
-
-                                TemplateButtonBottomBar(str = "Delete", onClick = {
-
-                                    if (list.size > 1) {
-
-                                        list.removeAt(pc.value)
-
-                                        //if (pc.value > 1)
-                                        //  pc.value--
-
-                                        if (pc.value > list.lastIndex) {
-                                            pc.value = list.lastIndex
-                                        }
-                                    }
-
-                                })
-
-                                TemplateButtonBottomBar(str = "Up", onClick = {
-                                    if (pc.value > 1) {
-                                        Collections.swap(list, pc.value - 1, pc.value)
-                                        pc.value--
-                                    }
-                                })
-
-                                TemplateButtonBottomBar(str = "Down", onClick = {
-                                    if ((pc.value > 0) && (pc.value < list.lastIndex)) {
-                                        Collections.swap(list, pc.value + 1, pc.value)
-                                        pc.value++
-                                    }
-                                })
-
-
-                                //TemplateButtonBottomBar(str = StateToString())
-
-                            }
-
-
-                        }
-                    }
-                }
-
-                DialogSaveAs(openDialog)
-
-                if (state == StateCommandScript.ISEDITTING) {
-                    Column(
-                    ) {
-                        Global.keyboard.Core()
-                    }
-                }
-            }
-        }
-    }
 }
 

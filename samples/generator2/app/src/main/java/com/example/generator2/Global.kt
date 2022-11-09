@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.bottomBarEnum
 import com.example.generator2.scripting.Script
 import com.example.generator2.scripting.ui.ScriptKeyboard
@@ -69,6 +70,7 @@ object Global : ViewModel() {
 
     val script = Script()
     lateinit var keyboard : ScriptKeyboard
+    val consoleLog = Console2()
 
     fun init() {
 
@@ -99,7 +101,7 @@ object Global : ViewModel() {
         }
 
         keyboard = ScriptKeyboard(script)
-
+        consoleLog.println("")
     }
 
     fun observe() {

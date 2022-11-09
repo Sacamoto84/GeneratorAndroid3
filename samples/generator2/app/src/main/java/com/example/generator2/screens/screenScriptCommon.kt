@@ -8,6 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.generator2.Global
 import com.example.generator2.scripting.StateCommandScript
+import com.example.generator2.scripting.ui.ConsoleLogDraw
+import com.example.generator2.scripting.ui.RegisterViewDraw
+import com.example.generator2.scripting.ui.ScriptTable
 import libs.modifier.recomposeHighlighter
 
 
@@ -26,14 +29,13 @@ fun ScreenScriptCommon() {
 
         Box(Modifier.weight(1f))
         {
-            Global.script.ScriptTable()
+            ScriptTable()
         }
 
         if (Global.script.state != StateCommandScript.ISEDITTING) {
-            //Консоль Логов
-            Global.script.ConsoleLogDraw(Modifier.weight(0.25f))
+
             //Блок регистров
-            Global.script.RegisterViewDraw()
+            RegisterViewDraw()
         }
 
     }
