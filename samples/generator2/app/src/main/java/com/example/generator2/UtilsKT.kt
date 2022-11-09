@@ -24,8 +24,7 @@ fun filesInDirToList(dir: String = ""): List<String> { ///storage/emulated/0/And
 }
 
 fun filesInDirToList(
-    context: Context,
-    dir: String = ""
+    context: Context, dir: String = ""
 ): List<String> { ///storage/emulated/0/Android/data/com.example.generator2/files
     val pathDocuments = context.getExternalFilesDir(dir)
 
@@ -41,10 +40,8 @@ fun filesInDirToList(
  * Сохранить list String в файл /Script/name.sk
  */
 fun saveListToScriptFile(
-    list: List<String>,
-    name: String
-) {
-    ///storage/emulated/0/Android/data/com.example.generator2/files
+    list: List<String>, name: String
+) { ///storage/emulated/0/Android/data/com.example.generator2/files
     val pathDocuments =
         Global.contextActivity!!.getExternalFilesDir("/Script")!!.absolutePath.toString() + "/${name}.sk"
     var str = "" //val m = list.toMutableList()
@@ -59,8 +56,7 @@ fun saveListToScriptFile(
 /**
  *  Прочитать файл скрипта и записать его в список
  */
-fun readScriptFileToList(name: String): List<String> {
-    ///storage/emulated/0/Android/data/com.example.generator2/files
+fun readScriptFileToList(name: String): List<String> { ///storage/emulated/0/Android/data/com.example.generator2/files
     val pathDocuments =
         Global.contextActivity!!.getExternalFilesDir("/Script")!!.absolutePath.toString() + "/${name}.sk"
 
@@ -74,6 +70,12 @@ fun readScriptFileToList(name: String): List<String> {
     }
 
     return list.toList()
+}
+
+fun deleteScriptFile(name: String) {
+    val pathDocuments =
+        Global.contextActivity!!.getExternalFilesDir("/Script")!!.absolutePath.toString() + "/${name}.sk"
+    File(pathDocuments).delete()
 }
 
 

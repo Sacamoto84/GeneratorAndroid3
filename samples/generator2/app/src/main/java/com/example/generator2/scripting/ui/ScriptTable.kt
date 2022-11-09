@@ -4,9 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -21,20 +19,31 @@ import androidx.compose.ui.unit.sp
 import com.example.generator2.*
 import com.example.generator2.R
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
+import com.example.generator2.screens.DialogDeleteRename
 import com.example.generator2.screens.DialogSaveAs
 import com.example.generator2.scripting.StateCommandScript
 import libs.MToast
 import java.util.*
 
+val refresh = mutableStateOf(0)
+
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScriptTable() {
 
-    val openDialog = remember { mutableStateOf(false) }
+    val openDialogSaveAs = remember { mutableStateOf(false) }
+
+    val openDialogDeleteRename = remember { mutableStateOf(false) }
 
     val context = LocalContext.current
 
+    var filename by remember { mutableStateOf("") }  //Имя выбранного файла в списке
+
+    val files = remember { mutableStateListOf<String>() }
+
     Box(modifier = Modifier.fillMaxSize(1f)) {
 
+        //refresh.value = refresh.value
 
         Column() {
 
@@ -62,7 +71,6 @@ fun ScriptTable() {
 
                     Column() {
 
-
                         if (Global.script.state != StateCommandScript.ISEDITTING) {
 
                             TemplateButtonBottomBar(str = "New", onClick = {
@@ -71,7 +79,10 @@ fun ScriptTable() {
                                 Global.script.command(StateCommandScript.EDIT)
                             })
                             //
-                            val files = filesInDirToList(context, "/Script").map { it.dropLast(3) }
+
+                            files.clear()
+                            files.addAll(filesInDirToList(context, "/Script").map { it.dropLast(3) })
+
                             Column(
                                 Modifier.fillMaxSize().weight(1f).padding(4.dp)
                                     .background(Color(0x8B1D1C1C)).border(1.dp, Color.DarkGray)
@@ -86,17 +97,19 @@ fun ScriptTable() {
                                         modifier = Modifier.fillMaxWidth().height(32.dp)
                                             .padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(
                                                 RoundedCornerShape(8.dp)
-                                            ).background(Color.LightGray).clickable(onClick = {
+                                            ).background(Color.LightGray).combinedClickable(
+                                                onClick = {
                                                 Global.script.command(StateCommandScript.STOP)
-
-                                                //stop()
-                                                //state = StateCommandScript.ISTOPPING
-
                                                 val l = readScriptFileToList(files[index])
                                                 Global.script.list.clear()
                                                 Global.script.list.addAll(l)
-
-                                            }).offset(0.dp, (0).dp),
+                                            }
+                                            , onLongClick = {
+                                                    openDialogDeleteRename.value = true
+                                                    filename = files[index]
+                                                }
+                                            )
+                                            .offset(0.dp, (0).dp),
                                         fontFamily = FontFamily(Font(R.font.jetbrains)),
                                         fontWeight = FontWeight.Bold,
                                         textAlign = TextAlign.Center,
@@ -126,7 +139,7 @@ fun ScriptTable() {
                                 onClick = { Global.script.command(StateCommandScript.STOP) })
 
                             TemplateButtonBottomBar(str = "Save", onClick = {
-                                if (Global.script.list[0] == "New") openDialog.value = true
+                                if (Global.script.list[0] == "New") openDialogSaveAs.value = true
                                 else {
                                     saveListToScriptFile(Global.script.list, Global.script.list[0])
                                     MToast(contex = Global.contextActivity!!, "Сохранено")
@@ -134,7 +147,7 @@ fun ScriptTable() {
                             })
 
                             TemplateButtonBottomBar(str = "Save As", onClick = {
-                                openDialog.value = true
+                                openDialogSaveAs.value = true
                             })
 
                             TemplateButtonBottomBar(str = "Add", onClick = {
@@ -197,7 +210,11 @@ fun ScriptTable() {
                 }
             }
 
-            DialogSaveAs(openDialog)
+            DialogSaveAs(openDialogSaveAs)
+
+            DialogDeleteRename(openDialogDeleteRename, filename)
+
+
 
             if (Global.script.state == StateCommandScript.ISEDITTING) {
                 Column(
@@ -208,3 +225,5 @@ fun ScriptTable() {
         }
     }
 }
+
+
