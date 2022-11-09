@@ -1,23 +1,29 @@
 package com.example.generator2.scripting
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.generator2.Global
+import com.example.generator2.*
+import com.example.generator2.R
 import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.recomposeHighlighterOneLine
-import com.example.generator2.saveListToScriptFile
 import com.example.generator2.screens.DialogSaveAs
 import com.example.generator2.scripting.ui.ScriptConsole
 import kotlinx.coroutines.delay
@@ -583,17 +589,9 @@ class Script {
         Box(
             modifier = Modifier.padding(8.dp).background(Color.Red)
                 .border(width = 1.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-                .recomposeHighlighter().then(modifier)
+                .then(modifier)
         ) {
             Column() {
-
-                //                Text(
-                //                    "Логи",
-                //                    color = Color.White,
-                //                    modifier = Modifier.fillMaxWidth(),
-                //                    textAlign = TextAlign.Center
-                //                )
-
                 consoleLog.Draw(
                     Modifier.padding(4.dp)
                 )
@@ -609,10 +607,10 @@ class Script {
                 .fillMaxWidth() //.background(Color.Red)
                 //.border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
                 //.wrapContentHeight()
-                .recomposeHighlighter().then(modifier)
+                .then(modifier)
         ) {
             Column(
-                Modifier.recomposeHighlighterOneLine().height(50.dp)
+                Modifier.height(50.dp)
             ) {
                 Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                     repeat(5) {
@@ -675,6 +673,8 @@ class Script {
 
         val openDialog = remember { mutableStateOf(false) }
 
+        val context = LocalContext.current
+
         Box(modifier = Modifier.fillMaxSize(1f)) {
             Column() {
 
@@ -705,16 +705,68 @@ class Script {
                             if (state != StateCommandScript.ISEDITTING) {
 
 
-                                TemplateButtonBottomBar(str = "Редактирование", onClick = {
+                                TemplateButtonBottomBar(str = "New", onClick = {
+
+
+                                })
+
+                                TemplateButtonBottomBar(str = "Edit", onClick = {
                                     command(StateCommandScript.EDIT)
                                 })
+
+                                //
+
+                                val files = filesInDirToList(context, "/Script").map { it.dropLast(3) }
+
+
+                                Column(
+                                    Modifier.fillMaxSize().weight(1f).padding(4.dp)
+                                        .background(Color(0x8B1D1C1C))
+                                        .verticalScroll(rememberScrollState())
+                                ) {
+
+                                    Spacer(modifier = Modifier.height(4.dp))
+
+                                    for (index in files.indices) {
+                                        Text(
+                                            text = files[index],
+                                            color = Color.DarkGray,
+                                            modifier = Modifier.fillMaxWidth().height(32.dp)
+                                                .padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(
+                                                    RoundedCornerShape(8.dp)
+                                                ).background(Color.LightGray)
+                                                .clickable(onClick = {
+
+                                                    stop()
+                                                    state = StateCommandScript.ISTOPPING
+
+                                                    val l = readScriptFileToList(files[index])
+                                                    list.clear()
+                                                    list.addAll(l)
+
+                                                }).offset(0.dp,(0).dp),
+                                            fontFamily = FontFamily(Font(R.font.jetbrains)),
+                                            fontWeight = FontWeight.Bold,
+                                            textAlign = TextAlign.Center, fontSize = 18.sp
+                                        )
+                                    }
+
+
+                                }
+
+
 
                                 TemplateButtonBottomBar(str = StateToString())
                             }
 
+
+
+
+
                             if (state == StateCommandScript.ISEDITTING) {
 
-                                TemplateButtonBottomBar(str = "Назад",
+                                TemplateButtonBottomBar(
+                                    str = "Назад",
                                     onClick = { command(StateCommandScript.STOP) })
 
                                 TemplateButtonBottomBar(str = "Save", onClick = {
@@ -771,6 +823,7 @@ class Script {
                                 //TemplateButtonBottomBar(str = StateToString())
 
                             }
+
 
                         }
                     }

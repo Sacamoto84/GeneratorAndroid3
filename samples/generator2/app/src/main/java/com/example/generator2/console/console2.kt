@@ -37,7 +37,7 @@ class Console2 {
     val isCheckedUselineVisible = mutableStateOf(false)
 
     //MARK: Размер строки
-    val textSizeDefault: TextUnit = 14.sp
+    val textSizeDefault: TextUnit = 12.sp
 
     val defaultTextColor: Color = Color.White
     val defaultBgColor: Color = Color.Black

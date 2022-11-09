@@ -31,7 +31,7 @@ fun ScreenScriptCommon() {
 
         if (Global.script.state != StateCommandScript.ISEDITTING) {
             //Консоль Логов
-            Global.script.ConsoleLogDraw(Modifier.weight(0.2f))
+            Global.script.ConsoleLogDraw(Modifier.weight(0.25f))
             //Блок регистров
             Global.script.RegisterViewDraw()
         }

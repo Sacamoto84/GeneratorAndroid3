@@ -106,6 +106,7 @@ fun TemplateButtonBottomBar(
     str: String = "?",
     onClick: () -> Unit = {},
     backgroundColor: Color = colorDarkBackground,
+    contentColor: Color = Color.White
 ) {
     OutlinedButton(
         onClick = onClick,
@@ -116,7 +117,7 @@ fun TemplateButtonBottomBar(
             .padding(start = 8.dp, end = 4.dp),
         colors = ButtonDefaults.outlinedButtonColors(
             backgroundColor = backgroundColor,
-            contentColor = Color.White
+            contentColor = contentColor
         ),
         border = BorderStroke(1.dp, Color.LightGray),contentPadding = PaddingValues(2.dp)
     ) {
