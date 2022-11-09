@@ -26,10 +26,23 @@ import kotlin.random.Random
 
 @Composable
 fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier) {
-    val indexSelect = remember {
-        mutableStateOf(selectLine)
-    }
+
+    println("ScriptConsole selectLine:$selectLine" )
+
+    val indexSelect = remember { mutableStateOf(selectLine)  }
+
     indexSelect.value = selectLine
+
+    val l = list.toList()
+
+    if (indexSelect.value > l.lastIndex)
+        indexSelect.value = l.lastIndex
+
+    if (indexSelect.value == 0) {
+        indexSelect.value = 1
+        Global.script.pc.value = 1
+    }
+
     val lazyListState: LazyListState = rememberLazyListState()
     Box(
         Modifier.fillMaxSize().background(Color(0xFF090909)).then(modifier),
@@ -39,28 +52,31 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
             modifier = Modifier.fillMaxSize(), state = lazyListState
         ) {
             itemsIndexed(
-                list.toList(),
+                l,
             ) { index, item ->
                 Row( //Modifier.background(Color.Magenta)
                     horizontalArrangement = Arrangement.Start
                 ) {
                     Box(
                         modifier = Modifier.selectable(
-                            selected = selectLine == index,
-                            onClick = { //indexSelect.value = index
-                                Global.script.pc.value =
-                                    index //MToast(Global.contextActivity!!, text = "$index")
-                            })
+                            selected = indexSelect.value == index,
+                            onClick = { Global.script.pc.value = index })
                     ) {
-                        ScriptItem().Draw(
-                            str = item,
-                            index = index,
-                            indexSelect.value == index,
-                        )
+
+                        //if (indexSelect.value == 0)
+                        //    indexSelect.value = 1
+
+                        val select = indexSelect.value == index
+
+                        ScriptItem().Draw( str = item, index = index, select )
+
+
                     }
                 }
             }
         }
     }
+
+    println("ScriptConsole..end" )
 }
 

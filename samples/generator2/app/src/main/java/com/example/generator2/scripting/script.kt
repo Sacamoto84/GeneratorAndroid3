@@ -687,6 +687,8 @@ class Script {
                         contentAlignment = Alignment.BottomEnd
                     ) {
 
+                        if (pc.value > list.lastIndex) pc.value = list.lastIndex
+
                         ScriptConsole(list, pc.value)
 
                         Text(text = "PC:${pc.value}", color = Color.Red)
@@ -707,26 +709,19 @@ class Script {
                                     command(StateCommandScript.EDIT)
                                 })
 
-
-
-
                                 TemplateButtonBottomBar(str = StateToString())
                             }
 
-
-
-
                             if (state == StateCommandScript.ISEDITTING) {
 
-                                TemplateButtonBottomBar(
-                                    str = "Назад",
+                                TemplateButtonBottomBar(str = "Назад",
                                     onClick = { command(StateCommandScript.STOP) })
 
                                 TemplateButtonBottomBar(str = "Save", onClick = {
-                                    if (Global.script.list[0] == "New") openDialog.value = true
+                                    if (list[0] == "New") openDialog.value = true
                                     else {
-                                        saveListToScriptFile( Global.script.list, Global.script.list[0] )
-                                        MToast(contex = Global.contextActivity!!, "Сохранено" )
+                                        saveListToScriptFile(list, list[0])
+                                        MToast(contex = Global.contextActivity!!, "Сохранено")
                                     }
                                 })
 
@@ -743,18 +738,30 @@ class Script {
                                 })
 
                                 TemplateButtonBottomBar(str = "Delete", onClick = {
-                                    list.removeAt(pc.value)
+
+                                    if (list.size > 1) {
+
+                                        list.removeAt(pc.value)
+
+                                        //if (pc.value > 1)
+                                        //  pc.value--
+
+                                        if (pc.value > list.lastIndex) {
+                                            pc.value = list.lastIndex
+                                        }
+                                    }
+
                                 })
 
                                 TemplateButtonBottomBar(str = "Up", onClick = {
-                                    if (pc.value > 0) {
+                                    if (pc.value > 1) {
                                         Collections.swap(list, pc.value - 1, pc.value)
                                         pc.value--
                                     }
                                 })
 
                                 TemplateButtonBottomBar(str = "Down", onClick = {
-                                    if (pc.value < list.lastIndex) {
+                                    if ((pc.value > 0) && (pc.value < list.lastIndex)) {
                                         Collections.swap(list, pc.value + 1, pc.value)
                                         pc.value++
                                     }

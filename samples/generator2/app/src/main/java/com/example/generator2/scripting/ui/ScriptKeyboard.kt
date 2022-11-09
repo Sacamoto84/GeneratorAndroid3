@@ -131,6 +131,12 @@ class ScriptKeyboard(private val s: Script) {
 
     @Composable
     fun Core() {
+        println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc.value} list.lastIndex:${list.lastIndex}" )
+        if (selectIndex <  0 ) selectIndex = 0
+        if (s.pc.value < 0 ) s.pc.value = 0
+
+        if (selectIndex >  list.lastIndex ) selectIndex = list.lastIndex
+        if (s.pc.value > list.lastIndex) s.pc.value = list.lastIndex
 
         textToListCommand(list[selectIndex])
         selectIndex = s.pc.value
@@ -150,6 +156,10 @@ class ScriptKeyboard(private val s: Script) {
             RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM")
             RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM")
         }
+
+
+        println("Keyboard Core..end" )
+
     }
 
     //show hide
