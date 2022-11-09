@@ -25,6 +25,7 @@ import colorLightBackground
 import com.example.generator2.Global
 import com.example.generator2.R
 import com.example.generator2.deleteScriptFile
+import com.example.generator2.renameScriptFile
 import com.example.generator2.scripting.ui.refresh
 import libs.MToast
 
@@ -69,11 +70,9 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String) {
                     )
                 }
 
-
                 Divider(color = Color.Gray, thickness = 2.dp)
 
                 Spacer(modifier = Modifier.height(16.dp))
-
 
                 OutlinedTextField(
                     value = value,
@@ -92,10 +91,12 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String) {
                     shape = RoundedCornerShape(36.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        Global.script.list[0] = value
-                        Global.saveListToScript(value)
+
+                        renameScriptFile(name, value)
+
                         openDialog.value = false
-                        MToast(context, "Сохранено")
+                        MToast(context, "Переименовали")
+
                     }),
                     textStyle = TextStyle(
                         fontSize = 18.sp,

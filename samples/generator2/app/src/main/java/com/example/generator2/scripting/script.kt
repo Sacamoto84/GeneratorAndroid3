@@ -222,6 +222,9 @@ class Script {
             "END"                                                  -> {
                 println("Скрипт окончен")
                 end = true
+
+                command(StateCommandScript.STOP)
+
             }
 
             "IF"                                                   -> ifCommand()

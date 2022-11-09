@@ -3,6 +3,9 @@ package com.example.generator2
 import android.content.Context
 import androidx.compose.ui.platform.LocalContext
 import java.io.File
+import java.io.IOException
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 
 fun Float.format(digits: Int) = "%.${digits}f".format(this)
 
@@ -76,6 +79,16 @@ fun deleteScriptFile(name: String) {
     val pathDocuments =
         Global.contextActivity!!.getExternalFilesDir("/Script")!!.absolutePath.toString() + "/${name}.sk"
     File(pathDocuments).delete()
+}
+
+fun renameScriptFile(nameSource: String, nameDescination: String) {
+    try {
+        val l = readScriptFileToList(nameSource)
+        deleteScriptFile(nameSource)
+        saveListToScriptFile(l, nameDescination)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
 }
 
 

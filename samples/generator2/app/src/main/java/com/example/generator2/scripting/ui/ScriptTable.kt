@@ -74,6 +74,15 @@ fun ScriptTable() {
                         if (Global.script.state != StateCommandScript.ISEDITTING) {
 
                             TemplateButtonBottomBar(str = "New", onClick = {
+
+                                Global.script.command(StateCommandScript.STOP)
+                                Global.script.list.clear()
+                                Global.script.list.add("New")
+                                Global.script.list.add("?")
+                                Global.script.list.add("END")
+
+                                Global.script.command(StateCommandScript.EDIT)
+
                             })
                             TemplateButtonBottomBar(str = "Edit", onClick = {
                                 Global.script.command(StateCommandScript.EDIT)
