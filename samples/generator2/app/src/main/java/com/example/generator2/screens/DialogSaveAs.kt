@@ -1,4 +1,4 @@
-package com.example.generator2.screens.screenFileManager
+package com.example.generator2.screens
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -19,12 +19,12 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import colorDarkBackground
 import colorLightBackground
+import com.example.generator2.Global
 import com.example.generator2.R
 import com.example.generator2.filesInDirToList
 import kotlinx.coroutines.delay
@@ -33,16 +33,11 @@ import libs.MToast
 @Composable
 fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
 
-    //val openDialog = remember { mutableStateOf(true) }
-
     val context = LocalContext.current
-
-    var value by mutableStateOf("")
-
+    var value by remember { mutableStateOf("")}
     val focusRequester = remember { FocusRequester() }
 
     if (openDialog.value) Dialog(onDismissRequest = { openDialog.value = false }) {
-
 
         Card(
             Modifier.height(400.dp).width(220.dp), elevation = 8.dp, border = BorderStroke(
@@ -55,10 +50,7 @@ fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
                 focusRequester.requestFocus()
             }
 
-
             Column() {
-
-
                 Text(
                     text = "Сохранить как",
                     modifier = Modifier.fillMaxWidth()
@@ -76,27 +68,23 @@ fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
                     Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C))
                         .verticalScroll(rememberScrollState())
                 ) {
+
                     Spacer(modifier = Modifier.height(4.dp))
 
                     for (index in files.indices) {
-
                         Text(
                             text = " " + files[index],
-                            color = if (index % 2 == 0) Color.LightGray else Color.DarkGray,
+                            color = Color.DarkGray,
                             modifier = Modifier.fillMaxWidth()
                                 .padding(start = 8.dp, top = 2.dp, end = 8.dp).clip(
                                     RoundedCornerShape(8.dp)
                                 )
-                                .background(if (index % 2 == 0) Color.DarkGray else Color.LightGray),
+                                .background( Color.LightGray ),
                             fontFamily = FontFamily(Font(R.font.jetbrains)),
                             fontWeight = FontWeight.Bold,
                             textAlign = TextAlign.Center
                         )
-
-
                     }
-
-
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -118,18 +106,18 @@ fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
                     singleLine = true,
                     shape = RoundedCornerShape(36.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = { MToast(context, "onDone") }),
+                    keyboardActions = KeyboardActions(onDone = {
+                        Global.script.list[0] = value
+                        Global.saveListToScript(value)
+                        openDialog.value = false
+                        MToast(context, "Сохранено")
+                    }),
                     textStyle = TextStyle(
                         fontSize = 18.sp,
                         fontFamily = FontFamily(Font(R.font.jetbrains)),
                     ),
                     )
             }
-
-
         }
-
-
     }
-
 }

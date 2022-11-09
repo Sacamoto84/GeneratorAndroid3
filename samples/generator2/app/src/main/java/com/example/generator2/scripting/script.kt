@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -16,9 +17,11 @@ import com.example.generator2.Global
 import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.recomposeHighlighterOneLine
-import com.example.generator2.screens.screenFileManager.DialogSaveAs
+import com.example.generator2.saveListToScriptFile
+import com.example.generator2.screens.DialogSaveAs
 import com.example.generator2.scripting.ui.ScriptConsole
 import kotlinx.coroutines.delay
+import libs.MToast
 import libs.modifier.recomposeHighlighter
 import java.util.*
 
@@ -547,7 +550,7 @@ class Script {
     //Тесты
     fun unit5Load() {
         list.clear()
-        list.add("T Script Name")
+        list.add("New")
         list.add("T Unit test")
         list.add("LOAD F1 1000")
         list.add("IF F1 < 10000")
@@ -695,24 +698,52 @@ class Script {
                     ) {
 
                         Column() {
+
+
                             if (state != StateCommandScript.ISEDITTING) {
 
-
-                                TemplateButtonBottomBar(str = "Сохранить как",
-
-                                   onClick = { openDialog.value = true }
-
-                                    )
 
                                 TemplateButtonBottomBar(str = "Редактирование", onClick = {
                                     command(StateCommandScript.EDIT)
                                 })
+
+
+
+
                                 TemplateButtonBottomBar(str = StateToString())
                             }
 
+
+
+
                             if (state == StateCommandScript.ISEDITTING) {
-                                TemplateButtonBottomBar(str = "STOP", onClick = {
-                                    command(StateCommandScript.STOP)
+
+                                TemplateButtonBottomBar(
+                                    str = "Назад",
+                                    onClick = { command(StateCommandScript.STOP) })
+
+                                TemplateButtonBottomBar(str = "Save", onClick = {
+                                    if (Global.script.list[0] == "New") openDialog.value = true
+                                    else {
+                                        saveListToScriptFile( Global.script.list, Global.script.list[0] )
+                                        MToast(contex = Global.contextActivity!!, "Сохранено" )
+                                    }
+                                })
+
+                                TemplateButtonBottomBar(str = "Save As", onClick = {
+                                    openDialog.value = true
+                                })
+
+                                TemplateButtonBottomBar(str = "Add", onClick = {
+                                    list.add(pc.value + 1, "?")
+                                })
+
+                                TemplateButtonBottomBar(str = "Add to end", onClick = {
+                                    list.add("?")
+                                })
+
+                                TemplateButtonBottomBar(str = "Delete", onClick = {
+                                    list.removeAt(pc.value)
                                 })
 
                                 TemplateButtonBottomBar(str = "Up", onClick = {
@@ -729,26 +760,16 @@ class Script {
                                     }
                                 })
 
-                                TemplateButtonBottomBar(str = "Добавить", onClick = {
-                                    list.add(pc.value + 1, "?")
-                                })
 
-                                TemplateButtonBottomBar(str = "Добавить в конец", onClick = {
-                                    list.add("?")
-                                })
+                                //TemplateButtonBottomBar(str = StateToString())
 
-                                TemplateButtonBottomBar(str = "Удалить", onClick = {
-                                    list.removeAt(pc.value)
-                                })
-
-                                TemplateButtonBottomBar(str = StateToString())
                             }
 
                         }
                     }
                 }
 
-                DialogSaveAs( openDialog )
+                DialogSaveAs(openDialog)
 
                 if (state == StateCommandScript.ISEDITTING) {
                     Column(
@@ -759,5 +780,5 @@ class Script {
             }
         }
     }
-    }
+}
 

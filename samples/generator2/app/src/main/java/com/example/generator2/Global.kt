@@ -269,4 +269,13 @@ object Global : ViewModel() {
     }
 
 
+    /**
+     * Сохранить текущий скрипт в файл
+     */
+    fun saveListToScript(name : String)
+    {
+        saveListToScriptFile(script.list, name)
+    }
+
+
 }

@@ -50,12 +50,12 @@ class ScriptItem {
 
                 for (i in 0 until s) {
                     Box(
-                        modifier = Modifier.padding(1.dp)
-                            .height(24.dp).clip(shape = RoundedCornerShape(8.dp))
-                            .background(pairList[i].colorBg)
+                        modifier = Modifier.padding(1.dp).height(24.dp)
+                            .clip(shape = RoundedCornerShape(8.dp)).background(pairList[i].colorBg)
                     ) {
                         Text(
-                            modifier = Modifier.padding(start = 4.dp, top = 2.dp, end = 4.dp).offset(x=0.dp, y=(-2).dp),
+                            modifier = Modifier.padding(start = 4.dp, top = 2.dp, end = 4.dp)
+                                .offset(x = 0.dp, y = (-2).dp),
                             text = pairList[i].text,
                             color = pairList[i].colorText,
                             textDecoration = if (pairList[i].underline) TextDecoration.Underline else null,
@@ -72,13 +72,11 @@ class ScriptItem {
         }
     }
 
-
     fun isNumeric(s: String): Boolean {
         val pos = ParsePosition(0)
         NumberFormat.getInstance().parse(s, pos)
         return s.length == pos.index
     }
-
 
     //Конвертируем строку и индекс в красивый вид
     private fun convertStringToPairTextAndColor(str: String, index: Int) {
@@ -132,18 +130,22 @@ class ScriptItem {
             )
 
 
-
-
-                    "DELAY"       -> pairList.add(
-            PairTextAndColor(
-                text = listCMD[0], colorText = Color(0xFFF5FFFF), colorBg = Color(0xFF1976D2), bold = true
+            "DELAY"      -> pairList.add(
+                PairTextAndColor(
+                    text = listCMD[0],
+                    colorText = Color(0xFFF5FFFF),
+                    colorBg = Color(0xFF1976D2),
+                    bold = true
+                )
             )
-        )
 
             else         -> {
                 pairList.add(
                     PairTextAndColor(
-                        text = listCMD[0], colorText = Color.Black, colorBg = Color.Green, bold = true
+                        text = listCMD[0],
+                        colorText = Color.Black,
+                        colorBg = Color.Green,
+                        bold = true
                     )
                 )
             }
@@ -246,9 +248,7 @@ class ScriptItem {
                     }
                 }
 
-            }
-            else
-            {
+            } else {
                 pairList.add(
                     PairTextAndColor(
                         text = listCMD[3],
