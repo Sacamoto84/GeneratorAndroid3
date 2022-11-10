@@ -9,4 +9,5 @@ enum class bottomBarEnum {
     SETTING,
     SAVEAS,
     LOADAS,
+    EDITOR
 }

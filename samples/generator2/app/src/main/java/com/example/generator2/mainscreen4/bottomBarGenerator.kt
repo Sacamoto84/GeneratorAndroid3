@@ -24,7 +24,7 @@ private fun Key1() {
 private fun Key2() {
     TemplateButtonBottomBar(
         str = "Редактор",
-        onClick = {  })
+        onClick = { bottomBarRoute.value = bottomBarEnum.EDITOR })
 }
 
 @Composable

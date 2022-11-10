@@ -12,8 +12,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import bottomBarEditor
 import colorDarkBackground
 import com.example.generator2.Global.bottomBarRoute
+import com.example.generator2.editor.ScreenEditor
 import com.example.generator2.screens.ScreenScriptCommon
 import com.example.generator2.scripting.ScreenScriptInfo
 
@@ -32,6 +34,8 @@ fun mainsreen4() {
                 bottomBarEnum.LOAD -> BottomBarLoad()
                 bottomBarEnum.LOADAS -> BottomBarLoad()
                 bottomBarEnum.SCRIPT -> bottomBarScript()
+                bottomBarEnum.EDITOR -> bottomBarEditor()
+
                 else -> BottomBarGenerator()
             }
         },
@@ -90,6 +94,17 @@ fun mainsreen4() {
                     ScreenScriptCommon()
                 }
             }
+
+            bottomBarEnum.EDITOR -> {
+                Box(
+                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+                        .fillMaxSize()
+                )
+                {
+                    ScreenEditor()
+                }
+            }
+
 
 
             else -> {
