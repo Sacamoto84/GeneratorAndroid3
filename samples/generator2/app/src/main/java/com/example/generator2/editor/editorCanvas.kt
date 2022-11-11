@@ -8,11 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.unit.dp
+import com.example.generator2.editor.EditorMatModel
 
 @Composable
 fun EditorCanvas()
@@ -22,6 +21,7 @@ fun EditorCanvas()
 
 
 
+    val model =  EditorMatModel()
 
 
     Box(modifier = Modifier.fillMaxWidth().aspectRatio(1f).background(Color.White))
@@ -56,6 +56,20 @@ fun EditorCanvas()
                     pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
                 )
             )
+
+
+            val points3 = model.createPoint(size)
+
+            drawPoints(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color.Red, Color.Yellow)
+                ),
+                points = points3,
+                cap = StrokeCap.Round,
+                pointMode = PointMode.Polygon,
+                strokeWidth = 3f
+            )
+
 
         }
     }
