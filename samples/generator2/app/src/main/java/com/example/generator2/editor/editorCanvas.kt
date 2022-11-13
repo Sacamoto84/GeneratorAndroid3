@@ -1,27 +1,24 @@
+import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.awaitFirstDown
-import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.PointerInputChange
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.generator2.editor.EditorMatModel
+import com.example.generator2.editor.PaintingState
 import com.smarttoolfactory.gesture.pointerMotionEvents
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 enum class MotionEvent {
     Idle, Down, Move, Up
 }
+
 
 val model = EditorMatModel()
 
@@ -32,68 +29,53 @@ fun EditorCanvas() {
     var currentPositionCorrection by remember { mutableStateOf(Offset.Unspecified) }
 
     // color and text are for debugging and observing state changes and position
-    var gestureColor by remember { mutableStateOf(Color.White) }
+    val gestureColor by remember { mutableStateOf(Color.Black) } //Цвет фона
 
-
-    // 🔥🔥 If pointer is moved fast, Canvas misses, only Canvas misses it, events work fine
-    // MotionEvent.Down events, and skips first down
-    val scope = rememberCoroutineScope()
-
-
-
-    val drawModifier = Modifier //.padding(8.dp)
-        //.shadow(1.dp)
+    val drawModifier = Modifier.padding(16.dp) //.shadow(1.dp)
         //.fillMaxWidth()
         //.height(300.dp)
         //.clipToBounds()
         .fillMaxSize().background(gestureColor)
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
             currentPosition = pointerInputChange.position
-            motionEvent = MotionEvent.Down
-            gestureColor = Color.Blue
+            motionEvent = MotionEvent.Down //gestureColor = Color.Blue
             pointerInputChange.consume()
         }, onMove = { pointerInputChange: PointerInputChange ->
             currentPosition = pointerInputChange.position
-            motionEvent = MotionEvent.Move
-            gestureColor = Color.Green
+            motionEvent = MotionEvent.Move // gestureColor = Color.Green
             pointerInputChange.consume()
         }, onUp = { pointerInputChange: PointerInputChange ->
-            motionEvent = MotionEvent.Up
-            gestureColor = Color.White
+            motionEvent = MotionEvent.Up // gestureColor = Color.White
             pointerInputChange.consume()
         }, delayAfterDownInMillis = 25L
         )
 
-
     val path1 = remember { Path() }
 
-    //currentPosition = Offset(
-    //    10f,
-    //    10f
-    //) //currentPositionCorrection = Offset( currentPosition.x, currentPosition.y + 100f)
-
     Box(
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1f)
-            .background(Color.White)
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1.5f)
+            .background(Color.Black)
     ) {
+
         Canvas(modifier = drawModifier) {
 
             model.sizeCanvas = size //Передали размер канвы
 
             when (motionEvent) {
                 MotionEvent.Down -> {
-
                     currentPositionCorrection = Offset(currentPosition.x, currentPosition.y + 100f)
                     model.position = Offset(currentPosition.x, currentPosition.y - 200f)
                     model.lastPosition = model.position
+
+
                 }
 
                 MotionEvent.Move -> {
                     currentPositionCorrection = Offset(
-                        currentPosition.x,
-                        currentPosition.y + 100f
+                        currentPosition.x, currentPosition.y + 100f
                     ) // model.position = currentPosition
                     model.position = Offset(currentPosition.x, currentPosition.y - 200f)
+
                 }
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
@@ -102,31 +84,61 @@ fun EditorCanvas() {
                         Offset.Unspecified //currentPositionCorrection = Offset( currentPosition.x, currentPosition.y + 100f)
                     motionEvent = MotionEvent.Idle
                 }
-
                 else             -> { //canvasText.append("MotionEvent.Idle\n")
                 }
             }
 
 
-
-            path1.reset()
-
-
-//            if (currentPosition != Offset.Unspecified) drawLine(
-//                start = Offset(x = currentPosition.x, y = currentPosition.y),
-//                end = Offset(x = 0f, y = 0f),
-//                color = Color.Magenta
-//            )
+            //Центральная вертикальная
 
 
+            drawLine(
+                color = Color.Gray,
+                start = Offset(size.width / 2, 0f),
+                end = Offset(size.width / 2, size.height - 1)
+            )
+            drawLine(
+                color = Color.Gray,
+                start = Offset(size.width / 4, 0f),
+                end = Offset(size.width / 4, size.height - 1)
+            )
+            drawLine(
+                color = Color.Gray,
+                start = Offset(size.width * 3 / 4, 0f),
+                end = Offset(size.width * 3 / 4, size.height - 1)
+            )
 
+            //Горизонтальная линия
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, size.height / 2),
+                end = Offset(size.width - 1, size.height / 2)
+            )
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, size.height / 4),
+                end = Offset(size.width - 1, size.height / 4)
+            )
+            drawLine(
+                color = Color.Gray,
+                start = Offset(0f, size.height * 3 / 4),
+                end = Offset(size.width - 1, size.height * 3 / 4)
+            )
 
+            drawRect(
+                color = Color.DarkGray,
+                topLeft = Offset(0f, 0f),
+                size = size,
+                style = Stroke(width = 1.dp.toPx())
+            )
 
             if (currentPosition != Offset.Unspecified) {
 
                 println("current position ${currentPosition.x}, ${currentPosition.y}")
 
-                model.calculateBox() //Расчет нового сигнала
+                if (model.state == PaintingState.PaintPoint) {
+                    model.line() //Расчет нового сигнала для точки
+                }
 
                 //Палец
                 drawCircle(
@@ -138,17 +150,39 @@ fun EditorCanvas() {
                 )
 
                 drawCircle(
-                    color = Color.Black,
+                    color = Color.Gray,
                     center = Offset(currentPosition.x, currentPosition.y - 200f),
                     radius = 10f,
                     alpha = 0.6f
                 )
 
+
+                val textPaint = Paint().asFrameworkPaint().apply {
+                    isAntiAlias = true
+                    textSize = 24.sp.toPx()
+                    color = android.graphics.Color.BLUE
+                    typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+                }
+
+
+                val paint = android.graphics.Paint()
+                paint.textSize = 28f
+                paint.color = 0xffff0000.toInt()
+                drawIntoCanvas {
+                    it.nativeCanvas.drawText(
+                        textConstrain(model.position.x.toInt(), model.position.y.toInt()),
+                        currentPositionCorrection.x - 50f,
+                        currentPositionCorrection.y - 350f,
+                        paint
+                    )
+                }
+
+
             }
 
 
-            val points3 = model.createPoint(size)
-
+            //Рисуем сам сигнал
+            val points3 = model.createPoint()
             drawPoints(
                 brush = Brush.linearGradient(
                     colors = listOf(Color.Red, Color.Yellow)
@@ -162,6 +196,24 @@ fun EditorCanvas() {
 
         }
     }
+}
+
+fun textConstrain(X: Int, Y: Int): String {
+    var x = X
+    var y = Y
+    if (x < 0) x = 0
+
+    if (x > 1023) x = 1023
+
+    if (y < 0) y = 0
+
+    if (y > 4095) y = 4095
+
+    y = 4095 - y
+
+
+    return "$x,$y"
+
 }
 
 
