@@ -8,6 +8,7 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import model
 
 @Composable
 fun ScreenEditor()
@@ -24,6 +25,8 @@ fun ScreenEditor()
 
 
         EditorCanvas()
+
+        editorPreviewCarrier(model)
 
     }
     
