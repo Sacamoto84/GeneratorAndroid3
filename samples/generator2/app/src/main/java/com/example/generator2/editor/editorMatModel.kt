@@ -217,7 +217,6 @@ class EditorMatModel {
 
         for (x in start..stop) {
 
-            //println("x=$x start=$start stop=$stop")
 
             if ((x >= 0) && (x < 1024 * 4)) {
 
@@ -249,9 +248,9 @@ class EditorMatModel {
                 //Нижняя полоса
                 val  t = 4.5f * size.width  - map(
                     position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
-                ) * 4f - 1
+                ) * 4f - 4f
 
-                if ((t >= 0 ) && (t <= size.height )) {
+                if ((t >= 0 ) && (t < size.height )) {
                     points3.add(
                         Offset(
                             startOffsetX, t

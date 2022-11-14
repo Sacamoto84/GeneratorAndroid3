@@ -1,6 +1,7 @@
 package com.example.generator2.editor
 
 import ButtonLine
+import ButtonNew
 import ButtonPoint
 import EditorCanvas
 import EditorCanvasLoop
@@ -8,8 +9,11 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -36,36 +40,13 @@ fun ScreenEditor() {
 
     Column(
         Modifier.fillMaxSize() //  .recomposeHighlighter()
-            .background(colorDarkBackground)
+            .background(colorDarkBackground).verticalScroll(rememberScrollState())
     ) {
 
 
-        //Рендер картинки модуляции
-        Box(
-            modifier = Modifier.padding(16.dp).fillMaxWidth() //
-                .border(
-                    1.dp,
-                    brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
-                    RectangleShape
-                ) //.clip(RoundedCornerShape(16.dp))
-                .background(colorLightBackground)
-        ) {
 
-            EditorPreviewCarrier(model)
-        }
 
-        //Рендер картинки частотной модуляции
-        Box(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp).fillMaxWidth() //
-                .border(
-                    1.dp,
-                    brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
-                    RectangleShape
-                ) //.clip(RoundedCornerShape(16.dp))
-                .background(colorLightBackground)
-        ) {
-            EditorPreviewFM(model)
-        }
+
 
         Row(
             modifier = Modifier.height(232.dp).fillMaxWidth().background(Color.Transparent),
@@ -82,7 +63,32 @@ fun ScreenEditor() {
                     ButtonLine()
                 }
             }
+
             EditorCanvasLoop()
+
+            Column(
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.background(Color.Transparent)
+            ) {
+
+                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
+                    ButtonNew()
+                }
+
+                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
+                    ButtonLine()
+                }
+
+                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
+                    ButtonLine()
+                }
+
+                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
+                    ButtonLine()
+                }
+
+            }
+
         }
 
         Box(
@@ -96,6 +102,21 @@ fun ScreenEditor() {
         ) {
             EditorCanvas()
         }
+
+       Column(
+           modifier = Modifier.padding(16.dp).fillMaxWidth() //
+               .border(
+                   1.dp,
+                   brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
+                   RectangleShape
+               ) //.clip(RoundedCornerShape(16.dp))
+               .background(colorLightBackground)
+       ) {
+           EditorPreviewCarrier(model)
+           EditorPreviewFM(model)
+       }
+
+
 
     }
 

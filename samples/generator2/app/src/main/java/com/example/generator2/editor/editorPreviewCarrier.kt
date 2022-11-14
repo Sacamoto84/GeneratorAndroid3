@@ -15,15 +15,11 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun EditorPreviewCarrier(model: EditorMatModel) {
-
     Box(
         modifier = Modifier.padding(8.dp).fillMaxWidth().aspectRatio(4f).background(Color.Black)
     ) {
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-
-
-
 
             val points = mutableListOf<Offset>()
 
@@ -68,27 +64,18 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
                 start = Offset(0f, size.height / 2),
                 end = (Offset(size.width - 1, size.height / 2))
             )
-
-
         }
-
-
     }
-
-
 }
 
 @Composable
 fun EditorPreviewFM(model: EditorMatModel) {
 
     Box(
-        modifier = Modifier.padding(8.dp).fillMaxWidth().aspectRatio(4f).background(Color.Black)
+        modifier = Modifier.padding(start = 8.dp, end = 8.dp, bottom = 8.dp).fillMaxWidth().aspectRatio(4f).background(Color.Black)
     ) {
 
         Canvas(modifier = Modifier.fillMaxSize()) {
-
-
-
 
             val points = mutableListOf<Offset>()
 

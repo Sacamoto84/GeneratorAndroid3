@@ -103,3 +103,61 @@ fun ButtonLine() {
         }
     }
 }
+
+@Composable
+fun ButtonNew() {
+    var gestureText by remember { mutableStateOf("") }
+    var gestureColor by remember { mutableStateOf(colorLightBackground) }
+    val context = LocalContext.current
+
+    Box(modifier = Modifier.fillMaxHeight().width(80.dp).clip(shape = RoundedCornerShape(16.dp))
+        .background(gestureColor).pointerInput(Unit) {
+            detectTapGestures(onPress = { //gestureText = "onPress"
+                gestureColor = Color.DarkGray
+                model.state = PaintingState.PaintLine
+                val released = try {
+                    tryAwaitRelease()
+                } catch (c: CancellationException) {
+                    false
+                }
+
+                if (released) {
+                    model.state = PaintingState.Show //gestureText = "onPress Released"
+                    gestureColor = colorLightBackground
+                } else {
+                    model.state = PaintingState.Show //gestureText = "onPress canceled"
+                    gestureColor = colorLightBackground
+                }
+            })
+        }) {
+
+        Canvas(modifier = Modifier.fillMaxSize()) {
+
+            drawLine(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF13C030), Color(0xFF03A9F4)
+                    )
+                ),
+                start = Offset(size.width/2,  10.dp.toPx()),
+                end = Offset(size.width/2, size.height - 10.dp.toPx()),
+                strokeWidth = 5.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+
+            drawLine(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color(0xFF13C030), Color(0xFF03A9F4)
+                    )
+                ),
+                start = Offset( 10.dp.toPx(),  size.height/2),
+                end = Offset(size.width - 10.dp.toPx(), size.height/2),
+                strokeWidth = 5.dp.toPx(),
+                cap = StrokeCap.Round,
+            )
+
+
+        }
+    }
+}
