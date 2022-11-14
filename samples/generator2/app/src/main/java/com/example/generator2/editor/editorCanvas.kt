@@ -24,7 +24,7 @@ val model = EditorMatModel()
 
 @Composable
 fun EditorCanvas() {
-    var motionEvent by remember { mutableStateOf(MotionEvent.Idle) } // This is our motion event we get from touch motion
+
     //var currentPosition by remember { mutableStateOf(Offset.Unspecified) } // This is previous motion event before next touch is saved into this current position
 
     // color and text are for debugging and observing state changes and position
@@ -37,72 +37,93 @@ fun EditorCanvas() {
         .fillMaxSize().background(gestureColor)
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
             model.currentPosition.value = pointerInputChange.position
-            motionEvent = MotionEvent.Down //gestureColor = Color.Blue
+            model.motionEvent.value = MotionEvent.Down //gestureColor = Color.Blue
             pointerInputChange.consume()
         }, onMove = { pointerInputChange: PointerInputChange ->
             model.currentPosition.value = pointerInputChange.position
-            motionEvent = MotionEvent.Move // gestureColor = Color.Green
+            model.motionEvent.value = MotionEvent.Move // gestureColor = Color.Green
             pointerInputChange.consume()
         }, onUp = { pointerInputChange: PointerInputChange ->
-            motionEvent = MotionEvent.Up // gestureColor = Color.White
+            model.motionEvent.value = MotionEvent.Up // gestureColor = Color.White
             pointerInputChange.consume()
-        }, delayAfterDownInMillis = 15L
+        }, delayAfterDownInMillis = 25L
         )
 
     val path1 = remember { Path() }
+
+    var disposable by remember { mutableStateOf(true)}
 
     Box(
         modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1f)
             .background(Color.Black)
     ) {
 
+
         Canvas(modifier = drawModifier) {
 
             model.sizeCanvas = size //Передали размер канвы
 
-            when (motionEvent) {
+            if (disposable)
+            {
+                disposable = false
+                model.currentPosition.value = Offset(size.width/2, size.height/2 + 200f)
+            }
+
+            when (model.motionEvent.value) {
                 MotionEvent.Down -> {
 
+                    println (model.motionEvent)
 
-                    model.setOnlyPosition(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                    model.setOnlyPosition(
+                        Offset(
+                            model.currentPosition.value.x, model.currentPosition.value.y - 200f
+                        )
+                    )
                     model.lastPosition = model.position
-
                 }
 
                 MotionEvent.Move -> {
 
-                    when (model.state)
-                    {
-                        PaintingState.Show  -> {
-                            model.setPositionAndLast(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                    println (model.motionEvent)
+
+                    when (model.state) {
+                        PaintingState.Show       -> {
+                            model.setPositionAndLast(
+                                Offset(
+                                    model.currentPosition.value.x,
+                                    model.currentPosition.value.y - 200f
+                                )
+                            )
                         }
-                        PaintingState.PaintLine -> {
-                            model.setOnlyPosition(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
-                            println("PaintLine")
+
+                        PaintingState.PaintLine  -> {
+                            model.setOnlyPosition(
+                                Offset(
+                                    model.currentPosition.value.x,
+                                    model.currentPosition.value.y - 200f
+                                )
+                            )
+                            println("..PaintLine")
                         }
-                        PaintingState.PaintPoint ->{
-                            model.setPositionAndLast(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                        PaintingState.PaintPoint -> {
+                            model.setPositionAndLast(
+                                Offset(
+                                    model.currentPosition.value.x,
+                                    model.currentPosition.value.y - 200f
+                                )
+                            )
                         }
                     }
-
-
-
-
-
                 }
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
-                    //canvasText.append("MotionEvent.Up pos: $currentPosition\n")
-                    model.currentPosition.value =
-                        Offset.Unspecified //currentPositionCorrection = Offset( currentPosition.x, currentPosition.y + 100f)
-                    motionEvent = MotionEvent.Idle
+                    model.motionEvent.value = MotionEvent.Idle
+                    println (model.motionEvent)
                 }
-                else             -> { //canvasText.append("MotionEvent.Idle\n")
-                }
+                else             -> {}
             }
 
             //Центральная вертикальная
-
             drawLine(
                 color = Color.Gray,
                 start = Offset(size.width / 2, 0f),
@@ -145,7 +166,7 @@ fun EditorCanvas() {
 
             if (model.currentPosition.value != Offset.Unspecified) {
 
-                println("current position ${model.currentPosition.value.x}, ${model.currentPosition.value.y}")
+                //println("current position ${model.currentPosition.value.x}, ${model.currentPosition.value.y}")
 
                 if (model.state == PaintingState.PaintPoint) {
                     model.line() //Расчет нового сигнала для точки
@@ -157,7 +178,10 @@ fun EditorCanvas() {
 
                 //Палец
                 drawCircle(
-                    color = Color.Red, center = model.currentPosition.value, radius = 60f, style = Stroke(
+                    color = Color.Red,
+                    center = model.currentPosition.value,
+                    radius = 60f,
+                    style = Stroke(
                         width = 3.dp.toPx(),
                         join = StrokeJoin.Bevel,
                         cap = StrokeCap.Square, //pathEffect = PathEffect.dashPathEffect(floatArrayOf(5f, 15f))
@@ -165,10 +189,9 @@ fun EditorCanvas() {
                 )
 
                 drawCircle(
-                    color = Color.Gray,
-                    center = Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f),
-                    radius = 10f,
-                    alpha = 0.6f
+                    color = Color.Gray, center = Offset(
+                        model.currentPosition.value.x, model.currentPosition.value.y - 200f
+                    ), radius = 10f, alpha = 0.6f
                 )
 
 
@@ -195,7 +218,6 @@ fun EditorCanvas() {
 
             }
 
-
             //Рисуем сам сигнал
             val points3 = model.createPoint()
             drawPoints(
@@ -207,31 +229,6 @@ fun EditorCanvas() {
                 pointMode = PointMode.Polygon,
                 strokeWidth = 3f
             )
-
-            //Рисуем сам сигнал
-            val points5 = model.createPointLoop().first
-            drawPoints(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color.Green, Color.Blue)
-                ),
-                points = points5,
-                cap = StrokeCap.Round,
-                pointMode = PointMode.Polygon,
-                strokeWidth = 3f
-            )
-
-            //Рисуем сам сигнал
-            val points6 = model.createPointLoop().second
-            drawPoints(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color.Red, Color.Magenta)
-                ),
-                points = points6,
-                cap = StrokeCap.Round,
-                pointMode = PointMode.Polygon,
-                strokeWidth = 3f
-            )
-
 
         }
     }

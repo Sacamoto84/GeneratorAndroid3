@@ -1,12 +1,9 @@
 package com.example.generator2
 
-//import com.example.generator2.ui.wiget.GestureOfDrag
-import android.Manifest.permission.*
-import android.os.Build
+//import com.example.generator2.ui.widget.GestureOfDrag
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.annotation.RequiresApi
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -33,11 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.lifecycleScope
 import colorDarkBackground
-import com.alexstyl.warden.PermissionResults
-import com.alexstyl.warden.PermissionState
-import com.alexstyl.warden.Warden
 import com.example.generator2.Global.onoffconfig
 import com.example.generator2.Global.onoffconfig1
 import com.example.generator2.mainscreen4.mainsreen4
@@ -45,9 +38,7 @@ import com.example.generator2.ui.slider.SunriseSliderColors
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import kotlinx.coroutines.launch
 import libs.KeepScreenOn
-import libs.MToast
 import libs.modifier.recomposeHighlighter
 
 

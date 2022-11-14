@@ -1,10 +1,11 @@
 package com.example.generator2.editor
 
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Path
-import kotlin.math.sin
 
 //Тип рисования
 enum class PaintingState {
@@ -17,6 +18,9 @@ class EditorMatModel {
 
     var state = PaintingState.Show
 
+
+    var motionEvent =  mutableStateOf(MotionEvent.Idle)  // This is our motion event we get from touch motion
+
     private val signal: IntArray = IntArray(1024) { 2047 }
 
     var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы
@@ -24,23 +28,19 @@ class EditorMatModel {
     var lastPosition: Offset
 
     init {
-        lastPosition = Offset(0f, 0f) //Прошлая кордината
+        lastPosition = Offset(sizeCanvas.width/2, sizeCanvas.height/2) //Прошлая кордината
     }
 
-    var currentPosition = mutableStateOf(Offset.Unspecified)
+    var currentPosition = mutableStateOf(Offset(sizeCanvas.width/2, sizeCanvas.height/2))
 
     var position: Offset = Offset(
         0f, 0f
-    )      //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
-    //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-    //            println("modelPosition $x $y")
-    //            field = Offset(x.toFloat(), y.toFloat())
-    //        }
+    )      //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
 
     fun setOnlyPosition(p: Offset) {
         val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
         val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        println("setOnlyPosition $x $y")
+        //println("setOnlyPosition $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -48,14 +48,14 @@ class EditorMatModel {
         lastPosition = position
         val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
         val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        println("setPositionAndLast $x $y")
+        //println("setPositionAndLast $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
     fun setOnlyLast(p: Offset) {
         val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
         val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        println("setLast $x $y")
+        //println("setLast $x $y")
         lastPosition = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -185,67 +185,137 @@ class EditorMatModel {
     /**
      * Создать точки из signal для отображения
      */
-    fun createPointLoop(size: Size = sizeCanvas): Pair<MutableList<Offset>, MutableList<Offset>> {
+    fun createPointLoop(size: Size = sizeCanvas): Four<MutableList<Offset>, MutableList<Offset>, MutableList<Offset>, MutableList<Offset>> {
 
         val points = mutableListOf<Offset>()
         val points2 = mutableListOf<Offset>()
+        val points3 = mutableListOf<Offset>()
+        val points4 = mutableListOf<Offset>()
 
         val verticalCenter = size.height / 2
 
         val sizeW = size.width.toInt()
 
+        var start = (position.x - size.width.toInt() / 8).toInt()
 
-        var start = (position.x - 50f).toInt()
-        var stop = (position.x + 50f).toInt()
+        if (start < (size.width.toInt() / 4) * (-1)) start = 0
 
-        if (start < 0) start = 0
+        var stop = start + size.width.toInt() / 4
 
+        if (stop > 1023 + size.width.toInt() / 4) {
 
-        stop = start + 100
-
-        if (stop > 1023) {
             stop = 1023
-            start = stop - 100
+            start = stop - size.width.toInt() / 4
+
         }
 
-        var startOffset = size.width / 2 - 50f
+        var startOffsetX = 0f
+        var startOffsetY = size.width / 4
 
         start *= 4
         stop *= 4
 
         for (x in start..stop) {
-            val y = (map(
-                signal[x / 4],
-                editMin,
-                editMax,
-                0,
-                size.height.toInt() - 1
-            ).toFloat()) * 2f - 350f
+
+            //println("x=$x start=$start stop=$stop")
+
+            if ((x >= 0) && (x < 1024 * 4)) {
+
+                val y = (map(
+                    signal[x / 4] - position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
+                ).toFloat()) * 4f + size.height / 4
 
 
-            points2.add(
-                Offset(
-                    startOffset,
-                    (map(
-                        position.y.toInt(),
-                        editMin,
-                        editMax,
-                        0,
-                        size.height.toInt() - 1
-                    ).toFloat()) * 2f - 350f
+                if (((startOffsetY + y) > 0f) && (startOffsetY + y < size.height)) {
+                    points.add(
+                        Offset(
+                            startOffsetX + 1,
+                            constrain((startOffsetY + y).toInt(), 0, size.height.toInt()).toFloat()
+                        )
+                    )
+                }
+
+                //Верхняя полоса
+                val  tt = size.width / 2 - map(
+                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
+                ) * 4f
+
+                    if ((tt >= 0 ) && (tt < size.height )) {
+                        points3.add(
+                            Offset(
+                                startOffsetX, tt
+                            )
+                        )
+                    }
+
+                //Нижняя полоса
+                val  t = 4.5f * size.width  - map(
+                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
+                ) * 4f - 1
+
+                if ((t >= 0 ) && (t <= size.height )) {
+                    points3.add(
+                        Offset(
+                            startOffsetX, t
+                        )
+                    )
+                }
+
+
+                //Центральная полосса
+                val  tn = 2.5f * size.width  - map(
+                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
+                ) * 4f - 2
+
+                if ((tn >= 0 ) && (tn <= size.height )) {
+                    points3.add(
+                        Offset(
+                            startOffsetX, tn
+                        )
+                    )
+                }
+
+
+            }
+
+            startOffsetX++
+
+            //Вертикадьная полоса
+            if (x == 0) {
+                for (i in 0..size.height.toInt())
+                    points2.add(
+                    Offset(
+                        startOffsetX, i.toFloat()
+                    )
                 )
-            )
+            }
+
+            if (x == 1024 * 4) {
+                for (i in 0..size.height.toInt()) points2.add(
+                    Offset(
+                        startOffsetX, i.toFloat()
+                    )
+                )
+            }
 
 
-            points.add(Offset(startOffset++, y))
+            if (x == 1024 * 2) {
+                for (i in 0..size.height.toInt()) points2.add(
+                    Offset(
+                        startOffsetX, i.toFloat()
+                    )
+                )
+            }
 
 
         }
 
-        var out: Pair<MutableList<Offset>, MutableList<Offset>> =
-            Pair(points, points2) //out.first = points
+        var out: Four<MutableList<Offset>, MutableList<Offset>, MutableList<Offset>, MutableList<Offset>> =
+            Four(points, points2, points3, points4)
         return out
     }
+
+
 
     //position->modelPosition
     private fun map(
@@ -256,6 +326,21 @@ class EditorMatModel {
         out_max: Int = 1023
     ): Int {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
+    }
+
+
+    private fun constrain(amt: Int, low: Int, high: Int): Int {
+
+        return if (amt < low) {
+            low
+        } else {
+            if (amt > high) {
+                high
+            } else {
+                amt
+            }
+        }
+
     }
 
 

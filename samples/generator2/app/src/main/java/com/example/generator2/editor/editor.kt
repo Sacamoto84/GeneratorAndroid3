@@ -3,6 +3,7 @@ package com.example.generator2.editor
 import ButtonLine
 import ButtonPoint
 import EditorCanvas
+import EditorCanvasLoop
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -31,9 +32,22 @@ fun ScreenEditor() {
             .background(colorDarkBackground)
     ) {
 
+        Row() {
 
-        ButtonPoint()
-        ButtonLine()
+            Column() {
+
+                ButtonPoint()
+                ButtonLine()
+
+            }
+
+            EditorCanvasLoop()
+
+        }
+
+
+
+
 
         EditorCanvas()
 
