@@ -2,8 +2,10 @@ import android.graphics.Typeface
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -51,10 +53,14 @@ fun EditorCanvas() {
 
     val path1 = remember { Path() }
 
-    var disposable by remember { mutableStateOf(true)}
+    var disposable by remember { mutableStateOf(true) }
 
     Box(
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(2f)
+        modifier = Modifier
+            //.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+            .fillMaxWidth()
+            .aspectRatio(2f)
+            //.clip(RoundedCornerShape(12.dp))
             .background(Color.Black)
     ) {
 
@@ -63,16 +69,15 @@ fun EditorCanvas() {
 
             model.sizeCanvas = size //Передали размер канвы
 
-            if (disposable)
-            {
+            if (disposable) {
                 disposable = false
-                model.currentPosition.value = Offset(size.width/2, size.height/2 + 200f)
+                model.currentPosition.value = Offset(size.width / 2, size.height / 2 + 200f)
             }
 
             when (model.motionEvent.value) {
                 MotionEvent.Down -> {
 
-                    println (model.motionEvent)
+                    println(model.motionEvent)
 
                     model.setOnlyPosition(
                         Offset(
@@ -84,7 +89,7 @@ fun EditorCanvas() {
 
                 MotionEvent.Move -> {
 
-                    println (model.motionEvent)
+                    println(model.motionEvent)
 
                     when (model.state) {
                         PaintingState.Show       -> {
@@ -118,7 +123,7 @@ fun EditorCanvas() {
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
                     model.motionEvent.value = MotionEvent.Idle
-                    println (model.motionEvent)
+                    println(model.motionEvent)
                 }
                 else             -> {}
             }

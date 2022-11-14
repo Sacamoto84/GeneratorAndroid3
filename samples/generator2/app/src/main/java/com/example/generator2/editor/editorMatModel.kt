@@ -210,7 +210,7 @@ class EditorMatModel {
         }
 
         var startOffsetX = 0f
-        var startOffsetY = size.width / 4
+        val startOffsetY = size.width / 4
 
         start *= 4
         stop *= 4
@@ -236,9 +236,7 @@ class EditorMatModel {
                 }
 
                 //Верхняя полоса
-                val  tt = size.width / 2 - map(
-                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
-                ) * 4f
+                val  tt = size.width / 2 - map( position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1 ) * 4f
 
                     if ((tt >= 0 ) && (tt < size.height )) {
                         points3.add(
@@ -262,7 +260,7 @@ class EditorMatModel {
                 }
 
 
-                //Центральная полосса
+                //Центральная полоса
                 val  tn = 2.5f * size.width  - map(
                     position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
                 ) * 4f - 2

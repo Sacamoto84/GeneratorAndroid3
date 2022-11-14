@@ -35,66 +35,64 @@ fun EditorCanvasLoop() {
         )
     ) {
 
+        ////////////////////
+        //Прицел
         drawLine(
-            color = Color.Gray,
-            start = Offset(size.width / 2, 0f),
-            end = Offset(size.width / 2, size.height - 1)
+            color = Color.LightGray.copy(alpha = 0.5f),
+            start = Offset(size.width / 2, 70.dp.toPx()),
+            end = Offset(size.width / 2, size.height - 70.dp.toPx())
+        , strokeWidth = 1.dp.toPx()
         )
 
         drawLine(
-            color = Color.Gray,
-            start = Offset(0f, size.height / 2),
-            end = Offset(size.width - 1, size.height / 2)
+            color = Color.LightGray,
+            start = Offset(70.dp.toPx(), size.height / 2),
+            end = Offset(size.width - 70.dp.toPx(), size.height / 2)
+            , strokeWidth = 1.dp.toPx()
         )
+        ////////////////////
 
-
-        //Рисуем сам сигнал
+        //Вертикальные ограничения
         val pointsV = model.createPointLoop(size).second
         drawPoints(
-            brush = Brush.linearGradient(
-                colors = listOf(Color.Blue, Color.Blue)
-            ),
+            color = Color.Gray,
             points = pointsV,
             cap = StrokeCap.Round,
             pointMode = PointMode.Lines,
-            strokeWidth = 6f
+            strokeWidth = 3f
         )
 
-        //Рисуем сам сигнал
+        //Горизонтальное ограничение
         val pointsH = model.createPointLoop(size).third
         drawPoints(
-            brush = Brush.linearGradient(
-                colors = listOf(Color.Blue, Color.Blue)
-            ),
+            color = Color.Gray,
             points = pointsH,
             cap = StrokeCap.Round,
             pointMode = PointMode.Lines,
-            strokeWidth = 6f
+            strokeWidth = 3f
         )
 
         //Рисуем сам сигнал
         val pointsSignal = model.createPointLoop(size).first
         drawPoints(
-            brush = Brush.linearGradient(
-                colors = listOf(Color.Green, Color.Green)
-            ),
+            color = Color.Green,
             points = pointsSignal,
             cap = StrokeCap.Round,
             pointMode = PointMode.Points,
-            strokeWidth = 3f
-        )
-
-        //Рисуем сам сигнал
-        val pointsNull = model.createPointLoop(size).four
-        drawPoints(
-            brush = Brush.linearGradient(
-                colors = listOf(Color.Magenta, Color.Yellow)
-            ),
-            points = pointsNull,
-            cap = StrokeCap.Round,
-            pointMode = PointMode.Lines,
             strokeWidth = 4f
         )
+
+//        //Рисуем сам сигнал
+//        val pointsNull = model.createPointLoop(size).four
+//        drawPoints(
+//            brush = Brush.linearGradient(
+//                colors = listOf(Color.Magenta, Color.Yellow)
+//            ),
+//            points = pointsNull,
+//            cap = StrokeCap.Round,
+//            pointMode = PointMode.Lines,
+//            strokeWidth = 4f
+//        )
 
 
     }
