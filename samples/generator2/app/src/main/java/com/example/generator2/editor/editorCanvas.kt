@@ -54,7 +54,7 @@ fun EditorCanvas() {
     var disposable by remember { mutableStateOf(true)}
 
     Box(
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1f)
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(2f)
             .background(Color.Black)
     ) {
 

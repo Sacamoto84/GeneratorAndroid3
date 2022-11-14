@@ -52,10 +52,9 @@ fun ScreenEditor() {
         EditorCanvas()
 
 
+        EditorPreviewCarrier(model)
 
 
-
-        //editorPreviewCarrier(model)
 
     }
 

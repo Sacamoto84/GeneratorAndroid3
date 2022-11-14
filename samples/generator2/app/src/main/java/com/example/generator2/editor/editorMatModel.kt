@@ -21,7 +21,7 @@ class EditorMatModel {
 
     var motionEvent =  mutableStateOf(MotionEvent.Idle)  // This is our motion event we get from touch motion
 
-    private val signal: IntArray = IntArray(1024) { 2047 }
+    val signal: IntArray = IntArray(1024) { 2047 }
 
     var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы
 
@@ -318,7 +318,7 @@ class EditorMatModel {
 
 
     //position->modelPosition
-    private fun map(
+    fun map(
         x: Int,
         in_min: Int = 0,
         in_max: Int = sizeCanvas.width.toInt() - 1,
