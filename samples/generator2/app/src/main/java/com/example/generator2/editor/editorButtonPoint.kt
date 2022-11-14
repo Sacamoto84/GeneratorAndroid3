@@ -18,7 +18,6 @@ import java.util.concurrent.CancellationException
 @Composable
 fun ButtonPoint()
 {
-
     var gestureText by remember { mutableStateOf("") }
     var gestureColor by remember { mutableStateOf(colorLightBackground) }
     val context = LocalContext.current
@@ -30,9 +29,7 @@ fun ButtonPoint()
                     onPress = {
                         //gestureText = "onPress"
                         gestureColor = Green400
-
                         model.state = PaintingState.PaintPoint
-
                         val released = try {
                             tryAwaitRelease()
                         } catch (c: CancellationException) {
@@ -57,5 +54,45 @@ fun ButtonPoint()
             textAlign = TextAlign.Center
         )
     }
+}
 
+@Composable
+fun ButtonLine()
+{
+    var gestureText by remember { mutableStateOf("") }
+    var gestureColor by remember { mutableStateOf(colorLightBackground) }
+    val context = LocalContext.current
+
+    Box(
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp).size(70.dp)
+            .background(gestureColor).pointerInput(Unit){
+                detectTapGestures(
+                    onPress = {
+                        //gestureText = "onPress"
+                        gestureColor = Green400
+                        model.state = PaintingState.PaintLine
+                        val released = try {
+                            tryAwaitRelease()
+                        } catch (c: CancellationException) {
+                            false
+                        }
+
+                        if (released) {
+                            model.state = PaintingState.Show
+                            //gestureText = "onPress Released"
+                            gestureColor = colorLightBackground
+                        } else {
+                            model.state = PaintingState.Show
+                            //gestureText = "onPress canceled"
+                            gestureColor = colorLightBackground
+                        }
+                    }
+                )
+            }) {
+        Text(
+            text = gestureText,
+            color = Color.White,
+            textAlign = TextAlign.Center
+        )
+    }
 }

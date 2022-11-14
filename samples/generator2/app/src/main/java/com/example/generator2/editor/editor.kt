@@ -1,5 +1,6 @@
 package com.example.generator2.editor
 
+import ButtonLine
 import ButtonPoint
 import EditorCanvas
 import android.widget.Toast
@@ -32,7 +33,7 @@ fun ScreenEditor() {
 
 
         ButtonPoint()
-
+        ButtonLine()
 
         EditorCanvas()
 

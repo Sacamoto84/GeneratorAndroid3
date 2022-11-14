@@ -25,8 +25,7 @@ val model = EditorMatModel()
 @Composable
 fun EditorCanvas() {
     var motionEvent by remember { mutableStateOf(MotionEvent.Idle) } // This is our motion event we get from touch motion
-    var currentPosition by remember { mutableStateOf(Offset.Unspecified) } // This is previous motion event before next touch is saved into this current position
-    var currentPositionCorrection by remember { mutableStateOf(Offset.Unspecified) }
+    //var currentPosition by remember { mutableStateOf(Offset.Unspecified) } // This is previous motion event before next touch is saved into this current position
 
     // color and text are for debugging and observing state changes and position
     val gestureColor by remember { mutableStateOf(Color.Black) } //Цвет фона
@@ -37,23 +36,23 @@ fun EditorCanvas() {
         //.clipToBounds()
         .fillMaxSize().background(gestureColor)
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
-            currentPosition = pointerInputChange.position
+            model.currentPosition.value = pointerInputChange.position
             motionEvent = MotionEvent.Down //gestureColor = Color.Blue
             pointerInputChange.consume()
         }, onMove = { pointerInputChange: PointerInputChange ->
-            currentPosition = pointerInputChange.position
+            model.currentPosition.value = pointerInputChange.position
             motionEvent = MotionEvent.Move // gestureColor = Color.Green
             pointerInputChange.consume()
         }, onUp = { pointerInputChange: PointerInputChange ->
             motionEvent = MotionEvent.Up // gestureColor = Color.White
             pointerInputChange.consume()
-        }, delayAfterDownInMillis = 25L
+        }, delayAfterDownInMillis = 15L
         )
 
     val path1 = remember { Path() }
 
     Box(
-        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1.5f)
+        modifier = Modifier.padding(start = 20.dp, end = 20.dp).fillMaxWidth().aspectRatio(1f)
             .background(Color.Black)
     ) {
 
@@ -63,24 +62,38 @@ fun EditorCanvas() {
 
             when (motionEvent) {
                 MotionEvent.Down -> {
-                    currentPositionCorrection = Offset(currentPosition.x, currentPosition.y + 100f)
-                    model.position = Offset(currentPosition.x, currentPosition.y - 200f)
-                    model.lastPosition = model.position
 
+
+                    model.setOnlyPosition(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                    model.lastPosition = model.position
 
                 }
 
                 MotionEvent.Move -> {
-                    currentPositionCorrection = Offset(
-                        currentPosition.x, currentPosition.y + 100f
-                    ) // model.position = currentPosition
-                    model.position = Offset(currentPosition.x, currentPosition.y - 200f)
+
+                    when (model.state)
+                    {
+                        PaintingState.Show  -> {
+                            model.setPositionAndLast(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                        }
+                        PaintingState.PaintLine -> {
+                            model.setOnlyPosition(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                            println("PaintLine")
+                        }
+                        PaintingState.PaintPoint ->{
+                            model.setPositionAndLast(Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f))
+                        }
+                    }
+
+
+
+
 
                 }
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
                     //canvasText.append("MotionEvent.Up pos: $currentPosition\n")
-                    currentPosition =
+                    model.currentPosition.value =
                         Offset.Unspecified //currentPositionCorrection = Offset( currentPosition.x, currentPosition.y + 100f)
                     motionEvent = MotionEvent.Idle
                 }
@@ -88,9 +101,7 @@ fun EditorCanvas() {
                 }
             }
 
-
             //Центральная вертикальная
-
 
             drawLine(
                 color = Color.Gray,
@@ -132,17 +143,21 @@ fun EditorCanvas() {
                 style = Stroke(width = 1.dp.toPx())
             )
 
-            if (currentPosition != Offset.Unspecified) {
+            if (model.currentPosition.value != Offset.Unspecified) {
 
-                println("current position ${currentPosition.x}, ${currentPosition.y}")
+                println("current position ${model.currentPosition.value.x}, ${model.currentPosition.value.y}")
 
                 if (model.state == PaintingState.PaintPoint) {
                     model.line() //Расчет нового сигнала для точки
                 }
 
+                if (model.state == PaintingState.PaintLine) {
+                    model.line() //Расчет нового сигнала для точки
+                }
+
                 //Палец
                 drawCircle(
-                    color = Color.Red, center = currentPosition, radius = 60f, style = Stroke(
+                    color = Color.Red, center = model.currentPosition.value, radius = 60f, style = Stroke(
                         width = 3.dp.toPx(),
                         join = StrokeJoin.Bevel,
                         cap = StrokeCap.Square, //pathEffect = PathEffect.dashPathEffect(floatArrayOf(5f, 15f))
@@ -151,7 +166,7 @@ fun EditorCanvas() {
 
                 drawCircle(
                     color = Color.Gray,
-                    center = Offset(currentPosition.x, currentPosition.y - 200f),
+                    center = Offset(model.currentPosition.value.x, model.currentPosition.value.y - 200f),
                     radius = 10f,
                     alpha = 0.6f
                 )
@@ -171,8 +186,8 @@ fun EditorCanvas() {
                 drawIntoCanvas {
                     it.nativeCanvas.drawText(
                         textConstrain(model.position.x.toInt(), model.position.y.toInt()),
-                        currentPositionCorrection.x - 50f,
-                        currentPositionCorrection.y - 350f,
+                        model.currentPosition.value.x + 50f,
+                        model.currentPosition.value.y - 250f,
                         paint
                     )
                 }
@@ -188,6 +203,30 @@ fun EditorCanvas() {
                     colors = listOf(Color.Red, Color.Yellow)
                 ),
                 points = points3,
+                cap = StrokeCap.Round,
+                pointMode = PointMode.Polygon,
+                strokeWidth = 3f
+            )
+
+            //Рисуем сам сигнал
+            val points5 = model.createPointLoop().first
+            drawPoints(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color.Green, Color.Blue)
+                ),
+                points = points5,
+                cap = StrokeCap.Round,
+                pointMode = PointMode.Polygon,
+                strokeWidth = 3f
+            )
+
+            //Рисуем сам сигнал
+            val points6 = model.createPointLoop().second
+            drawPoints(
+                brush = Brush.linearGradient(
+                    colors = listOf(Color.Red, Color.Magenta)
+                ),
+                points = points6,
                 cap = StrokeCap.Round,
                 pointMode = PointMode.Polygon,
                 strokeWidth = 3f
