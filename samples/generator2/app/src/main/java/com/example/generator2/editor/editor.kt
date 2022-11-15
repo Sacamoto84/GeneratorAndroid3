@@ -64,7 +64,7 @@ fun ScreenEditor() {
                 }
             }
 
-            EditorCanvasLoop()
+            //EditorCanvasLoop()
 
             Column(
                 verticalArrangement = Arrangement.SpaceBetween,

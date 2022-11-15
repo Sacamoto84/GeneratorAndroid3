@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
@@ -200,25 +201,30 @@ fun EditorCanvas() {
                 )
 
 
-                val textPaint = Paint().asFrameworkPaint().apply {
-                    isAntiAlias = true
-                    textSize = 24.sp.toPx()
-                    color = android.graphics.Color.BLUE
-                    typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-                }
 
 
-                val paint = android.graphics.Paint()
-                paint.textSize = 28f
-                paint.color = 0xffff0000.toInt()
-                drawIntoCanvas {
-                    it.nativeCanvas.drawText(
-                        textConstrain(model.position.x.toInt(), model.position.y.toInt()),
-                        model.currentPosition.value.x + 50f,
-                        model.currentPosition.value.y - 250f,
-                        paint
-                    )
-                }
+
+//                val textPaint = Paint().asFrameworkPaint().apply {
+//                    isAntiAlias = true
+//                    textSize = 24.sp.toPx()
+//                    color = android.graphics.Color.BLUE
+//                    typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+//                }
+//                //Текст
+//                val paint = android.graphics.Paint()
+//                paint.textSize = 28f
+//                paint.color = 0xffff0000.toInt()
+//                drawIntoCanvas {
+//                    it.nativeCanvas.drawText(
+//                        textConstrain(model.position.x.toInt(), model.position.y.toInt()),
+//                        model.currentPosition.value.x + 50f,
+//                        model.currentPosition.value.y - 250f,
+//                        paint
+//                    )
+//                }
+
+
+
 
 
             }
