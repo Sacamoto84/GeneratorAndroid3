@@ -41,13 +41,16 @@ fun EditorCanvas() {
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
             model.currentPosition.value = pointerInputChange.position
             model.motionEvent.value = MotionEvent.Down //gestureColor = Color.Blue
+            model.refsresh.value++
             pointerInputChange.consume()
         }, onMove = { pointerInputChange: PointerInputChange ->
             model.currentPosition.value = pointerInputChange.position
             model.motionEvent.value = MotionEvent.Move // gestureColor = Color.Green
+            model.refsresh.value++
             pointerInputChange.consume()
         }, onUp = { pointerInputChange: PointerInputChange ->
             model.motionEvent.value = MotionEvent.Up // gestureColor = Color.White
+            model.refsresh.value++
             pointerInputChange.consume()
         }, delayAfterDownInMillis = 25L
         )
@@ -70,9 +73,11 @@ fun EditorCanvas() {
 
             model.sizeCanvas = size //Передали размер канвы
 
+            val mouseOffset = 150f
+
             if (disposable) {
                 disposable = false
-                model.currentPosition.value = Offset(size.width / 2, size.height / 2 + 200f)
+                model.currentPosition.value = Offset(size.width / 2, size.height / 2 + mouseOffset)
             }
 
             when (model.motionEvent.value) {
@@ -82,7 +87,7 @@ fun EditorCanvas() {
 
                     model.setOnlyPosition(
                         Offset(
-                            model.currentPosition.value.x, model.currentPosition.value.y - 200f
+                            model.currentPosition.value.x, model.currentPosition.value.y - mouseOffset
                         )
                     )
                     model.lastPosition = model.position
@@ -97,7 +102,7 @@ fun EditorCanvas() {
                             model.setPositionAndLast(
                                 Offset(
                                     model.currentPosition.value.x,
-                                    model.currentPosition.value.y - 200f
+                                    model.currentPosition.value.y - mouseOffset
                                 )
                             )
                         }
@@ -106,7 +111,7 @@ fun EditorCanvas() {
                             model.setOnlyPosition(
                                 Offset(
                                     model.currentPosition.value.x,
-                                    model.currentPosition.value.y - 200f
+                                    model.currentPosition.value.y - mouseOffset
                                 )
                             )
                             println("..PaintLine")
@@ -115,7 +120,7 @@ fun EditorCanvas() {
                             model.setPositionAndLast(
                                 Offset(
                                     model.currentPosition.value.x,
-                                    model.currentPosition.value.y - 200f
+                                    model.currentPosition.value.y - mouseOffset
                                 )
                             )
                         }
@@ -196,7 +201,7 @@ fun EditorCanvas() {
 
                 drawCircle(
                     color = Color.Gray, center = Offset(
-                        model.currentPosition.value.x, model.currentPosition.value.y - 200f
+                        model.currentPosition.value.x, model.currentPosition.value.y - mouseOffset
                     ), radius = 10f, alpha = 0.6f
                 )
 

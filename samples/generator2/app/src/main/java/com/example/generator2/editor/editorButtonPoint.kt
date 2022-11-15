@@ -26,7 +26,7 @@ fun ButtonPoint() {
     var gestureColor by remember { mutableStateOf(colorLightBackground) }
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxHeight().width(80.dp).clip(shape = RoundedCornerShape(16.dp))
+    Box(modifier = Modifier.fillMaxHeight().width(70.dp).clip(shape = RoundedCornerShape(16.dp))
         .background(gestureColor).pointerInput(Unit) {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray
@@ -67,7 +67,7 @@ fun ButtonLine() {
     var gestureColor by remember { mutableStateOf(colorLightBackground) }
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxHeight().width(80.dp).clip(shape = RoundedCornerShape(16.dp))
+    Box(modifier = Modifier.fillMaxHeight().width(70.dp).clip(shape = RoundedCornerShape(16.dp))
         .background(gestureColor).pointerInput(Unit) {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray

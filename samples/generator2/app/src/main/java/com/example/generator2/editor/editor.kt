@@ -45,9 +45,6 @@ fun ScreenEditor() {
 
 
 
-
-
-
         Row(
             modifier = Modifier.height(232.dp).fillMaxWidth().background(Color.Transparent),
             verticalAlignment = Alignment.CenterVertically
@@ -56,43 +53,36 @@ fun ScreenEditor() {
                 verticalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.background(Color.Transparent)
             ) {
-                Box(modifier = Modifier.padding(start = 16.dp, bottom = 8.dp).weight(1f)) {
+                Box(modifier = Modifier.padding(start = 16.dp, bottom = 8.dp).weight(0.5f)) {
                     ButtonPoint()
                 }
-                Box(modifier = Modifier.padding(start = 16.dp, top = 8.dp).weight(1f)) {
+                Box(modifier = Modifier.padding(start = 16.dp, top = 8.dp).weight(0.5f)) {
                     ButtonLine()
                 }
             }
 
-            //EditorCanvasLoop()
-
-            Column(
-                verticalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.background(Color.Transparent)
-            ) {
-
-                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
-                    ButtonNew()
-                }
-
-                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
-                    ButtonLine()
-                }
-
-                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
-                    ButtonLine()
-                }
-
-                Box(modifier = Modifier.padding(end = 16.dp, top = 8.dp).weight(1f)) {
-                    ButtonLine()
-                }
-
-            }
+            EditorCanvasLoop()
 
         }
 
-        Box(
+        Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth() //
+                .border(
+                    1.dp,
+                    brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
+                    RectangleShape
+                ) //.clip(RoundedCornerShape(16.dp))
+                .background(colorLightBackground)
+        ) {
+            EditorPreviewCarrier(model)
+            EditorPreviewFM(model)
+        }
+
+
+
+
+        Box(
+            modifier = Modifier.padding(8.dp).fillMaxWidth() //
                 .border(
                     1.dp,
                     brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
@@ -103,18 +93,7 @@ fun ScreenEditor() {
             EditorCanvas()
         }
 
-       Column(
-           modifier = Modifier.padding(16.dp).fillMaxWidth() //
-               .border(
-                   1.dp,
-                   brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
-                   RectangleShape
-               ) //.clip(RoundedCornerShape(16.dp))
-               .background(colorLightBackground)
-       ) {
-           EditorPreviewCarrier(model)
-           EditorPreviewFM(model)
-       }
+
 
 
 

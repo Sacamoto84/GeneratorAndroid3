@@ -5,7 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Path
 
 //Тип рисования
 enum class PaintingState {
@@ -16,46 +18,65 @@ enum class PaintingState {
 
 class EditorMatModel {
 
+    val refsresh = mutableStateOf(0)
+
+    //0..4095
+    val editMax = 4096 //Соличество строк
+
+    //1024
+    val editWight = 1024 //Количество столбцов
+
+
     var state = PaintingState.Show
 
+    var motionEvent =
+        mutableStateOf(MotionEvent.Idle)  // This is our motion event we get from touch motion
 
-    var motionEvent =  mutableStateOf(MotionEvent.Idle)  // This is our motion event we get from touch motion
 
-    val signal: IntArray = IntArray(1024) { 2047 }
+    val signal: IntArray = IntArray(editWight + 1) { editMax / 2 }
+
 
     var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы
 
     var lastPosition: Offset
 
     init {
-        lastPosition = Offset(sizeCanvas.width/2, sizeCanvas.height/2) //Прошлая кордината
+        lastPosition = Offset(sizeCanvas.width / 2, sizeCanvas.height / 2) //Прошлая кордината
     }
 
-    var currentPosition = mutableStateOf(Offset(sizeCanvas.width/2, sizeCanvas.height/2))
+    var currentPosition = mutableStateOf(Offset(sizeCanvas.width / 2, sizeCanvas.height / 2))
 
     var position: Offset = Offset(
         0f, 0f
-    )      //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
+    )
+
+    //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
 
     fun setOnlyPosition(p: Offset) {
-        val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
-        val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        //println("setOnlyPosition $x $y")
+        val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
+        val y = map(
+            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1
+        )
+        println("setOnlyPosition $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
     fun setPositionAndLast(p: Offset) {
         lastPosition = position
-        val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
-        val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        //println("setPositionAndLast $x $y")
+        val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
+        val y = map(
+            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1f
+        )
+        println("setPositionAndLast $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
     fun setOnlyLast(p: Offset) {
-        val x = map(p.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023)
-        val y = map(p.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax)
-        //println("setLast $x $y")
+        val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
+        val y = map(
+            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1
+        )
+        println("setLast $x $y")
         lastPosition = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -71,29 +92,33 @@ class EditorMatModel {
         var tmp = 0
 
         /* Check for overflow */
-        if (x0 >= 1024) {
-            x0 = 1023
+        if (x0 > editWight) {
+            x0 = editWight
         }
-        if (x1 >= 1024) {
-            x1 = 1023
+
+        if (x1 > editWight) {
+            x1 = editWight
         }
-        if (y0 >= editMax + 1) {
+
+        if (y0 > editMax) {
             y0 = editMax
         }
-        if (y1 >= editMax + 1) {
+
+        if (y1 > editMax) {
             y1 = editMax
         }
 
+
         if (x0 < 0) x0 = 0
 
-        if (y0 < editMin) y0 = editMin
+        if (y0 < 0) y0 = 0
 
         if (x1 < 0) x1 = 0
 
-        if (y1 < editMin) y1 = editMin
+        if (y1 < 0) y1 = 0
 
-        val dx = if (x0 < x1) (x1 - x0) else (x0 - x1)
-        val dy = if (y0 < y1) (y1 - y0) else (y0 - y1)
+        val dx = if (x0 < x1) x1 - x0 else x0 - x1
+        val dy = if (y0 < y1) y1 - y0 else y0 - y1
         val sx = if (x0 < x1) 1 else -1
         val sy = if (y0 < y1) 1 else -1
         var err = (if (dx > dy) dx else -dy) / 2
@@ -132,9 +157,6 @@ class EditorMatModel {
             }
 
             /* Horizontal line */ //for (i = x0; i <= x1; i++) {
-            //    SetPixel(i, y0, c)
-            //}
-
             for (i in x0..x1) {
                 signal[i] = y0 // map(y0, editMin, editMax, 0, sizeCanvas.width.toInt() - 1 )
             }
@@ -170,163 +192,88 @@ class EditorMatModel {
     fun createPoint(size: Size = sizeCanvas): MutableList<Offset> {
 
         val points = mutableListOf<Offset>()
-        val verticalCenter = size.height / 2
 
-        val sizeW = size.width.toInt()
+        signal[signal.lastIndex] = signal[signal.lastIndex - 1]
 
-        for (x in 0 until size.width.toInt() step 1) {
-            val mapX: Int = map(x, 0, sizeW - 1, 0, editWight - 1)
-            val y = map(signal[mapX], editMin, editMax, 0, size.height.toInt() - 1).toFloat()
+        for (x in 0 until size.width.toInt()) {
+
+            val mapX: Int = map(x.toFloat(), 0f, size.width - 1, 0f, editWight.toFloat()).toInt()
+
+            val y = map(signal[mapX].toFloat(), 0f, editMax.toFloat(), 0f, size.height - 1).toFloat()
             points.add(Offset(x.toFloat(), y))
+
         }
+
         return points
     }
 
     /**
      * Создать точки из signal для отображения
      */
-    fun createPointLoop(size: Size = sizeCanvas): Four<MutableList<Offset>, MutableList<Offset>, MutableList<Offset>, MutableList<Offset>> {
+    fun createPointLoop(size: Size = sizeCanvas): Four<MutableList<Offset>, MutableList<Offset>, Path, Path> {
+
+        var gain = 8
 
         val points = mutableListOf<Offset>()
         val points2 = mutableListOf<Offset>()
         val points3 = mutableListOf<Offset>()
         val points4 = mutableListOf<Offset>()
 
-        val verticalCenter = size.height / 2
+        gain = 8
 
-        val sizeW = size.width.toInt()
+        val pathRect = Path() //Вертикальная полоса
+        val pathRef = Path()  //Референсные линии
 
-        var start = (position.x - size.width.toInt() / 8).toInt()
+        for (x in 0 until editWight * gain) {
+            val y = gain * signal[x / gain]
+            points.add(
+                Offset(
+                    size.width / 2 + x.toFloat() - position.x * gain,
+                    size.height / 2 + y.toFloat() - position.y * gain
+                )
+            )
 
-        if (start < (size.width.toInt() / 4) * (-1)) start = 0
-
-        var stop = start + size.width.toInt() / 4
-
-        if (stop > 1023 + size.width.toInt() / 4) {
-
-            stop = 1023
-            start = stop - size.width.toInt() / 4
-
-        }
-
-        var startOffsetX = 0f
-        val startOffsetY = size.width / 4
-
-        start *= 4
-        stop *= 4
-
-        for (x in start..stop) {
-
-
-            if ((x >= 0) && (x < 1024 * 4)) {
-
-                val y = (map(
-                    signal[x / 4] - position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
-                ).toFloat()) * 4f + size.height / 4
-
-
-                if (((startOffsetY + y) > 0f) && (startOffsetY + y < size.height)) {
-                    points.add(
-                        Offset(
-                            startOffsetX + 1,
-                            constrain((startOffsetY + y).toInt(), 0, size.height.toInt()).toFloat()
-                        )
-                    )
-                }
-
-                //Верхняя полоса
-                val  tt = size.width / 2 - map( position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1 ) * 4f
-
-                    if ((tt >= 0 ) && (tt < size.height )) {
-                        points3.add(
-                            Offset(
-                                startOffsetX, tt
-                            )
-                        )
-                    }
-
-                //Нижняя полоса
-                val  t = 4.5f * size.width  - map(
-                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
-                ) * 4f - 4f
-
-                if ((t >= 0 ) && (t < size.height )) {
-                    points3.add(
-                        Offset(
-                            startOffsetX, t
-                        )
-                    )
-                }
-
-
-                //Центральная полоса
-                val  tn = 2.5f * size.width  - map(
-                    position.y.toInt(), editMin, editMax, 0, size.height.toInt() - 1
-                ) * 4f - 2
-
-                if ((tn >= 0 ) && (tn <= size.height )) {
-                    points3.add(
-                        Offset(
-                            startOffsetX, tn
-                        )
-                    )
-                }
-
-
-            }
-
-            startOffsetX++
-
-            //Вертикадьная полоса
+            //Внешний квадрат
             if (x == 0) {
-                for (i in 0..size.height.toInt())
-                    points2.add(
-                    Offset(
-                        startOffsetX, i.toFloat()
+                val top = size.height / 2 - position.y * gain
+                val bottom = size.height / 2 - position.y * gain + editMax * gain
+                val left = size.width / 2 - position.x * gain
+                val right = size.width / 2 - position.x * gain + editWight * gain
+
+                pathRect.reset()
+                pathRect.addRect(
+                    Rect(
+                        topLeft = Offset(left, top),
+                        bottomRight = Offset(right, bottom)
                     )
                 )
+
+                //Референсные линии
+                pathRef.reset()
+                pathRef.moveTo(left, size.height / 2 - position.y * gain + editMax * gain / 2)
+                pathRef.lineTo(right, size.height / 2 - position.y * gain + editMax * gain / 2)
+                pathRef.moveTo(size.width / 2 - position.x * gain + editWight * gain / 2, top)
+                pathRef.lineTo(size.width / 2 - position.x * gain + editWight * gain / 2, bottom)
             }
-
-            if (x == 1024 * 4) {
-                for (i in 0..size.height.toInt()) points2.add(
-                    Offset(
-                        startOffsetX, i.toFloat()
-                    )
-                )
-            }
-
-
-            if (x == 1024 * 2) {
-                for (i in 0..size.height.toInt()) points2.add(
-                    Offset(
-                        startOffsetX, i.toFloat()
-                    )
-                )
-            }
-
 
         }
 
-        var out: Four<MutableList<Offset>, MutableList<Offset>, MutableList<Offset>, MutableList<Offset>> =
-            Four(points, points2, points3, points4)
+        val out: Four<MutableList<Offset>, MutableList<Offset>, Path, Path> =
+            Four(points, points2, pathRef, pathRect)
+
         return out
     }
 
 
-
     //position->modelPosition
     fun map(
-        x: Int,
-        in_min: Int = 0,
-        in_max: Int = sizeCanvas.width.toInt() - 1,
-        out_min: Int = 0,
-        out_max: Int = 1023
-    ): Int {
+        x: Float, in_min: Float, in_max: Float, out_min: Float, out_max: Float
+    ): Float {
         return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
     }
 
 
-    private fun constrain(amt: Int, low: Int, high: Int): Int {
+    fun constrain(amt: Int, low: Int, high: Int): Int {
 
         return if (amt < low) {
             low
@@ -341,15 +288,11 @@ class EditorMatModel {
     }
 
 
-    companion object {
-        private const val sizeMouse = 10
+    //        companion object {
+    //            private const val sizeMouse = 10
+    //            private const val editHeight = 1024
+    //
+    //        }
 
-        private const val editWight = 1024
-        private const val editHeight = 1024
-
-        private const val editMax = 4095
-        private const val editMin = 0
-
-    }
 
 }
