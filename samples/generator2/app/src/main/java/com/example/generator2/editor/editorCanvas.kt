@@ -83,7 +83,7 @@ fun EditorCanvas() {
             when (model.motionEvent.value) {
                 MotionEvent.Down -> {
 
-                    println(model.motionEvent)
+                    //println(model.motionEvent)
 
                     model.setOnlyPosition(
                         Offset(
@@ -95,7 +95,7 @@ fun EditorCanvas() {
 
                 MotionEvent.Move -> {
 
-                    println(model.motionEvent)
+                    //println(model.motionEvent)
 
                     when (model.state) {
                         PaintingState.Show       -> {
@@ -114,7 +114,7 @@ fun EditorCanvas() {
                                     model.currentPosition.value.y - mouseOffset
                                 )
                             )
-                            println("..PaintLine")
+                            //println("..PaintLine")
                         }
                         PaintingState.PaintPoint -> {
                             model.setPositionAndLast(
@@ -129,7 +129,7 @@ fun EditorCanvas() {
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
                     model.motionEvent.value = MotionEvent.Idle
-                    println(model.motionEvent)
+                    //println(model.motionEvent)
                 }
                 else             -> {}
             }
@@ -193,7 +193,7 @@ fun EditorCanvas() {
                     center = model.currentPosition.value,
                     radius = 60f,
                     style = Stroke(
-                        width = 3.dp.toPx(),
+                        width = 2.dp.toPx(),
                         join = StrokeJoin.Bevel,
                         cap = StrokeCap.Square, //pathEffect = PathEffect.dashPathEffect(floatArrayOf(5f, 15f))
                     )
@@ -237,9 +237,10 @@ fun EditorCanvas() {
             //Рисуем сам сигнал
             val points3 = model.createPoint()
             drawPoints(
-                brush = Brush.linearGradient(
-                    colors = listOf(Color.Red, Color.Yellow)
-                ),
+//                brush = Brush.linearGradient(
+//                    colors = listOf(Color.Red, Color.Yellow)
+//                ),
+                color = Color.Red,
                 points = points3,
                 cap = StrokeCap.Round,
                 pointMode = PointMode.Polygon,

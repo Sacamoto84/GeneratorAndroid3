@@ -31,6 +31,7 @@ fun ButtonPoint() {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray
                 model.state = PaintingState.PaintPoint
+                model.refsreshButton.value = 1
                 val released = try {
                     tryAwaitRelease()
                 } catch (c: CancellationException) {
@@ -40,9 +41,11 @@ fun ButtonPoint() {
                 if (released) {
                     model.state = PaintingState.Show //gestureText = "onPress Released"
                     gestureColor = colorLightBackground
+                    model.refsreshButton.value = 0
                 } else {
                     model.state = PaintingState.Show //gestureText = "onPress canceled"
                     gestureColor = colorLightBackground
+                    model.refsreshButton.value = 0
                 }
             })
         }) {
@@ -72,6 +75,7 @@ fun ButtonLine() {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray
                 model.state = PaintingState.PaintLine
+                model.refsreshButton.value = 1
                 val released = try {
                     tryAwaitRelease()
                 } catch (c: CancellationException) {
@@ -81,9 +85,11 @@ fun ButtonLine() {
                 if (released) {
                     model.state = PaintingState.Show //gestureText = "onPress Released"
                     gestureColor = colorLightBackground
+                    model.refsreshButton.value = 0
                 } else {
                     model.state = PaintingState.Show //gestureText = "onPress canceled"
                     gestureColor = colorLightBackground
+                    model.refsreshButton.value = 0
                 }
             })
         }) {

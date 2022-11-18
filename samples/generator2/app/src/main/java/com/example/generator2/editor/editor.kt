@@ -13,9 +13,12 @@ import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Card
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,15 +28,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import colorDarkBackground
 import colorLightBackground
+import com.example.generator2.recomposeHighlighterOneLine
 import com.example.generator2.ui.theme.Green400
 import com.example.generator2.ui.theme.Orange400
 import com.example.generator2.ui.theme.Red400
+import libs.modifier.recomposeHighlighter
 import model
 import java.util.concurrent.CancellationException
+
+
 
 @Composable
 fun ScreenEditor() {
@@ -43,10 +52,8 @@ fun ScreenEditor() {
             .background(colorDarkBackground).verticalScroll(rememberScrollState())
     ) {
 
-
-
         Row(
-            modifier = Modifier.height(232.dp).fillMaxWidth().background(Color.Transparent),
+            modifier = Modifier.height(232.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -60,9 +67,7 @@ fun ScreenEditor() {
                     ButtonLine()
                 }
             }
-
-            EditorCanvasLoop()
-
+            //EditorCanvasLoop()
         }
 
         Column(
@@ -72,14 +77,11 @@ fun ScreenEditor() {
                     brush = Brush.verticalGradient(listOf(Color.Gray, Color.Gray, Color.DarkGray)),
                     RectangleShape
                 ) //.clip(RoundedCornerShape(16.dp))
-                .background(colorLightBackground)
+                .background(colorLightBackground).recomposeHighlighter()
         ) {
-            EditorPreviewCarrier(model)
-            EditorPreviewFM(model)
+            //EditorPreviewCarrier(model)
+            //EditorPreviewFM(model)
         }
-
-
-
 
         Box(
             modifier = Modifier.padding(8.dp).fillMaxWidth() //
@@ -93,10 +95,5 @@ fun ScreenEditor() {
             EditorCanvas()
         }
 
-
-
-
-
     }
-
 }

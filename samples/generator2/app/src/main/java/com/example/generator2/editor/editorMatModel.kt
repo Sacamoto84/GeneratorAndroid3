@@ -19,13 +19,13 @@ enum class PaintingState {
 class EditorMatModel {
 
     val refsresh = mutableStateOf(0)
+    val refsreshButton = mutableStateOf(0)
 
-    //0..4095
-    val editMax = 4096 //Соличество строк
+    //4096
+    val editMax = 32 //Соличество строк
 
     //1024
-    val editWight = 1024 //Количество столбцов
-
+    val editWight = 32 //Количество столбцов
 
     var state = PaintingState.Show
 
@@ -57,7 +57,7 @@ class EditorMatModel {
         val y = map(
             p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1
         )
-        println("setOnlyPosition $x $y")
+        //println("setOnlyPosition $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -67,7 +67,7 @@ class EditorMatModel {
         val y = map(
             p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1f
         )
-        println("setPositionAndLast $x $y")
+        //println("setPositionAndLast $x $y")
         position = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -76,7 +76,7 @@ class EditorMatModel {
         val y = map(
             p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1
         )
-        println("setLast $x $y")
+        //println("setLast $x $y")
         lastPosition = Offset(x.toFloat(), y.toFloat())
     }
 
@@ -286,13 +286,5 @@ class EditorMatModel {
         }
 
     }
-
-
-    //        companion object {
-    //            private const val sizeMouse = 10
-    //            private const val editHeight = 1024
-    //
-    //        }
-
 
 }
