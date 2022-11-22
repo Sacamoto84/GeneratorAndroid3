@@ -6,16 +6,14 @@ import ButtonPoint
 import EditorCanvas
 import EditorCanvasLoop
 import android.widget.Toast
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -34,6 +32,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import colorDarkBackground
 import colorLightBackground
+import com.airbnb.lottie.compose.*
+import com.example.generator2.R
 import com.example.generator2.recomposeHighlighterOneLine
 import com.example.generator2.ui.theme.Green400
 import com.example.generator2.ui.theme.Orange400
@@ -42,8 +42,6 @@ import libs.modifier.recomposeHighlighter
 import model
 import java.util.concurrent.CancellationException
 
-
-
 @Composable
 fun ScreenEditor() {
 
@@ -51,6 +49,47 @@ fun ScreenEditor() {
         Modifier.fillMaxSize() //  .recomposeHighlighter()
             .background(colorDarkBackground).verticalScroll(rememberScrollState())
     ) {
+
+
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.alert))
+        LottieAnimation(
+            composition,
+            modifier = Modifier.size(100.dp),
+            iterations = LottieConstants.IterateForever
+        )
+
+
+
+        val composition1 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.delete))
+        var nonce by remember { mutableStateOf(1) }
+        val animatable = rememberLottieAnimatable()
+
+        LaunchedEffect(composition, nonce) {
+            composition1 ?: return@LaunchedEffect
+            animatable.animate(
+                composition,
+                continueFromPreviousAnimate = false,
+            )
+        }
+        LottieAnimation(
+            composition1,
+            { animatable.progress },
+            modifier = Modifier
+                .clickable { nonce++ }
+        )
+
+
+//        LottieAnimation(
+//            composition  = composition1,
+//            modifier = Modifier.size(100.dp),
+//            isPlaying = isPlaying.value,
+//            restartOnPlay = true,
+//            iterations = 1
+//        )
+
+        Button(onClick = {
+            nonce++
+        }) { Text(text = nonce.toString())}
 
         Row(
             modifier = Modifier.height(232.dp).fillMaxWidth(),
@@ -66,8 +105,7 @@ fun ScreenEditor() {
                 Box(modifier = Modifier.padding(start = 16.dp, top = 8.dp).weight(0.5f)) {
                     ButtonLine()
                 }
-            }
-            //EditorCanvasLoop()
+            } //EditorCanvasLoop()
         }
 
         Column(
@@ -78,8 +116,7 @@ fun ScreenEditor() {
                     RectangleShape
                 ) //.clip(RoundedCornerShape(16.dp))
                 .background(colorLightBackground).recomposeHighlighter()
-        ) {
-            //EditorPreviewCarrier(model)
+        ) { //EditorPreviewCarrier(model)
             //EditorPreviewFM(model)
         }
 
@@ -94,6 +131,5 @@ fun ScreenEditor() {
         ) {
             EditorCanvas()
         }
-
     }
 }
