@@ -1,30 +1,33 @@
 package com.example.generator2.mainscreen4
 
 import androidx.compose.runtime.Composable
-import com.example.generator2.Global.bottomBarRoute
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.generator2.Global
 import kotlin.system.exitProcess
 
 @Composable
-private fun Key0() {
+private fun Key0(
+    global: Global = viewModel()
+) {
     TemplateButtonBottomBar(
         str = "Сохранить",
         onClick = {
-            bottomBarRoute.value = bottomBarEnum.SAVE
+            global.bottomBarRoute.value = bottomBarEnum.SAVE
         })
 }
 
 @Composable
-private fun Key1() {
+private fun Key1(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Загрузить",
-        onClick = {bottomBarRoute.value = bottomBarEnum.LOAD })
+        onClick = {global.bottomBarRoute.value = bottomBarEnum.LOAD })
 }
 
 @Composable
-private fun Key2() {
+private fun Key2(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Редактор",
-        onClick = { bottomBarRoute.value = bottomBarEnum.EDITOR })
+        onClick = { global.bottomBarRoute.value = bottomBarEnum.EDITOR })
 }
 
 @Composable
@@ -35,17 +38,17 @@ private fun Key5() {
 }
 
 @Composable
-private fun Key4() {
+private fun Key4(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Скрипт",
-        onClick = { bottomBarRoute.value = bottomBarEnum.SCRIPT })
+        onClick = { global.bottomBarRoute.value = bottomBarEnum.SCRIPT })
 }
 
 @Composable
-private fun Key3() {
+private fun Key3(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Настройка",
-        onClick = { bottomBarRoute.value = bottomBarEnum.SETTING })
+        onClick = { global.bottomBarRoute.value = bottomBarEnum.SETTING })
 }
 
 @Composable

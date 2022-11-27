@@ -12,22 +12,24 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import bottomBarEditor
 import colorDarkBackground
-import com.example.generator2.Global.bottomBarRoute
+import com.example.generator2.Global
 import com.example.generator2.editor.ScreenEditor
 import com.example.generator2.screens.ScreenScriptCommon
-import com.example.generator2.scripting.ScreenScriptInfo
 
 
 //var bottomBarRoute : bottomBarEnum = bottomBarEnum.HOME
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun mainsreen4() {
+fun mainsreen4(
+    global: Global = viewModel()
+) {
     Scaffold(
         bottomBar = {
-            when (bottomBarRoute.value) {
+            when ( global.bottomBarRoute.value) {
                 bottomBarEnum.HOME -> BottomBarGenerator()
                 bottomBarEnum.SAVE -> BottomBarSave()
                 bottomBarEnum.SAVEAS -> BottomBarSave()
@@ -43,7 +45,7 @@ fun mainsreen4() {
     )
     {
 
-        when (bottomBarRoute.value) {
+        when ( global.bottomBarRoute.value) {
 
             bottomBarEnum.HOME -> {
                 Column(

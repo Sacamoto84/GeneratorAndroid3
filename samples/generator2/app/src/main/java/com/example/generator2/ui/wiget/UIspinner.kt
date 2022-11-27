@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
-import com.example.generator2.Utils
 import com.example.generator2.itemList
 
 object UIspinner {
@@ -32,32 +32,33 @@ object UIspinner {
         CH: String,
         Mod: String,
         transparrent: Boolean = false,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
+        global: Global = viewModel()
     ) {
 
         val expanded = remember { mutableStateOf(false) }
 
         //Выбор с каким списком работать
-        var itemlist: ArrayList<itemList> = Global.itemlistCarrier
+        var itemlist: ArrayList<itemList> = global.itemlistCarrier
         when (Mod) {
-            "CR" -> itemlist = Global.itemlistCarrier
-            "AM" -> itemlist = Global.itemlistAM
-            "FM" -> itemlist = Global.itemlistFM
+            "CR" -> itemlist = global.itemlistCarrier
+            "AM" -> itemlist = global.itemlistAM
+            "FM" -> itemlist = global.itemlistFM
         }
 
         //Текущий текст
         var currentValue = "---"
         if (CH == "CH0") {
             when (Mod) {
-                "CR" -> currentValue = Global.ch1_Carrier_Filename.value!!
-                "AM" -> currentValue = Global.ch1_AM_Filename.value!!
-                "FM" -> currentValue = Global.ch1_FM_Filename.value!!
+                "CR" -> currentValue = global.liveData.ch1_Carrier_Filename.value!!
+                "AM" -> currentValue = global.liveData.ch1_AM_Filename.value!!
+                "FM" -> currentValue = global.liveData.ch1_FM_Filename.value!!
             }
         } else {
             when (Mod) {
-                "CR" -> currentValue = Global.ch2_Carrier_Filename.value!!
-                "AM" -> currentValue = Global.ch2_AM_Filename.value!!
-                "FM" -> currentValue = Global.ch2_FM_Filename.value!!
+                "CR" -> currentValue = global.liveData.ch2_Carrier_Filename.value!!
+                "AM" -> currentValue = global.liveData.ch2_AM_Filename.value!!
+                "FM" -> currentValue = global.liveData.ch2_FM_Filename.value!!
             }
         }
 
@@ -127,15 +128,15 @@ object UIspinner {
                                 expanded.value = false
                                 if (CH == "CH0") {
                                     when (Mod) {
-                                        "CR" -> Global.ch1_Carrier_Filename.value = currentValue
-                                        "AM" -> Global.ch1_AM_Filename.value = currentValue
-                                        "FM" -> Global.ch1_FM_Filename.value = currentValue
+                                        "CR" -> global.liveData.ch1_Carrier_Filename.value = currentValue
+                                        "AM" -> global.liveData.ch1_AM_Filename.value = currentValue
+                                        "FM" -> global.liveData.ch1_FM_Filename.value = currentValue
                                     }
                                 } else {
                                     when (Mod) {
-                                        "CR" -> Global.ch2_Carrier_Filename.value = currentValue
-                                        "AM" -> Global.ch2_AM_Filename.value = currentValue
-                                        "FM" -> Global.ch2_FM_Filename.value = currentValue
+                                        "CR" -> global.liveData.ch2_Carrier_Filename.value = currentValue
+                                        "AM" -> global.liveData.ch2_AM_Filename.value = currentValue
+                                        "FM" -> global.liveData.ch2_FM_Filename.value = currentValue
 
                                     }
                                 }

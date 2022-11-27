@@ -1,11 +1,17 @@
 package com.example.generator2.screens
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.Card
+import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,16 +28,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.Global
 import com.example.generator2.R
-import com.example.generator2.filesInDirToList
 import kotlinx.coroutines.delay
 import libs.MToast
 
 @Composable
-fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
+fun DialogSaveAs(openDialog :  MutableState<Boolean>, global: Global = viewModel()) {
 
     val context = LocalContext.current
     var value by remember { mutableStateOf("")}
@@ -62,7 +68,7 @@ fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
                     color = Color.LightGray
                 )
 
-                val files = filesInDirToList(context, "/Script")
+                val files = global.utils.filesInDirToList("/Script")
 
                 Column(
                     Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C))
@@ -107,8 +113,8 @@ fun DialogSaveAs(openDialog :  MutableState<Boolean>) {
                     shape = RoundedCornerShape(36.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        Global.script.list[0] = value
-                        Global.saveListToScript(value)
+                        global.script.list[0] = value
+                        global.saveListToScript(value)
                         openDialog.value = false
                         MToast(context, "Сохранено")
                     }),

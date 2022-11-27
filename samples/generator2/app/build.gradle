@@ -1,6 +1,10 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+
+    id 'kotlin-kapt'
+
+
 }
 
 android {
@@ -20,7 +24,6 @@ android {
         ]
 
     }
-
 
 
     signingConfigs {
@@ -128,8 +131,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:1.5.1"
     implementation "androidx.appcompat:appcompat-resources:1.5.1"
 
-    //implementation "com.github.skydoves:landscapist-coil:1.5.1"
-
     implementation("io.coil-kt:coil-compose:2.1.0")
     implementation("io.coil-kt:coil-gif:2.0.0-rc03")
 
@@ -146,18 +147,23 @@ dependencies {
     implementation 'com.github.seniorjoinu:reliable-udp:0.3.1' //Udp
 
     implementation 'com.google.code.gson:gson:2.8.9'
-    
+
     implementation "androidx.navigation:navigation-compose:2.6.0-alpha04"
+
     implementation "com.google.accompanist:accompanist-webview:0.26.5-rc"
     implementation "com.google.accompanist:accompanist-pager:0.26.5-rc"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.5-rc"
-
 
     implementation 'com.alexstyl:warden:1.0.0-alpha2'
 
     implementation("androidx.compose.animation:animation-graphics:$compose_version")
 
+
+    //lottie анимация
     implementation 'com.airbnb.android:lottie:5.2.0'
     implementation 'com.airbnb.android:lottie-compose:5.2.0'
+
+
+
 
 }

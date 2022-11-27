@@ -30,13 +30,11 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.core.app.ActivityCompat;
@@ -51,7 +49,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 public class Utils {
 

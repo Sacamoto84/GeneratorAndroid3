@@ -1,12 +1,11 @@
 package com.example.generator2.scripting
 
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.runtime.*
-import com.example.generator2.*
-import com.example.generator2.Global.consoleLog
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.example.generator2.vmLiveData
 import kotlinx.coroutines.delay
-import java.util.*
 
 /*
  * ----------------- Логика -----------------
@@ -73,7 +72,7 @@ enum class StateCommandScript {
 }
 
 //Основной класс скриптовой системы
-class Script {
+class Script (private var liveData: vmLiveData) {
 
 
     //╭─ Генератор ───────────────────────╮
@@ -89,13 +88,11 @@ class Script {
     var list = mutableStateListOf<String>()
     var state by mutableStateOf(StateCommandScript.ISTOPPING)
 
-
     init {
         f.addAll(FloatArray(10).toList())
         command(StateCommandScript.STOP)
 
     }
-
 
     fun command(s: StateCommandScript) {
 
@@ -145,7 +142,7 @@ class Script {
     }
 
     fun log(str: String) {
-        consoleLog.println(str)
+        //consoleLog.println(str)
     }
 
     suspend fun run() {
@@ -363,25 +360,25 @@ class Script {
             if (listCMD[1] == "CR")                    //│  CH1 CR ON   CH2 CR OFF  //│
             {                                          //╰────────────────────────────┤
                 if (chanel == 1)                                                    //│
-                    Global.ch1_EN.value = onoff                                     //│
+                    liveData.ch1_EN.postValue(onoff)                                //│
                 else                                                                //│
-                    Global.ch2_EN.value = onoff                                     //│
+                    liveData.ch2_EN.postValue(onoff)                                //│
             }                                                                       //│
             //────────────────────────────────────────────┬───────────────────────────┤
             if (listCMD[1] == "AM")                     //│  CH1 AM ON   CH2 AM OFF //│
             {                                           //╰───────────────────────────┤
                 if (chanel == 1)                                                    //│
-                    Global.ch1_AM_EN.value = onoff                                  //│
+                    liveData.ch1_AM_EN.postValue( onoff )                                 //│
                 else                                                                //│
-                    Global.ch2_AM_EN.value = onoff                                  //│
+                    liveData.ch2_AM_EN.postValue( onoff )                                 //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             if (listCMD[1] == "FM")                                                 //│
             {                                                                       //│
                 if (chanel == 1)                                                    //│
-                    Global.ch1_FM_EN.value = onoff                                  //│
+                    liveData.ch1_FM_EN.postValue(  onoff)                                  //│
                 else                                                                //│
-                    Global.ch2_FM_EN.value = onoff                                  //│
+                    liveData.ch2_FM_EN.postValue(  onoff )                                 //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             return                                                                  //│
@@ -395,9 +392,9 @@ class Script {
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 println(listCMD[2])                                                 //│
-                if (chanel == 1) Global.ch1_Carrier_Filename.value = listCMD[2]                  //│
+                if (chanel == 1) liveData.ch1_Carrier_Filename.postValue(  listCMD[2])                  //│
                 else                                                                //│
-                    Global.ch2_Carrier_Filename.value = listCMD[2]                  //│
+                    liveData.ch2_Carrier_Filename.postValue(  listCMD[2])                  //│
             }                                                                       //│
 
             //CR[1 2] FR 1000.3                                                     //│
@@ -408,9 +405,9 @@ class Script {
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
-                if (chanel == 1) Global.ch1_Carrier_Fr.value = value                             //│
+                if (chanel == 1) liveData.ch1_Carrier_Fr.postValue(  value )                            //│
                 else                                                                //│
-                    Global.ch2_Carrier_Fr.value = value                             //│
+                    liveData.ch2_Carrier_Fr.postValue(  value )                            //│
             }                                                                       //│
             return                                                                  //│
         }                                                                           //│
@@ -430,19 +427,19 @@ class Script {
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    Global.ch1_AM_Fr.value = value                                  //│
+                    liveData.ch1_AM_Fr.postValue(  value )                                //│
                 else                                                                //│
-                    Global.ch2_AM_Fr.value = value                                  //│
+                    liveData.ch2_AM_Fr.postValue(  value )                                 //│
             }                                                                       //│
 
             //AM[1 2] MOD 02_HWawe { 1.9ms }                                        //│
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 if (chanel == 1) {                                                  //│
-                    Global.ch1_AM_Filename.value = listCMD[2]                       //│
+                    liveData.ch1_AM_Filename.postValue(  listCMD[2] )                      //│
                 }                                                                   //│
                 else                                                                //│
-                    Global.ch2_AM_Filename.value = listCMD[2]                       //│
+                    liveData.ch2_AM_Filename.postValue(  listCMD[2] )                      //│
             }                                                                       //│
             return                                                                  //│
         }                                                                           //│
@@ -461,9 +458,9 @@ class Script {
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    Global.ch1_FM_Base.value = value                                //│
+                    liveData.ch1_FM_Base.postValue(  value  )                              //│
                 else                                                                //│
-                    Global.ch2_FM_Base.value = value                                //│
+                    liveData.ch2_FM_Base.postValue(  value )                               //│
             }                                                                       //│
         }                                                                           //│
         //│
@@ -474,17 +471,17 @@ class Script {
                 f[listCMD[2].drop(1).toInt()]
             } else listCMD[2].toFloat()
 
-            if (chanel == 1) Global.ch1_FM_Dev.value = value
+            if (chanel == 1) liveData.ch1_FM_Dev.postValue( value )
             else                                                                    //│
-                Global.ch2_FM_Dev.value = value                                     //│
+                liveData.ch2_FM_Dev.postValue(  value  )                                   //│
         }                                                                           //│
 
         //FM[1 2] MOD 02_HWawe                                                      //│
         if (listCMD[1] == "MOD")                                                    //│
         {                                                                           //│
-            if (chanel == 1) Global.ch1_FM_Filename.value = listCMD[2]
+            if (chanel == 1) liveData.ch1_FM_Filename.postValue(  listCMD[2])
             else                                                                    //│
-                Global.ch2_FM_Filename.value = listCMD[2]                           //│
+                liveData.ch2_FM_Filename.postValue( listCMD[2]  )                         //│
         }                                                                           //│
 
         //FM[1 2] FR   3.5                                                          //│
@@ -494,9 +491,9 @@ class Script {
                 f[listCMD[2].drop(1).toInt()]
             } else listCMD[2].toFloat()
 
-            if (chanel == 1) Global.ch1_FM_Fr.value = value
+            if (chanel == 1) liveData.ch1_FM_Fr.postValue( value)
             else                                                                     //│
-                Global.ch2_FM_Fr.value = value                                       //│
+                liveData.ch2_FM_Fr.postValue( value  )                                     //│
         }                                                                            //│
         return                                                                       //│
     }                                                                                //│ //╰────────────────────────────────────────────────────────────────────────────────╯

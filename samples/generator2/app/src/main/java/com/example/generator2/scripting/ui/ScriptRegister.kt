@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
 
 
@@ -45,7 +46,7 @@ fun RegisterViewDraw(modifier: Modifier = Modifier) {
 
 //Ячейка регистра
 @Composable
-private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier) {
+private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Global = viewModel()) {
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
             .border(1.dp, Color.White, RoundedCornerShape(4.dp))
@@ -72,7 +73,7 @@ private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier) {
             }
 
             Text(
-                text = "${Global.script.f[index]}",
+                text = "${global.script.f[index]}",
                 color = Color.White,
                 fontSize = 14.sp,
                 modifier = Modifier.fillMaxWidth(),

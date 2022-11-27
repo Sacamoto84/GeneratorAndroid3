@@ -1,10 +1,10 @@
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
 import com.example.generator2.mainscreen4.TemplateBottomBar6Key
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.mainscreen4.bottomBarEnum
-import com.example.generator2.scripting.StateCommandScript
+
 
 @Composable
 private fun Key0() {
@@ -32,9 +32,11 @@ private fun Key4() {
 }
 
 @Composable
-private fun Key5() {
+private fun Key5(
+    global: Global = viewModel()
+) {
     TemplateButtonBottomBar(str = "Назад", onClick = {
-        Global.bottomBarRoute.value = bottomBarEnum.HOME
+        global.bottomBarRoute.value = bottomBarEnum.HOME
     })
 }
 

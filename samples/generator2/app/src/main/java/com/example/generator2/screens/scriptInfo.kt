@@ -2,7 +2,6 @@ package com.example.generator2.scripting
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.generator2.Global
 import com.example.generator2.console.Console2
 
 

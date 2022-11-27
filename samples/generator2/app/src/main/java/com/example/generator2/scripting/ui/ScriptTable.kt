@@ -9,7 +9,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -17,6 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
 import com.airbnb.lottie.compose.rememberLottieAnimatable
@@ -28,6 +28,7 @@ import com.example.generator2.mainscreen4.TemplateButtonBottomBarAndLottie
 import com.example.generator2.screens.DialogDeleteRename
 import com.example.generator2.screens.DialogSaveAs
 import com.example.generator2.scripting.StateCommandScript
+import com.example.generator2.Global
 import libs.MToast
 import java.util.*
 
@@ -35,7 +36,7 @@ val refresh = mutableStateOf(0)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScriptTable() {
+fun ScriptTable(global: Global = viewModel()) {
 
     val openDialogSaveAs = remember { mutableStateOf(false) }
 
@@ -81,12 +82,12 @@ fun ScriptTable() {
                     contentAlignment = Alignment.BottomEnd
                 ) {
 
-                    if (Global.script.pc.value > Global.script.list.lastIndex) Global.script.pc.value =
-                        Global.script.list.lastIndex
+                    if (global.script.pc.value > global.script.list.lastIndex) global.script.pc.value =
+                        global.script.list.lastIndex
 
-                    ScriptConsole(Global.script.list, Global.script.pc.value)
+                    ScriptConsole(global.script.list, global.script.pc.value)
 
-                    Text(text = "PC:${Global.script.pc.value}", color = Color.Red)
+                    Text(text = "PC:${global.script.pc.value}", color = Color.Red)
                 }
 
                 Box(
@@ -99,26 +100,26 @@ fun ScriptTable() {
                         verticalArrangement = Arrangement.SpaceEvenly
                     ) {
 
-                        if (Global.script.state != StateCommandScript.ISEDITTING) {
+                        if (global.script.state != StateCommandScript.ISEDITTING) {
 
                             TemplateButtonBottomBar(str = "New", onClick = {
 
-                                Global.script.command(StateCommandScript.STOP)
-                                Global.script.list.clear()
-                                Global.script.list.add("New")
-                                Global.script.list.add("?")
-                                Global.script.list.add("END")
+                                global.script.command(StateCommandScript.STOP)
+                                global.script.list.clear()
+                                global.script.list.add("New")
+                                global.script.list.add("?")
+                                global.script.list.add("END")
 
-                                Global.script.command(StateCommandScript.EDIT)
+                                global.script.command(StateCommandScript.EDIT)
 
                             })
                             TemplateButtonBottomBarAndLottie(str = "Edit", onClick = {
-                                Global.script.command(StateCommandScript.EDIT)
+                                global.script.command(StateCommandScript.EDIT)
                             }, resId = R.raw.paper_notebook_writing_animation, autostart = true) //
 
                             files.clear()
-                            files.addAll(filesInDirToList(
-                                context, "/Script"
+                            files.addAll(global.utils.filesInDirToList(
+                                "/Script"
                             ).map { it.dropLast(3) })
 
                             Column(
@@ -137,10 +138,10 @@ fun ScriptTable() {
                                                 RoundedCornerShape(8.dp)
                                             ).background(Color.LightGray)
                                             .combinedClickable(onClick = {
-                                                Global.script.command(StateCommandScript.STOP)
-                                                val l = readScriptFileToList(files[index])
-                                                Global.script.list.clear()
-                                                Global.script.list.addAll(l)
+                                                global.script.command(StateCommandScript.STOP)
+                                                val l = global.utils.readScriptFileToList(files[index])
+                                                global.script.list.clear()
+                                                global.script.list.addAll(l)
                                             }, onLongClick = {
                                                 openDialogDeleteRename.value = true
                                                 filename = files[index]
@@ -156,7 +157,7 @@ fun ScriptTable() {
                             //TemplateButtonBottomBar(str = Global.script.StateToString())
 
                             Text(
-                                text = Global.script.StateToString(),
+                                text = global.script.StateToString(),
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
                                 fontSize = 14.sp
@@ -172,11 +173,11 @@ fun ScriptTable() {
 
 
 
-                        if (Global.script.state == StateCommandScript.ISEDITTING) {
+                        if (global.script.state == StateCommandScript.ISEDITTING) {
 
                             TemplateButtonBottomBarAndLottie(modifier = Modifier.height(50.dp),
                                 str = "Назад",
-                                onClick = { Global.script.command(StateCommandScript.STOP) },
+                                onClick = { global.script.command(StateCommandScript.STOP) },
                                 resId = R.raw.back
                             )
 
@@ -184,14 +185,14 @@ fun ScriptTable() {
                                 modifier = Modifier.height(50.dp),
                                 str = "Save",
                                 onClick = {
-                                    if (Global.script.list[0] == "New") openDialogSaveAs.value =
+                                    if (global.script.list[0] == "New") openDialogSaveAs.value =
                                         true
                                     else {
-                                        saveListToScriptFile(
-                                            Global.script.list,
-                                            Global.script.list[0]
+                                        global.utils.saveListToScriptFile(
+                                            global.script.list,
+                                            global.script.list[0]
                                         )
-                                        MToast(contex = Global.contextActivity!!, "Сохранено")
+                                        MToast(contex = global.contextActivity!!, "Сохранено")
                                     }
                                 },
 
@@ -222,7 +223,7 @@ fun ScriptTable() {
                                 modifier = Modifier.height(50.dp),
                                 str = "Add",
                                 onClick = {
-                                    Global.script.list.add(Global.script.pc.value + 1, "?")
+                                    global.script.list.add(global.script.pc.value + 1, "?")
                                 })
                             
                             TemplateButtonBottomBarAndLottie(
@@ -231,7 +232,7 @@ fun ScriptTable() {
 
                                 str = "Add END",
                                 onClick = {
-                                    Global.script.list.add(Global.script.pc.value + 1, "END")
+                                    global.script.list.add(global.script.pc.value + 1, "END")
                                 },
 
                                 resId = R.raw.add2,
@@ -247,15 +248,15 @@ fun ScriptTable() {
                                 modifier = Modifier.height(50.dp), str = "Delete",
                                 onClick = {
 
-                                    if (Global.script.list.size > 1) {
+                                    if (global.script.list.size > 1) {
 
-                                        Global.script.list.removeAt(Global.script.pc.value)
+                                        global.script.list.removeAt(global.script.pc.value)
 
                                         //if (pc.value > 1)
                                         //  pc.value--
 
-                                        if (Global.script.pc.value > Global.script.list.lastIndex) {
-                                            Global.script.pc.value = Global.script.list.lastIndex
+                                        if (global.script.pc.value > global.script.list.lastIndex) {
+                                            global.script.pc.value = global.script.list.lastIndex
                                         }
                                     }
 
@@ -270,13 +271,13 @@ fun ScriptTable() {
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Up",
                                 onClick = {
-                                    if (Global.script.pc.value > 1) {
+                                    if (global.script.pc.value > 1) {
                                         Collections.swap(
-                                            Global.script.list,
-                                            Global.script.pc.value - 1,
-                                            Global.script.pc.value
+                                            global.script.list,
+                                            global.script.pc.value - 1,
+                                            global.script.pc.value
                                         )
-                                        Global.script.pc.value--
+                                        global.script.pc.value--
                                     }
                                 },
 
@@ -289,13 +290,13 @@ fun ScriptTable() {
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Down",
                                 onClick = {
-                                    if ((Global.script.pc.value > 0) && (Global.script.pc.value < Global.script.list.lastIndex)) {
+                                    if ((global.script.pc.value > 0) && (global.script.pc.value < global.script.list.lastIndex)) {
                                         Collections.swap(
-                                            Global.script.list,
-                                            Global.script.pc.value + 1,
-                                            Global.script.pc.value
+                                            global.script.list,
+                                            global.script.pc.value + 1,
+                                            global.script.pc.value
                                         )
-                                        Global.script.pc.value++
+                                        global.script.pc.value++
                                     }
                                 },
                                 resId = R.raw.down,
@@ -318,10 +319,10 @@ fun ScriptTable() {
 
 
 
-            if (Global.script.state == StateCommandScript.ISEDITTING) {
+            if (global.script.state == StateCommandScript.ISEDITTING) {
                 Column(
                 ) {
-                    Global.keyboard.Core()
+                    global.keyboard.Core()
                 }
             }
         }

@@ -4,6 +4,7 @@ package com.example.generator2
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -31,8 +32,6 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
-import com.example.generator2.Global.onoffconfig
-import com.example.generator2.Global.onoffconfig1
 import com.example.generator2.mainscreen4.mainsreen4
 import com.example.generator2.ui.slider.SunriseSliderColors
 import com.example.generator2.ui.theme.Generator2Theme
@@ -58,51 +57,51 @@ fun sunriseSliderColorsDefault() = SunriseSliderColors(
     tickInactiveColor = ProjColors.lightBlue.copy(alpha = 0.3f)
 )
 
-
 class MainActivity : ComponentActivity() {
+    private val global: Global by viewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Global.componentActivity = this
-        Global.contextActivity = applicationContext
+        global.componentActivity = this
+        global.contextActivity = applicationContext
 
-        test()
+        global.init()
+        global.observe()
 
-        Global.init()
-        Global.observe()
-
-        Global.ch1_EN.value = false
+        global.liveData.ch1_EN.value = false
 
         Utils.ContextMainActivity = applicationContext
 
         /** Запуск Звука
          */
+
         PlaybackEngine.create(this) //.create(this)
         PlaybackEngine.start()
 
-        onoffconfig1.pathOn = "png/switch/on.png"
-        onoffconfig1.pathOff = "png/switch/off.png"
-        onoffconfig1.pathGroup = "png/switch/switch.png"
-        onoffconfig1.componentW = 64.0f
-        onoffconfig1.componentPixelW = 108.0f
-        onoffconfig1.componentPixelH = 64.0f
-        onoffconfig1.groupW = 30.0f
-        onoffconfig1.groupPixelW = 37.0f
-        onoffconfig1.groupPixelH = 49.0f
-        onoffconfig1.groupDeltaY = 0.dp
-        onoffconfig1.groupPositionOn = 34.dp
-        onoffconfig1.groupPositionOff = 0.dp
+        global.onoffconfig1.pathOn = "png/switch/on.png"
+        global.onoffconfig1.pathOff = "png/switch/off.png"
+        global.onoffconfig1.pathGroup = "png/switch/switch.png"
+        global.onoffconfig1.componentW = 64.0f
+        global.onoffconfig1.componentPixelW = 108.0f
+        global.onoffconfig1.componentPixelH = 64.0f
+        global.onoffconfig1.groupW = 30.0f
+        global.onoffconfig1.groupPixelW = 37.0f
+        global.onoffconfig1.groupPixelH = 49.0f
+        global.onoffconfig1.groupDeltaY = 0.dp
+        global.onoffconfig1.groupPositionOn = 34.dp
+        global.onoffconfig1.groupPositionOff = 0.dp
 
-        onoffconfig.componentW = 64.0f
-        onoffconfig.componentPixelW = 108.0f
-        onoffconfig.componentPixelH = 64.0f
-        onoffconfig.groupW = 30.0f
-        onoffconfig.groupPixelW = 37.0f
-        onoffconfig.groupPixelH = 49.0f
-        onoffconfig.groupDeltaY = 2.dp
-        onoffconfig.groupPositionOn = 29.dp
-        onoffconfig.groupPositionOff = 5.dp
+        global.onoffconfig.componentW = 64.0f
+        global.onoffconfig.componentPixelW = 108.0f
+        global.onoffconfig.componentPixelH = 64.0f
+        global.onoffconfig.groupW = 30.0f
+        global.onoffconfig.groupPixelW = 37.0f
+        global.onoffconfig.groupPixelH = 49.0f
+        global.onoffconfig.groupDeltaY = 2.dp
+        global.onoffconfig.groupPositionOn = 29.dp
+        global.onoffconfig.groupPositionOff = 5.dp
 
 
         //PlaybackEngine.CH_EN(0,true)
@@ -115,19 +114,19 @@ class MainActivity : ComponentActivity() {
 
         val arrFilesCarrier: Array<String> = Utils.listFileInCarrier() //Заполняем список
         for (i in arrFilesCarrier.indices) {
-            Global.itemlistCarrier.add(itemList(Global.patchCarrier, arrFilesCarrier[i], 0))
+            global.itemlistCarrier.add(itemList(global.patchCarrier, arrFilesCarrier[i], 0))
         }
         val arrFilesMod: Array<String> = Utils.listFileInMod() //Получение списка файлов в папке Mod
         for (i in arrFilesMod.indices) {
-            Global.itemlistAM.add(itemList(Global.patchMod, arrFilesMod[i], 1))
-            Global.itemlistFM.add(itemList(Global.patchMod, arrFilesMod[i], 0))
+            global.itemlistAM.add(itemList(global.patchMod, arrFilesMod[i], 1))
+            global.itemlistFM.add(itemList(global.patchMod, arrFilesMod[i], 0))
         }
 
-        Global.sendAlltoGen()
+        global.sendAlltoGen()
 
-        Global.launchScriptScope() //Запуск скриптового потока
+        global.launchScriptScope() //Запуск скриптового потока
 
-        Global.script.unit5Load() //Загрузить тест
+        global.script.unit5Load() //Загрузить тест
 
 
         setContent {

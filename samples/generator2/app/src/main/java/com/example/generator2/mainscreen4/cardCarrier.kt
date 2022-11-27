@@ -3,52 +3,43 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.Slider
-import androidx.compose.material.SliderDefaults
 import androidx.compose.material.Switch
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
 import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UIspinner
-import libs.modifier.recomposeHighlighter
-import kotlin.properties.Delegates
 
 
 @Composable
 fun CardCarrier(str: String = "CH0") {
 
+    val global: Global = viewModel()
+
     val chEN: State<Boolean?> = if (str == "CH0") {
-        Global.ch1_EN.observeAsState()
+        global.liveData.ch1_EN.observeAsState()
     } else {
-        Global.ch2_EN.observeAsState()
+        global.liveData.ch2_EN.observeAsState()
     }
 
     val carrierFr: State<Float?> = if (str == "CH0") {
-        Global.ch1_Carrier_Fr.observeAsState()
+        global.liveData.ch1_Carrier_Fr.observeAsState()
     } else {
-        Global.ch2_Carrier_Fr.observeAsState()
+        global.liveData.ch2_Carrier_Fr.observeAsState()
     }
 
     Card(
@@ -86,7 +77,7 @@ fun CardCarrier(str: String = "CH0") {
                     modifier = Modifier.width(ms4SwitchWidth),
                     checked = chEN.value!!,
                     onCheckedChange = {
-                        if (str == "CH0") Global.ch1_EN.value = it else Global.ch2_EN.value = it
+                        if (str == "CH0") global.liveData.ch1_EN.value = it else global.liveData.ch2_EN.value = it
                     })
 
                 MainscreenTextBox(
@@ -104,8 +95,8 @@ fun CardCarrier(str: String = "CH0") {
                     sensing = sensetingSliderCr,
                     range = rangeSliderCr,
                     onValueChange = {
-                        if (str == "CH0") Global.ch1_Carrier_Fr.value =
-                            it else Global.ch2_Carrier_Fr.value = it
+                        if (str == "CH0") global.liveData.ch1_Carrier_Fr.value =
+                            it else global.liveData.ch2_Carrier_Fr.value = it
                     },
                     modifier = modifierInfinitySlider,
                     vertical = true,

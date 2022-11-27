@@ -1,7 +1,6 @@
 package com.example.generator2.screens
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -9,8 +8,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -20,18 +17,17 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.Global
 import com.example.generator2.R
-import com.example.generator2.deleteScriptFile
-import com.example.generator2.renameScriptFile
 import com.example.generator2.scripting.ui.refresh
 import libs.MToast
 
 
 @Composable
-fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String) {
+fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: Global = viewModel()) {
 
     val context = LocalContext.current
 
@@ -53,7 +49,7 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String) {
 
                 Button(
                     onClick = {
-                        deleteScriptFile(name)
+                        global.utils.deleteScriptFile(name)
                         openDialog.value = false
                         refresh.value++
                     },
@@ -92,7 +88,7 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String) {
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
 
-                        renameScriptFile(name, value)
+                        global.utils.renameScriptFile(name, value)
 
                         openDialog.value = false
                         MToast(context, "Переименовали")

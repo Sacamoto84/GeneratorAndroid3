@@ -1,33 +1,34 @@
 package com.example.generator2.mainscreen4
 
 import androidx.compose.runtime.Composable
-import com.example.generator2.Global.bottomBarRoute
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.generator2.Global
 
 @Composable
-private fun Key0() {
+private fun Key0(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Загрузить текущее",
         onClick = {
             //TODO()
-            bottomBarRoute.value = bottomBarEnum.HOME
+            global.bottomBarRoute.value = bottomBarEnum.HOME
         })
 }
 
 @Composable
-private fun Key1() {
+private fun Key1(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Загрузить как",
         onClick = {
-            bottomBarRoute.value = bottomBarEnum.LOADAS
+            global.bottomBarRoute.value = bottomBarEnum.LOADAS
         })
 }
 
 @Composable
-private fun Key5() {
+private fun Key5(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Назад",
         onClick = {
-            bottomBarRoute.value = bottomBarEnum.HOME
+            global.bottomBarRoute.value = bottomBarEnum.HOME
         })
 }
 

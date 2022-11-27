@@ -3,9 +3,8 @@ package com.example.generator2.mainscreen4
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import colorGreen
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
-import com.example.generator2.Global.bottomBarRoute
 import com.example.generator2.scripting.StateCommandScript
 
 @Composable
@@ -17,24 +16,24 @@ private fun Key0() {
 }
 
 @Composable
-private fun Key1() {
+private fun Key1(global: Global = viewModel()) {
 
 
-    if ((Global.script.state == StateCommandScript.ISRUNNING) || (Global.script.state == StateCommandScript.ISPAUSE)) {
-        TemplateButtonBottomBar(str = if (Global.script.state != StateCommandScript.ISPAUSE) "Пауза" else "Продолжить",
+    if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
+        TemplateButtonBottomBar(str = if (global.script.state != StateCommandScript.ISPAUSE) "Пауза" else "Продолжить",
             onClick = {
-                if (Global.script.state != StateCommandScript.ISPAUSE) Global.script.command(
+                if (global.script.state != StateCommandScript.ISPAUSE) global.script.command(
                     StateCommandScript.PAUSE
                 )
                 else {
-                    Global.script.state = StateCommandScript.ISRUNNING
-                    Global.script.end = false
+                    global.script.state = StateCommandScript.ISRUNNING
+                    global.script.end = false
                 }
             })
     } else {
 
         TemplateButtonBottomBar(str = "Запуск", onClick = {
-            Global.script.command(StateCommandScript.START)
+            global.script.command(StateCommandScript.START)
         })
 
     }
@@ -42,17 +41,17 @@ private fun Key1() {
 }
 
 @Composable
-private fun Key2() {
+private fun Key2(global: Global = viewModel()) {
     TemplateButtonBottomBar(str = "Стоп", onClick = {
-        Global.script.command(StateCommandScript.STOP)
+        global.script.command(StateCommandScript.STOP)
     })
 }
 
 @Composable
-private fun Key4() {
+private fun Key4(global: Global = viewModel()) {
     TemplateButtonBottomBar(
         str = "Назад", onClick = {
-            bottomBarRoute.value = bottomBarEnum.HOME
+            global.bottomBarRoute.value = bottomBarEnum.HOME
         },
         backgroundColor = Color.DarkGray,
         contentColor = Color.White
@@ -60,9 +59,9 @@ private fun Key4() {
 }
 
 @Composable
-private fun Key5() {
+private fun Key5(global: Global = viewModel()) {
     TemplateButtonBottomBar(str = "Назад", onClick = {
-        bottomBarRoute.value = bottomBarEnum.HOME
+        global.bottomBarRoute.value = bottomBarEnum.HOME
     })
 }
 

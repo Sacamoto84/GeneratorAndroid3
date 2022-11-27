@@ -1,9 +1,5 @@
 package com.example.generator2.scripting.ui
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.SizeTransform
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -19,13 +15,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
-import libs.MToast
-import kotlin.random.Random
 
 @Composable
-fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier) {
+fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global = viewModel()) {
 
     println("ScriptConsole selectLine:$selectLine" )
 
@@ -40,7 +34,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
 
     if (indexSelect.value == 0) {
         indexSelect.value = 1
-        Global.script.pc.value = 1
+        global.script.pc.value = 1
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
@@ -60,7 +54,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                     Box(
                         modifier = Modifier.selectable(
                             selected = indexSelect.value == index,
-                            onClick = { Global.script.pc.value = index })
+                            onClick = { global.script.pc.value = index })
                     ) {
 
                         //if (indexSelect.value == 0)

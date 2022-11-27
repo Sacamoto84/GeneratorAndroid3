@@ -22,35 +22,38 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.Global
 import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UIspinner
 
 @Composable
-fun CardFM(str: String = "CH0") {
+fun CardFM(str: String = "CH0", global: Global = viewModel()) {
+
+
 
     val fmEN: State<Boolean?> = if (str == "CH0") {
-        Global.ch1_FM_EN.observeAsState()
+        global.liveData.ch1_FM_EN.observeAsState()
     } else {
-        Global.ch2_FM_EN.observeAsState()
+        global.liveData.ch2_FM_EN.observeAsState()
     }
 
     val fmFr: State<Float?> = if (str == "CH0") {
-        Global.ch1_FM_Fr.observeAsState()
+        global.liveData.ch1_FM_Fr.observeAsState()
     } else {
-        Global.ch2_FM_Fr.observeAsState()
+        global.liveData.ch2_FM_Fr.observeAsState()
     }
 
     val fmBase: State<Float?> = if (str == "CH0") {
-        Global.ch1_FM_Base.observeAsState()
+        global.liveData.ch1_FM_Base.observeAsState()
     } else {
-        Global.ch2_FM_Base.observeAsState()
+        global.liveData.ch2_FM_Base.observeAsState()
     }
 
     val fmDev: State<Float?> = if (str == "CH0") {
-        Global.ch1_FM_Dev.observeAsState()
+        global.liveData.ch1_FM_Dev.observeAsState()
     } else {
-        Global.ch2_FM_Dev.observeAsState()
+        global.liveData.ch2_FM_Dev.observeAsState()
     }
 
 
@@ -88,7 +91,7 @@ fun CardFM(str: String = "CH0") {
             Switch(
                 modifier = Modifier.width(ms4SwitchWidth),
                 checked = fmEN.value!!, onCheckedChange = {
-                    if (str == "CH0") Global.ch1_FM_EN.value = it else Global.ch2_FM_EN.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_EN.value = it else global.liveData.ch2_FM_EN.value = it
                 })
 
             MainscreenTextBox(
@@ -105,8 +108,8 @@ fun CardFM(str: String = "CH0") {
                 sensing = if (fmFr.value!! < 10.0F) sensetingSliderAmFm else sensetingSliderAmFm * 10f,
                 range = rangeSliderAmFm,
                 onValueChange = {
-                    if (str == "CH0") Global.ch1_FM_Fr.value =
-                        it else Global.ch2_FM_Fr.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_Fr.value =
+                        it else global.liveData.ch2_FM_Fr.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -186,8 +189,8 @@ fun CardFM(str: String = "CH0") {
                 sensing = sensetingSliderFmBase * 8,
                 range = rangeSliderFmBase,
                 onValueChange = {
-                    if (str == "CH0") Global.ch1_FM_Base.value =
-                        it else Global.ch2_FM_Base.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_Base.value =
+                        it else global.liveData.ch2_FM_Base.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -201,8 +204,8 @@ fun CardFM(str: String = "CH0") {
                 sensing = sensetingSliderFmBase,
                 range = rangeSliderFmBase,
                 onValueChange = {
-                    if (str == "CH0") Global.ch1_FM_Base.value =
-                        it else Global.ch2_FM_Base.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_Base.value =
+                        it else global.liveData.ch2_FM_Base.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -262,8 +265,8 @@ fun CardFM(str: String = "CH0") {
                 sensing = sensetingSliderFmDev * 8,
                 range = rangeSliderFmDev,
                 onValueChange = {
-                    if (str == "CH0") Global.ch1_FM_Dev.value =
-                        it else Global.ch2_FM_Dev.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_Dev.value =
+                        it else global.liveData.ch2_FM_Dev.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -276,8 +279,8 @@ fun CardFM(str: String = "CH0") {
                 sensing = sensetingSliderFmDev,
                 range = rangeSliderFmDev,
                 onValueChange = {
-                    if (str == "CH0") Global.ch1_FM_Dev.value =
-                        it else Global.ch2_FM_Dev.value = it
+                    if (str == "CH0") global.liveData.ch1_FM_Dev.value =
+                        it else global.liveData.ch2_FM_Dev.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,

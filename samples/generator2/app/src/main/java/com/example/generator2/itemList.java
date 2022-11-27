@@ -3,7 +3,6 @@ package com.example.generator2;
 import android.graphics.Bitmap;
 
 
-
 public class itemList {
     private String name = "xxx";     // название без окончания
     private String filename; // Название файла

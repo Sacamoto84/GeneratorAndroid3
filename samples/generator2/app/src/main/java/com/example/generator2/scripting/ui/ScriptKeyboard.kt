@@ -27,6 +27,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
 import com.example.generator2.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
@@ -182,7 +183,7 @@ class ScriptKeyboard(private val s: Script) {
     //var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
 
     @Composable
-    fun ScreenMod(arg: Int, type: String = "CR") {
+    fun ScreenMod(arg: Int, type: String = "CR", global: Global = viewModel()) {
         val lazyListState: LazyListState = rememberLazyListState()
         val selectedIndex = remember { mutableStateOf(0) }
         Row {
@@ -193,9 +194,9 @@ class ScriptKeyboard(private val s: Script) {
             ) {
                 itemsIndexed(
                     when (type) {
-                        "CR" -> Global.itemlistCarrier.toList()
-                        "AM" -> Global.itemlistAM.toList()
-                        else -> Global.itemlistFM.toList()
+                        "CR" -> global.itemlistCarrier.toList()
+                        "AM" -> global.itemlistAM.toList()
+                        else -> global.itemlistFM.toList()
                     }
                 ) { index, item ->
                     Row(
