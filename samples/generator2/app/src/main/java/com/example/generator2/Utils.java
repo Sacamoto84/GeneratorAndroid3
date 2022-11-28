@@ -324,25 +324,5 @@ public class Utils {
         return res;
     }
 
-    //Для спиннера, отсылка массива
-    public static void Spinner_Send_Buffer(String CH, String Mod, String name)
-    {
-        //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
-        String path = "";
-
-        if (Mod.equals("CR"))
-            path += patchCarrier  +name +".dat";
-        else
-            path += patchMod      +name +".dat" ;
-
-        byte [] buf = readFileMod2048byte(path); //Здесь должны прочитать файл и записать в массив;
-
-        int ch  = 0;
-        int mod = 0;
-        if (Mod.equals("AM")) mod = 1;
-        if (Mod.equals("FM")) mod = 2;
-        if (CH.equals("CH1")) ch = 1;
-        PlaybackEngine.CH_Send_Buffer(ch,mod , buf); //Послали буффер
-    }
 
 }

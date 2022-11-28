@@ -37,8 +37,10 @@ import com.example.generator2.ui.slider.SunriseSliderColors
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
 import libs.modifier.recomposeHighlighter
+import javax.inject.Inject
 
 
 fun valuesList() = listOf(0f, 100f)
@@ -57,8 +59,13 @@ fun sunriseSliderColorsDefault() = SunriseSliderColors(
     tickInactiveColor = ProjColors.lightBlue.copy(alpha = 0.3f)
 )
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private val global: Global by viewModels()
+
+    @Inject lateinit var observe: Observe
+    @Inject lateinit var playbackEngine: PlaybackEngine
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,7 +75,10 @@ class MainActivity : ComponentActivity() {
         global.contextActivity = applicationContext
 
         global.init()
-        global.observe()
+
+        observe.observe()
+
+        //global.observe()
 
         global.liveData.ch1_EN.value = false
 
@@ -77,8 +87,8 @@ class MainActivity : ComponentActivity() {
         /** Запуск Звука
          */
 
-        PlaybackEngine.create(this) //.create(this)
-        PlaybackEngine.start()
+        playbackEngine.create(this)
+        playbackEngine.start()
 
         global.onoffconfig1.pathOn = "png/switch/on.png"
         global.onoffconfig1.pathOff = "png/switch/off.png"

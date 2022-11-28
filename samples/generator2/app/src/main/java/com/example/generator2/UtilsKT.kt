@@ -6,9 +6,7 @@ import java.io.IOException
 
 fun Float.format(digits: Int) = "%.${digits}f".format(this)
 
-public class UtilsKT () {
-
-    public lateinit var context: Context
+public class UtilsKT ( private var context: Context , private var playbackEngine: PlaybackEngine) {
 
     /**
      * Получить список файлов по пути
@@ -84,6 +82,24 @@ public class UtilsKT () {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+
+
+    //Для спиннера, отсылка массива
+    fun Spinner_Send_Buffer(
+        CH: String,
+        Mod: String,
+        name: String
+    ) { //String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS).toString();
+        var path = ""
+        path += if (Mod == "CR") Utils.patchCarrier + name + ".dat" else Utils.patchMod + name + ".dat"
+        val buf = Utils.readFileMod2048byte(path) //Здесь должны прочитать файл и записать в массив;
+        var ch = 0
+        var mod = 0
+        if (Mod == "AM") mod = 1
+        if (Mod == "FM") mod = 2
+        if (CH == "CH1") ch = 1
+        playbackEngine.CH_Send_Buffer(ch, mod, buf) //Послали буффер
     }
 
 
