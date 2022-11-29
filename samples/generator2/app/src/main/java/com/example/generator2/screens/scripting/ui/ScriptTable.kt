@@ -1,4 +1,4 @@
-package com.example.generator2.scripting.ui
+package com.example.generator2.screens.ui
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -25,10 +25,12 @@ import com.example.generator2.*
 import com.example.generator2.R
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.mainscreen4.TemplateButtonBottomBarAndLottie
-import com.example.generator2.screens.DialogDeleteRename
-import com.example.generator2.screens.DialogSaveAs
-import com.example.generator2.scripting.StateCommandScript
-import com.example.generator2.Global
+import com.example.generator2.screens.ConsoleLogDraw
+import com.example.generator2.screens.scripting.dialog.DialogDeleteRename
+import com.example.generator2.screens.scripting.dialog.DialogSaveAs
+import com.example.generator2.screens.scripting.ui.ScriptConsole
+import com.example.generator2.vm.StateCommandScript
+import com.example.generator2.vm.Global
 import libs.MToast
 import java.util.*
 
@@ -69,8 +71,6 @@ fun ScriptTable(global: Global = viewModel()) {
 
     Box(modifier = Modifier.fillMaxSize(1f)) {
 
-        //refresh.value = refresh.value
-
         Column() {
 
             Row(
@@ -102,7 +102,8 @@ fun ScriptTable(global: Global = viewModel()) {
 
                         if (global.script.state != StateCommandScript.ISEDITTING) {
 
-                            TemplateButtonBottomBar(str = "New", onClick = {
+                            //Кнопка New
+                            TemplateButtonBottomBar(str = "Новый", onClick = {
 
                                 global.script.command(StateCommandScript.STOP)
                                 global.script.list.clear()
@@ -113,15 +114,23 @@ fun ScriptTable(global: Global = viewModel()) {
                                 global.script.command(StateCommandScript.EDIT)
 
                             })
-                            TemplateButtonBottomBarAndLottie(str = "Edit", onClick = {
-                                global.script.command(StateCommandScript.EDIT)
-                            }, resId = R.raw.paper_notebook_writing_animation, autostart = true) //
 
+                            TemplateButtonBottomBarAndLottie(
+                                str = "Изменить", onClick = {
+                                    global.script.command(StateCommandScript.EDIT)
+                                },
+                                resId = R.raw.paper_notebook_writing_animation,
+                                autostart = true
+                            ) //
+
+                            // Создать список названий файлов из папки /Script
                             files.clear()
                             files.addAll(global.utils.filesInDirToList(
                                 "/Script"
                             ).map { it.dropLast(3) })
+                            //
 
+                            //Отображение списка названия скриптов
                             Column(
                                 Modifier.fillMaxSize().weight(1f).padding(4.dp)
                                     .background(Color(0x8B1D1C1C)).border(1.dp, Color.DarkGray)
@@ -139,7 +148,8 @@ fun ScriptTable(global: Global = viewModel()) {
                                             ).background(Color.LightGray)
                                             .combinedClickable(onClick = {
                                                 global.script.command(StateCommandScript.STOP)
-                                                val l = global.utils.readScriptFileToList(files[index])
+                                                val l =
+                                                    global.utils.readScriptFileToList(files[index])
                                                 global.script.list.clear()
                                                 global.script.list.addAll(l)
                                             }, onLongClick = {
@@ -154,10 +164,9 @@ fun ScriptTable(global: Global = viewModel()) {
                                 }
                             } //
 
-                            //TemplateButtonBottomBar(str = Global.script.StateToString())
-
+                            //Текущее состояние
                             Text(
-                                text = global.script.StateToString(),
+                                text = global.script.stateToString(),
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
                                 fontSize = 14.sp
@@ -175,7 +184,8 @@ fun ScriptTable(global: Global = viewModel()) {
 
                         if (global.script.state == StateCommandScript.ISEDITTING) {
 
-                            TemplateButtonBottomBarAndLottie(modifier = Modifier.height(50.dp),
+                            TemplateButtonBottomBarAndLottie(
+                                modifier = Modifier.height(50.dp),
                                 str = "Назад",
                                 onClick = { global.script.command(StateCommandScript.STOP) },
                                 resId = R.raw.back
@@ -189,8 +199,7 @@ fun ScriptTable(global: Global = viewModel()) {
                                         true
                                     else {
                                         global.utils.saveListToScriptFile(
-                                            global.script.list,
-                                            global.script.list[0]
+                                            global.script.list, global.script.list[0]
                                         )
                                         MToast(contex = global.contextActivity!!, "Сохранено")
                                     }
@@ -219,13 +228,12 @@ fun ScriptTable(global: Global = viewModel()) {
                                 paddingStartText = 12.dp
                             )
 
-                            TemplateButtonBottomBar(
-                                modifier = Modifier.height(50.dp),
+                            TemplateButtonBottomBar(modifier = Modifier.height(50.dp),
                                 str = "Add",
                                 onClick = {
                                     global.script.list.add(global.script.pc.value + 1, "?")
                                 })
-                            
+
                             TemplateButtonBottomBarAndLottie(
 
                                 modifier = Modifier.height(50.dp),

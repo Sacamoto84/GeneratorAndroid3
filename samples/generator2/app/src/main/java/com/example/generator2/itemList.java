@@ -2,7 +2,6 @@ package com.example.generator2;
 
 import android.graphics.Bitmap;
 
-
 public class itemList {
     private String name = "xxx";     // название без окончания
     private String filename; // Название файла
@@ -28,7 +27,6 @@ public class itemList {
     public String getName() {
         return this.name;
     }
-
     public Bitmap getBitmap() {
         return this.bitmap;
     }

@@ -1,6 +1,5 @@
 package com.example.generator2
 
-//import com.example.generator2.ui.widget.GestureOfDrag
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -19,9 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.platform.LocalContext
@@ -31,33 +28,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.navigation.compose.rememberNavController
 import colorDarkBackground
 import com.example.generator2.mainscreen4.mainsreen4
-import com.example.generator2.ui.slider.SunriseSliderColors
+import com.example.generator2.vm.Global
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
+import com.example.generator2.vm.Observe
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
 import libs.modifier.recomposeHighlighter
 import javax.inject.Inject
-
-
-fun valuesList() = listOf(0f, 100f)
-
-fun sunriseSliderColorsDefault() = SunriseSliderColors(
-    thumbColor = ProjColors.lightBlue,
-    thumbDisabledColor = ProjColors.silver,
-    inThumbColor = ProjColors.white,
-    trackBrush = Brush.horizontalGradient(
-        listOf(
-            ProjColors.lightBlue, ProjColors.grayish
-        ), tileMode = TileMode.Clamp
-    ),
-    inactiveTrackColor = ProjColors.lightBlue.copy(alpha = 0.1f),
-    tickActiveColor = ProjColors.white,
-    tickInactiveColor = ProjColors.lightBlue.copy(alpha = 0.3f)
-)
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -66,6 +48,7 @@ class MainActivity : ComponentActivity() {
 
     @Inject lateinit var observe: Observe
     @Inject lateinit var playbackEngine: PlaybackEngine
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -141,6 +124,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
 
+
+
             val systemUiController = rememberSystemUiController()
             SideEffect {
                 systemUiController.setSystemBarsColor(colorDarkBackground, darkIcons = false)
@@ -149,6 +134,9 @@ class MainActivity : ComponentActivity() {
             KeepScreenOn()
 
             Generator2Theme {
+
+
+                val navController = rememberNavController()
 
 
                 mainsreen4()

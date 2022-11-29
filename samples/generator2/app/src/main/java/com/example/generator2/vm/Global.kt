@@ -1,4 +1,4 @@
-package com.example.generator2
+package com.example.generator2.vm
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -10,10 +10,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.console.Console2
 import com.example.generator2.mainscreen4.bottomBarEnum
-import com.example.generator2.scripting.Script
-import com.example.generator2.scripting.ui.ScriptKeyboard
+import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ActivityContext
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -87,7 +85,6 @@ class Global @Inject constructor() : ViewModel() {
         consoleLog.println("")
     }
 
-
     fun sendAlltoGen() {
         playbackEngine.CH_EN(0, liveData.ch1_EN.value!!)
         playbackEngine.CH_EN(1, liveData.ch2_EN.value!!)
@@ -156,25 +153,19 @@ class Global @Inject constructor() : ViewModel() {
 
     }
 
-
     ////////////////////////////////////////////////////////
-
-
     fun launchScriptScope() {
         viewModelScope.launch {
             scriptRun()
         }
     }
 
-
     private suspend fun scriptRun() = withContext(Dispatchers.Default) {
         while (true) {
             script.run()
-            delay(10)
+            delay(50)
         }
     }
-
-
 
     /**
      * Сохранить текущий скрипт в файл

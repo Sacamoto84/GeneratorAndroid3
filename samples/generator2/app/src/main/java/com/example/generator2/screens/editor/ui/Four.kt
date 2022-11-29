@@ -1,7 +1,7 @@
 
 //@file:kotlin.jvm.JvmName("TuplesKt")
 
-package com.example.generator2.editor
+package com.example.generator2.screens.editor.ui
 
 import java.io.Serializable
 

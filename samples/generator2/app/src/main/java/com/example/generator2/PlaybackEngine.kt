@@ -2,7 +2,6 @@ package com.example.generator2
 
 import android.content.Context
 import android.media.AudioManager
-import android.os.Build
 import android.util.Log
 
 class PlaybackEngine {
@@ -24,16 +23,16 @@ class PlaybackEngine {
     }
 
     private fun setDefaultStreamValues(context: Context) {
+
         Log.d("!!!", "---PlaybackEngine.setDefaultStreamValues()---")
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            val myAudioMgr = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-            val sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
-            val defaultSampleRate = sampleRateStr.toInt()
-            val framesPerBurstStr =
-                myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
-            val defaultFramesPerBurst = framesPerBurstStr.toInt()
-            native_setDefaultStreamValues(defaultSampleRate, defaultFramesPerBurst)
-        }
+        val myAudioMgr = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
+        val defaultSampleRate = sampleRateStr.toInt()
+        val framesPerBurstStr =
+            myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
+        val defaultFramesPerBurst = framesPerBurstStr.toInt()
+        native_setDefaultStreamValues(defaultSampleRate, defaultFramesPerBurst)
+
     }
 
     fun start(): Int {

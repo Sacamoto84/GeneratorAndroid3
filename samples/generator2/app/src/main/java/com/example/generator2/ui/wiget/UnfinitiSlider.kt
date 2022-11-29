@@ -47,7 +47,6 @@ fun InfinitySlider(
 
     var offX by remember { mutableStateOf(0f) }    //Смещени, координаты текущего начала Box
 
-
     val _sensing = rememberUpdatedState(sensing)
 
     Box(

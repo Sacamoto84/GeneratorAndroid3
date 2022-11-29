@@ -1,13 +1,12 @@
-package com.example.generator2.editor
+package com.example.generator2.screens.editor
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Path
+import com.example.generator2.screens.editor.ui.Four
+import com.example.generator2.screens.editor.ui.MotionEvent
 
 //Тип рисования
 enum class PaintingState {

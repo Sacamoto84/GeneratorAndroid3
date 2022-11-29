@@ -13,7 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PointMode
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
-import libs.modifier.recomposeHighlighter
+import com.example.generator2.screens.editor.EditorMatModel
 
 @Composable
 fun EditorPreviewCarrier(model: EditorMatModel) {

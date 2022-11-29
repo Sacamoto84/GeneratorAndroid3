@@ -1,4 +1,4 @@
-package com.example.generator2.scripting.ui
+package com.example.generator2.screens.scripting.ui
 
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
@@ -29,9 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
-import com.example.generator2.Global
+import com.example.generator2.vm.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.scripting.Script
+import com.example.generator2.vm.Script
 import com.example.generator2.ui.theme.NoRippleTheme
 import java.util.*
 
@@ -45,9 +45,7 @@ data class RouteKeyboard(
     var argument: Int = 0, var route: RouteKeyboardEnum, var NoHomeRoute: RouteKeyboardEnum? = null
 )
 
-
 //Клавиатурка
-//class ScriptKeyboard(private val list: SnapshotStateList<String>) {
 class ScriptKeyboard(private val s: Script) {
 
     private var selectIndex = s.pc.value
@@ -144,7 +142,7 @@ class ScriptKeyboard(private val s: Script) {
         Log.i("script", "Keyboard Core() PC:${s.pc.value}")
 
         when (route.value.route) {
-            RouteKeyboardEnum.HOME       -> ScreenHOME(route.value.argument)
+            RouteKeyboardEnum.HOME       -> ScreenHOME()
             RouteKeyboardEnum.NUMBER     -> ScreenNUMBERPAD(route.value.argument)
             RouteKeyboardEnum.F          -> ScreenFPAD(route.value.argument)
             RouteKeyboardEnum.ONOFF      -> ScreenONOFF(route.value.argument)
@@ -233,7 +231,7 @@ class ScriptKeyboard(private val s: Script) {
 
 
     @Composable
-    fun ScreenHOME(arg: Int) {
+    fun ScreenHOME() {
 
 
         //Global.contextActivity?.let { MToast(it, text = "$size") }

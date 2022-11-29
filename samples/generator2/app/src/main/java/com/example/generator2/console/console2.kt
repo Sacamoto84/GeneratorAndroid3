@@ -71,11 +71,16 @@ class Console2 {
         flash: Boolean = false,
         textSize: TextUnit = textSizeDefault
     ) {
+
+        if ((colorlineAndText.size == 1) && (colorlineAndText[0].pairList[0].text==""))
+        {
+            colorlineAndText.removeAt(0)
+        }
+
         colorlineAndText.add(
 
             LineTextAndColor(
-                text,
-                listOf(
+                text, listOf(
                     PairTextAndColor(
                         text = text,
                         colorText = color,
@@ -102,6 +107,7 @@ class Console2 {
         flash: Boolean = false,
         textSize: TextUnit = textSizeDefault
     ) {
+
         colorlineAndText.last().pairList.add(
             PairTextAndColor(
                 text = text,
@@ -114,14 +120,16 @@ class Console2 {
                 textSize = textSize
             )
         )
+
     }
 
 
-    @Composable
-    //fun Lazy(messages: SnapshotStateList<LineTextAndColor>) {
+    @Composable //fun Lazy(messages: SnapshotStateList<LineTextAndColor>) {
     fun Draw(modifier: Modifier = Modifier) {
-        val messages: SnapshotStateList<LineTextAndColor> = colorlineAndText
 
+        if (colorlineAndText.isEmpty()) println("")
+
+        val messages: SnapshotStateList<LineTextAndColor> = colorlineAndText
 
         var update by remember { mutableStateOf(true) }  //для мигания
         val lazyListState: LazyListState = rememberLazyListState()
@@ -132,115 +140,117 @@ class Console2 {
         LaunchedEffect(key1 = messages) {
             while (true) {
                 delay(700L)
-                update = !update
-                //telnetWarning.value = (telnetSlegenie.value == false) && (messages.size > lastCount)
+                update =
+                    !update //telnetWarning.value = (telnetSlegenie.value == false) && (messages.size > lastCount)
             }
         }
 
         LaunchedEffect(key1 = lastVisibleItemIndex, key2 = messages) {
             while (true) {
-                delay(200L)
-                //val s = messages.size
+                delay(200L) //val s = messages.size
                 //if ((s > 20) && (telnetSlegenie.value == true)) {
-                    lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
+                lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
                 //}
             }
-        }
-//.background(Color(0xFF090909))
+        } //.background(Color(0xFF090909))
+
 
         Box(
-            Modifier
-                .fillMaxSize()
-                .background(Color(0xFF090909))
-                .then(modifier)
-            //.weight(1f)
-        )
-        {
+            Modifier.fillMaxSize().background(Color(0xFF090909)).then(modifier) //.weight(1f)
+        ) {
 
-            //Верхний блок Теминала
-            ///////////////////////////////////////////////////////////
-            LazyColumn(                                              //
-                modifier = Modifier
-                    .fillMaxSize(), state = lazyListState                          //
-            ) {
 
-                //val z = manual_recomposeLazy.value
-                //println("LAZY Счетчик рекомпозиций $z")
 
-                itemsIndexed(messages.toList())
-                { index, item ->
-                    Row()
-                    {
 
-                        val s = item.pairList.size
+                ///////////////////////////////////////////////////////////
+                LazyColumn(                                              //
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState                          //
+                ) {
 
-                        if ((s > 0) && (isCheckedUselineVisible.value)) {
+                    //val z = manual_recomposeLazy.value
+                    //println("LAZY Счетчик рекомпозиций $z")
 
-                            val str: String = when (index) {
-                                in 0..9 -> String.format("   %d>", index)
-                                in 10..99 -> String.format("  %d>", index)
-                                in 100..999 -> String.format(" %d>", index)
-                                else -> String.format("%d>", index)
-                            }
-                            Text(
-                                text = str,
-                                color = if (item.text.isBlank()) Color.Black else Color.Gray,
-                                fontSize = textSizeDefault,
-                                fontFamily = FontFamily(
-                                    Font(
-                                        com.example.generator2.R.font.jetbrains,
-                                        FontWeight.Normal
+                    itemsIndexed(messages.toList()) { index, item ->
+                        Row() {
+
+                            val s = item.pairList.size
+
+                            if ((s > 0) && (isCheckedUselineVisible.value)) {
+
+                                val str: String = when (index) {
+                                    in 0..9     -> String.format("   %d>", index)
+                                    in 10..99   -> String.format("  %d>", index)
+                                    in 100..999 -> String.format(" %d>", index)
+                                    else        -> String.format("%d>", index)
+                                }
+                                Text(
+                                    text = str,
+                                    color = if (item.text.isBlank()) Color.Black else Color.Gray,
+                                    fontSize = textSizeDefault,
+                                    fontFamily = FontFamily(
+                                        Font(
+                                            com.example.generator2.R.font.jetbrains,
+                                            FontWeight.Normal
+                                        )
                                     )
                                 )
-                            )
-                        }
+                            }
 
 
-                        for (i in 0 until s) {
+                            for (i in 0 until s) {
 
-                            val colorSelect = if (SelectLine.value == index) Color.Magenta else Color.DarkGray
+                                val colorSelect =
+                                    if (SelectLine.value == index) Color.Magenta else Color.DarkGray
 
-                            Box(
-                                Modifier
-                                    .fillMaxWidth()
-                                    //.background(colorSelect)
-                            )
-                            {
+                                Box(
+                                    Modifier.fillMaxWidth() //.background(colorSelect)
+                                ) {
 
-                                Text(
-                                    text = item.pairList[i].text,
-                                    color = if (!item.pairList[i].flash)
-                                        item.pairList[i].colorText
-                                    else
-                                        if (update) item.pairList[i].colorText else Color(0xFF090909),
-                                    modifier = Modifier.background(
-                                        if (!item.pairList[i].flash)
-                                            item.pairList[i].colorBg
-                                        else
-                                            if (update) item.pairList[i].colorBg else Color(
+                                    Text(
+                                        text = item.pairList[i].text,
+                                        color = if (!item.pairList[i].flash) item.pairList[i].colorText
+                                        else if (update) item.pairList[i].colorText else Color(
+                                            0xFF090909
+                                        ),
+                                        modifier = Modifier.background(
+                                            if (!item.pairList[i].flash) item.pairList[i].colorBg
+                                            else if (update) item.pairList[i].colorBg else Color(
                                                 0xFF090909
                                             )
-                                    ),
-                                    textDecoration = if (item.pairList[i].underline) TextDecoration.Underline else null,
-                                    fontWeight = if (item.pairList[i].bold) FontWeight.Bold else null,
-                                    fontStyle = if (item.pairList[i].italic) FontStyle.Italic else null,
-                                    fontSize = item.pairList[i].textSize,
-                                    fontFamily = FontFamily(
-                                        Font(R.font.jetbrains, FontWeight.Normal)
+                                        ),
+                                        textDecoration = if (item.pairList[i].underline) TextDecoration.Underline else null,
+                                        fontWeight = if (item.pairList[i].bold) FontWeight.Bold else null,
+                                        fontStyle = if (item.pairList[i].italic) FontStyle.Italic else null,
+                                        fontSize = item.pairList[i].textSize,
+                                        fontFamily = FontFamily(
+                                            Font(R.font.jetbrains, FontWeight.Normal)
+                                        )
                                     )
-                                )
+                                }
+
                             }
 
+
                         }
-
-
                     }
+
+
+
+
+
+
                 }
-            }
+
+
+
         }
     }
 
+
 }
+
+
 
 
 

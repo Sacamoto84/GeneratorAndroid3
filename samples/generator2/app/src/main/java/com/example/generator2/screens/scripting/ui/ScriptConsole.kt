@@ -1,4 +1,4 @@
-package com.example.generator2.scripting.ui
+package com.example.generator2.screens.scripting.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.Global
+import com.example.generator2.screens.ui.ScriptItem
+import com.example.generator2.vm.Global
 
 @Composable
 fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global = viewModel()) {

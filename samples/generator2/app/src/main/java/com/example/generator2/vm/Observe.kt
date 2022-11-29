@@ -1,18 +1,14 @@
-package com.example.generator2
+package com.example.generator2.vm
 
 import android.util.Log
 import com.example.generator2.PlaybackEngine
-import com.example.generator2.Utils
-import com.example.generator2.vmLiveData
-import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import com.example.generator2.UtilsKT
 
 
 class Observe (private var liveData: vmLiveData, private var playbackEngine: PlaybackEngine, private var  utils: UtilsKT)
 {
 
     fun observe() {
-
 
         liveData.ch1_EN.observeForever { ch1_EN ->
             Log.d("observeForever", "onClick")

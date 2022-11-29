@@ -1,22 +1,19 @@
-import android.graphics.Typeface
+package com.example.generator2.screens.editor.ui
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import com.example.generator2.editor.EditorMatModel
-import com.example.generator2.editor.PaintingState
+import com.example.generator2.screens.editor.EditorMatModel
+import com.example.generator2.screens.editor.PaintingState
 import com.smarttoolfactory.gesture.pointerMotionEvents
+
 
 enum class MotionEvent {
     Idle, Down, Move, Up

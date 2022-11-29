@@ -1,22 +1,19 @@
-package com.example.generator2.screens
+package com.example.generator2.screens.scripting
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.Global
-import com.example.generator2.scripting.StateCommandScript
-import com.example.generator2.scripting.ui.RegisterViewDraw
-import com.example.generator2.scripting.ui.ScriptTable
+import com.example.generator2.vm.Global
+import com.example.generator2.vm.StateCommandScript
+import com.example.generator2.screens.scripting.ui.RegisterViewDraw
+import com.example.generator2.screens.ui.ScriptTable
 
 
 //Основной экран для скриптов
 @Composable
 fun ScreenScriptCommon(global: Global = viewModel()) {
-
-
-    //Global.script.LoadScriptToConsoleView()
 
     Column(
         //Modifier

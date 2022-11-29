@@ -13,11 +13,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.viewmodel.compose.viewModel
-import bottomBarEditor
 import colorDarkBackground
-import com.example.generator2.Global
-import com.example.generator2.editor.ScreenEditor
-import com.example.generator2.screens.ScreenScriptCommon
+import com.example.generator2.vm.Global
+import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.editor.bottomBarEditor
+import com.example.generator2.screens.scripting.ScreenScriptCommon
 
 
 //var bottomBarRoute : bottomBarEnum = bottomBarEnum.HOME

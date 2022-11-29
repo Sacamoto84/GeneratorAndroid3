@@ -1,12 +1,12 @@
 package com.example.generator2.di
 
 import android.content.Context
-import com.example.generator2.Observe
+import com.example.generator2.vm.Observe
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.UtilsKT
-import com.example.generator2.scripting.Script
-import com.example.generator2.scripting.ui.ScriptKeyboard
-import com.example.generator2.vmLiveData
+import com.example.generator2.vm.Script
+import com.example.generator2.screens.scripting.ui.ScriptKeyboard
+import com.example.generator2.vm.vmLiveData
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

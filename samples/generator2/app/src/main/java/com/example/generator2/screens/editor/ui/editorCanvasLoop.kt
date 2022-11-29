@@ -1,3 +1,5 @@
+package com.example.generator2.screens.editor.ui
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -11,6 +13,8 @@ import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.unit.dp
+import com.example.generator2.screens.editor.ui.MotionEvent
+import com.example.generator2.screens.editor.ui.model
 import com.smarttoolfactory.gesture.pointerMotionEvents
 
 @Composable

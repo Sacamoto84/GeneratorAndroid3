@@ -1,46 +1,24 @@
-package com.example.generator2.editor
+package com.example.generator2.screens.editor
 
-import ButtonLine
-import ButtonNew
-import ButtonPoint
-import EditorCanvas
-import EditorCanvasLoop
-import android.widget.Toast
 import androidx.compose.foundation.*
-import androidx.compose.foundation.gestures.detectTapGestures
-import androidx.compose.foundation.gestures.rememberScrollableState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
-import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import colorDarkBackground
 import colorLightBackground
 import com.airbnb.lottie.compose.*
 import com.example.generator2.R
-import com.example.generator2.recomposeHighlighterOneLine
-import com.example.generator2.ui.theme.Green400
-import com.example.generator2.ui.theme.Orange400
-import com.example.generator2.ui.theme.Red400
+import com.example.generator2.screens.editor.ui.ButtonLine
+import com.example.generator2.screens.editor.ui.ButtonPoint
+import com.example.generator2.screens.editor.ui.EditorCanvas
 import libs.modifier.recomposeHighlighter
-import model
-import java.util.concurrent.CancellationException
 
 @Composable
 fun ScreenEditor() {

@@ -1,10 +1,10 @@
-package com.example.generator2.scripting
+package com.example.generator2.vm
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.example.generator2.vmLiveData
+import com.example.generator2.screens.consoleLog
 import kotlinx.coroutines.delay
 
 /*
@@ -72,14 +72,10 @@ enum class StateCommandScript {
 }
 
 //Основной класс скриптовой системы
-class Script (private var liveData: vmLiveData) {
-
+class Script(private var liveData: vmLiveData) {
 
     //╭─ Генератор ───────────────────────╮
-    var scriptName: String = ""    //Имя текущего скрипта
-
     var end = true
-    private var yield = false
     private var endTime = 0L              //Время > которого можно продолжать работу
 
     var f = mutableStateListOf<Float>()
@@ -91,7 +87,6 @@ class Script (private var liveData: vmLiveData) {
     init {
         f.addAll(FloatArray(10).toList())
         command(StateCommandScript.STOP)
-
     }
 
     fun command(s: StateCommandScript) {
@@ -126,7 +121,7 @@ class Script (private var liveData: vmLiveData) {
 
     //╰─────────────────────────────╯
 
-    fun StateToString(): String {
+    fun stateToString(): String {
         val s = when (state) {
             StateCommandScript.START      -> "START"
             StateCommandScript.PAUSE      -> "PAUSE"
@@ -141,18 +136,17 @@ class Script (private var liveData: vmLiveData) {
         return s
     }
 
-    fun log(str: String) {
-        //consoleLog.println(str)
+    fun log(str: String) { //
+       consoleLog.println(str)
     }
 
     suspend fun run() {
 
         if (end) return
         end = false
-        yield = false
         if (System.currentTimeMillis() <= endTime) return
         endTime = 0
-        while (!yield && !end) {
+        while (!end) {
 
             cmdExecute(list[pc.value])
             if (System.currentTimeMillis() <= endTime) return
@@ -160,8 +154,6 @@ class Script (private var liveData: vmLiveData) {
 
         }
     }
-
-    //fun openScript(path: String) { }
 
     private fun start() {
         pc.value = 1
@@ -236,15 +228,8 @@ class Script (private var liveData: vmLiveData) {
                 pc.value++
             }
 
-            //"PRINTF" -> { printF() pc++}
-
             "GOTO"                                                 -> {
                 pc.value = listCMD[1].toInt()
-            }
-
-            "YIELD"                                                -> {
-                yield = true
-                pc.value++
             }
 
             "DELAY"                                                -> {
@@ -253,15 +238,10 @@ class Script (private var liveData: vmLiveData) {
                 pc.value++
             }
 
-            "TEXT"                                                 -> {
-                pc.value++
-            }
-
             "LOAD"                                                 -> { //LOAD F1 2344.0  │ 2344.0 -> F1
-                Load()
+                load()
                 pc.value++
             }
-
 
             else                                                   -> {
                 println("Script:? pc:$pc.value:$comand")
@@ -271,10 +251,9 @@ class Script (private var liveData: vmLiveData) {
 
         }
 
-
     }
 
-    fun Load() { //LOAD F1 2344.0  │ 2344.0 -> F1
+    fun load() { //LOAD F1 2344.0  │ 2344.0 -> F1
         val comand: String = list[pc.value]
 
         //Разобрать строку на список команд
@@ -285,7 +264,9 @@ class Script (private var liveData: vmLiveData) {
         }
 
         val index = listCMD[1].drop(1).toInt()
-        f[index] = listCMD[2].toFloat()
+
+        f[index] = if ((listCMD[2].first() == 'F')) f[listCMD[2].drop(1).toInt()]
+        else listCMD[2].toFloat()
 
     }
 
@@ -349,14 +330,13 @@ class Script (private var liveData: vmLiveData) {
             return
         }
 
-        var value = 0.0f
-
         val chanel = listCMD[0].drop(2).toInt() //Номер канала
 
         //╭─ CH1 CH2 ─────────────────────────────────────────────────────────────────╮
         if ((listCMD[0] == "CH1") || (listCMD[0] == "CH2")) {                       //│                                                                       //│
-            val onoff =
-                listCMD[2] == "ON"                                          //│ //───────────────────────────────────────────┬────────────────────────────┤
+            val onoff =                                                             //│
+                listCMD[2] == "ON"                                                  //│
+            //────────────────────────────────────────────┬───────────────────────────┤
             if (listCMD[1] == "CR")                    //│  CH1 CR ON   CH2 CR OFF  //│
             {                                          //╰────────────────────────────┤
                 if (chanel == 1)                                                    //│
@@ -368,17 +348,17 @@ class Script (private var liveData: vmLiveData) {
             if (listCMD[1] == "AM")                     //│  CH1 AM ON   CH2 AM OFF //│
             {                                           //╰───────────────────────────┤
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_AM_EN.postValue( onoff )                                 //│
+                    liveData.ch1_AM_EN.postValue(onoff)                             //│
                 else                                                                //│
-                    liveData.ch2_AM_EN.postValue( onoff )                                 //│
+                    liveData.ch2_AM_EN.postValue(onoff)                             //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             if (listCMD[1] == "FM")                                                 //│
             {                                                                       //│
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_FM_EN.postValue(  onoff)                                  //│
+                    liveData.ch1_FM_EN.postValue(onoff)                             //│
                 else                                                                //│
-                    liveData.ch2_FM_EN.postValue(  onoff )                                 //│
+                    liveData.ch2_FM_EN.postValue(onoff)                             //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             return                                                                  //│
@@ -392,22 +372,22 @@ class Script (private var liveData: vmLiveData) {
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 println(listCMD[2])                                                 //│
-                if (chanel == 1) liveData.ch1_Carrier_Filename.postValue(  listCMD[2])                  //│
+                if (chanel == 1) liveData.ch1_Carrier_Filename.postValue(listCMD[2])    //│
                 else                                                                //│
-                    liveData.ch2_Carrier_Filename.postValue(  listCMD[2])                  //│
+                    liveData.ch2_Carrier_Filename.postValue(listCMD[2])             //│
             }                                                                       //│
 
             //CR[1 2] FR 1000.3                                                     //│
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F') {                            //│
-                    f[listCMD[2].drop(1).toInt()]                         //│
+                val value = if (listCMD[2].first() == 'F') {                            //│
+                    f[listCMD[2].drop(1).toInt()]                                //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
-                if (chanel == 1) liveData.ch1_Carrier_Fr.postValue(  value )                            //│
+                if (chanel == 1) liveData.ch1_Carrier_Fr.postValue(value)           //│
                 else                                                                //│
-                    liveData.ch2_Carrier_Fr.postValue(  value )                            //│
+                    liveData.ch2_Carrier_Fr.postValue(value)                        //│
             }                                                                       //│
             return                                                                  //│
         }                                                                           //│
@@ -421,25 +401,25 @@ class Script (private var liveData: vmLiveData) {
             //AM[1 2] FR 1000.3                                                     //│
             if (listCMD[1] == "FR")                                                 //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F') f[listCMD[2].drop(1)
+                val value = if (listCMD[2].first() == 'F') f[listCMD[2].drop(1)
                     .toInt()]                      //│
                 else                                                                //│
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_AM_Fr.postValue(  value )                                //│
+                    liveData.ch1_AM_Fr.postValue(value)                             //│
                 else                                                                //│
-                    liveData.ch2_AM_Fr.postValue(  value )                                 //│
+                    liveData.ch2_AM_Fr.postValue(value)                             //│
             }                                                                       //│
 
             //AM[1 2] MOD 02_HWawe { 1.9ms }                                        //│
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 if (chanel == 1) {                                                  //│
-                    liveData.ch1_AM_Filename.postValue(  listCMD[2] )                      //│
+                    liveData.ch1_AM_Filename.postValue(listCMD[2])                  //│
                 }                                                                   //│
                 else                                                                //│
-                    liveData.ch2_AM_Filename.postValue(  listCMD[2] )                      //│
+                    liveData.ch2_AM_Filename.postValue(listCMD[2])                  //│
             }                                                                       //│
             return                                                                  //│
         }                                                                           //│
@@ -452,51 +432,52 @@ class Script (private var liveData: vmLiveData) {
             //FM[1 2] BASE 1234.6                                                   //│
             if (listCMD[1] == "BASE")                                               //│
             {                                                                       //│
-                value = if (listCMD[2].first() == 'F') {                            //│
-                    f[listCMD[2].drop(1).toInt()]                      //│
+                val value = if (listCMD[2].first() == 'F') {                            //│
+                    f[listCMD[2].drop(1).toInt()]                                //│
                 } else                                                              //│
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_FM_Base.postValue(  value  )                              //│
+                    liveData.ch1_FM_Base.postValue(value)                           //│
                 else                                                                //│
-                    liveData.ch2_FM_Base.postValue(  value )                               //│
+                    liveData.ch2_FM_Base.postValue(value)                           //│
             }                                                                       //│
         }                                                                           //│
         //│
         //FM[1 2] DEV  123.8                                                        //│
         if (listCMD[1] == "DEV")                                                    //│
         {
-            value = if (listCMD[2].first() == 'F') {
+            val value = if (listCMD[2].first() == 'F') {
                 f[listCMD[2].drop(1).toInt()]
             } else listCMD[2].toFloat()
 
-            if (chanel == 1) liveData.ch1_FM_Dev.postValue( value )
-            else                                                                    //│
-                liveData.ch2_FM_Dev.postValue(  value  )                                   //│
-        }                                                                           //│
-
-        //FM[1 2] MOD 02_HWawe                                                      //│
-        if (listCMD[1] == "MOD")                                                    //│
-        {                                                                           //│
-            if (chanel == 1) liveData.ch1_FM_Filename.postValue(  listCMD[2])
-            else                                                                    //│
-                liveData.ch2_FM_Filename.postValue( listCMD[2]  )                         //│
-        }                                                                           //│
-
-        //FM[1 2] FR   3.5                                                          //│
-        if (listCMD[1] == "FR")                                                     //│
-        {                                                                           //│
-            value = if (listCMD[2].first() == 'F') {
-                f[listCMD[2].drop(1).toInt()]
-            } else listCMD[2].toFloat()
-
-            if (chanel == 1) liveData.ch1_FM_Fr.postValue( value)
+            if (chanel == 1) liveData.ch1_FM_Dev.postValue(value)
             else                                                                     //│
-                liveData.ch2_FM_Fr.postValue( value  )                                     //│
+                liveData.ch2_FM_Dev.postValue(value)                                 //│
         }                                                                            //│
-        return                                                                       //│
-    }                                                                                //│ //╰────────────────────────────────────────────────────────────────────────────────╯
+
+        //FM[1 2] MOD 02_HWawe                                                       //│
+        if (listCMD[1] == "MOD")                                                     //│
+        {                                                                            //│
+            if (chanel == 1) liveData.ch1_FM_Filename.postValue(listCMD[2])
+            else                                                                     //│
+                liveData.ch2_FM_Filename.postValue(listCMD[2])                       //│
+        }                                                                            //│
+
+        //FM[1 2] FR   3.5                                                           //│
+        if (listCMD[1] == "FR")                                                      //│
+        {                                                                            //│
+            val value = if (listCMD[2].first() == 'F') {
+                f[listCMD[2].drop(1).toInt()]
+            } else listCMD[2].toFloat()
+
+            if (chanel == 1) liveData.ch1_FM_Fr.postValue(value)
+            else                                                                      //│
+                liveData.ch2_FM_Fr.postValue(value)                                   //│
+        }                                                                             //│
+        return                                                                        //│
+    }                                                                                 //│
+    // ╰────────────────────────────────────────────────────────────────────────────────╯
 
     private fun comandPlusMinus() { //MINUS F1 5000.0
         //MINUS F1 F2
@@ -509,24 +490,29 @@ class Script (private var liveData: vmLiveData) {
         val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9 //MINUS F1 F2
         if (listCMD[2].first() == 'F') { //Второй операнд это регистор
             val secondIndex = listCMD[2].drop(1)
-                .toInt() //Индекс второго регистра //┌── MINUS ────────────────────────────────────┐
+                .toInt() //Индекс второго регистра
+            // ┌── MINUS ────────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - f[secondIndex]  //MINUS F* F*
-            } //└────────────────────────────────────────────┘
+            }
+            //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + f[secondIndex]          //PLUS F* F*
             } //└────────────────────────────────────────────┘
         } else { //Второй операнд это константа
             //MINUS F1 5000.0
-            val fvalue = listCMD[2].toFloat() //┌── MINUS ───────────────────────────────────┐
+            val fvalue = listCMD[2].toFloat()
+            //┌── MINUS ───────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - fvalue //MINUS F* F*
-            } //└────────────────────────────────────────────┘
+            }
+            //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + fvalue //MINUS F* F*
-            } //└────────────────────────────────────────────┘
+            }
+            //└────────────────────────────────────────────┘
         }
     }
 
@@ -534,7 +520,6 @@ class Script (private var liveData: vmLiveData) {
     fun unit5Load() {
         list.clear()
         list.add("New")
-        list.add("T Unit test")
         list.add("LOAD F1 1000")
         list.add("IF F1 < 10000")
         list.add("DELAY 50")
@@ -542,9 +527,8 @@ class Script (private var liveData: vmLiveData) {
         list.add("DELAY 50")
         list.add("PLUS F1 100")
         list.add("DELAY 50")
-        list.add("GOTO 3")
+        list.add("GOTO 2")
         list.add("ENDIF")
-        list.add("T Выход")
         list.add("END")
     }
 

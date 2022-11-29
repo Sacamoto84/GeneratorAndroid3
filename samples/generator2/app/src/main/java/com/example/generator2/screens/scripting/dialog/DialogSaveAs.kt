@@ -1,4 +1,4 @@
-package com.example.generator2.screens
+package com.example.generator2.screens.scripting.dialog
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -31,13 +31,13 @@ import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
 import colorLightBackground
-import com.example.generator2.Global
+import com.example.generator2.vm.Global
 import com.example.generator2.R
 import kotlinx.coroutines.delay
 import libs.MToast
 
 @Composable
-fun DialogSaveAs(openDialog :  MutableState<Boolean>, global: Global = viewModel()) {
+fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global = viewModel()) {
 
     val context = LocalContext.current
     var value by remember { mutableStateOf("")}

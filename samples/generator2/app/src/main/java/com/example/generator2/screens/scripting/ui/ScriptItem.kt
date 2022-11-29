@@ -1,4 +1,4 @@
-package com.example.generator2.scripting.ui
+package com.example.generator2.screens.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

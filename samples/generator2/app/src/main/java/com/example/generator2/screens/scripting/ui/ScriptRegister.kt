@@ -1,4 +1,4 @@
-package com.example.generator2.scripting.ui
+package com.example.generator2.screens.scripting.ui
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,7 +13,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.Global
+import com.example.generator2.vm.Global
 
 
 //Блок регистров

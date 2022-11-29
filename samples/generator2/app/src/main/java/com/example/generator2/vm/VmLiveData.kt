@@ -1,11 +1,10 @@
-package com.example.generator2
+package com.example.generator2.vm
 
 import androidx.lifecycle.MutableLiveData
 
-
 class vmLiveData {
 
-        var ch1_EN = MutableLiveData<Boolean>(true)          //: MutableState<Int> = mutableStateOf( 1)
+        var ch1_EN = MutableLiveData<Boolean>(true)
         var ch1_Carrier_Filename = MutableLiveData<String>("03_HWave2")
         var ch1_Carrier_Fr = MutableLiveData<Float>(2000.0f)     //Частота несущей
         var ch1_AM_EN = MutableLiveData<Boolean>(false)

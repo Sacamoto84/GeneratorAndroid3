@@ -1,6 +1,6 @@
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.Global
+import com.example.generator2.vm.Global
 import com.example.generator2.mainscreen4.TemplateBottomBar6Key
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.mainscreen4.bottomBarEnum
