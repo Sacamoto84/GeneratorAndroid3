@@ -1,7 +1,6 @@
 package com.example.generator2
 
 import android.os.Bundle
-import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -29,34 +28,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import colorDarkBackground
 import com.example.generator2.mainscreen4.mainsreen4
 import com.example.generator2.screens.editor.ScreenEditor
 import com.example.generator2.screens.scripting.ScreenScriptCommon
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.scripting.ScreenScriptInfo
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
+import com.example.generator2.vm.Global
 import com.example.generator2.vm.Observe
+import com.google.accompanist.navigation.animation.AnimatedNavHost
+import com.google.accompanist.navigation.animation.composable
+import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
 import libs.modifier.recomposeHighlighter
 import javax.inject.Inject
 
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val global: Global by viewModels()
 
-    @Inject lateinit var observe: Observe
-    @Inject lateinit var playbackEngine: PlaybackEngine
+    @Inject
+    lateinit var observe: Observe
+
+    @Inject
+    lateinit var playbackEngine: PlaybackEngine
 
 
-
+    @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -131,7 +134,6 @@ class MainActivity : ComponentActivity() {
         setContent {
 
 
-
             val systemUiController = rememberSystemUiController()
             SideEffect {
                 systemUiController.setSystemBarsColor(colorDarkBackground, darkIcons = false)
@@ -139,22 +141,52 @@ class MainActivity : ComponentActivity() {
 
             KeepScreenOn()
 
-            Generator2Theme {
+            //initialState - С какого экрана переход
+            //targetState   -переходит на
 
-                val navController = rememberNavController()
 
-                NavHost(navController = navController, startDestination = "home") {
-                    composable("home")
-                    {
-                        mainsreen4(navController, global)
-                    }
-                    composable("script") { ScreenScriptCommon(navController, global)  }
-                    composable("editor") { ScreenEditor(navController, global)  }
+            //enterTransition - управляет тем, что EnterTransition выполняется, когда targetState  NavBackStackEntry на экране появляется значок .
+            //exitTransition  - управляет тем, что ExitTransition  запускается, когда initialState NavBackStackEntry исчезает с экрана.
+
+            Generator2Theme(darkTheme = true) {
+
+
+                val navController = rememberAnimatedNavController()
+
+                AnimatedNavHost(
+                    navController = navController,
+                    startDestination = "home",
+                    modifier = Modifier.background(Color.Black)
+                ) {
+
+                    composable("home",
+                        enterTransition = { // Let's make for a really long fade in
+                            fadeIn(animationSpec = tween(0))
+                        },
+
+                        exitTransition = {
+                            fadeOut(animationSpec = tween(0))
+                        }) { mainsreen4(navController, global) }
+
+
+                    composable("script",
+                        enterTransition = { fadeIn(animationSpec = tween(0))  },
+                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
+                    ) { ScreenScriptCommon(navController, global) }
+
+                    composable("editor",
+                        enterTransition = { fadeIn(animationSpec = tween(0))  },
+                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
+                    ) { ScreenEditor(navController, global) }
+
+
+                    composable("scriptinfo",
+                        enterTransition = { fadeIn(animationSpec = tween(0))  },
+                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
+                    ) { ScreenScriptInfo(navController) }
+
 
                 }
-
-
-
 
 
                 //ScriptActivity()
@@ -623,7 +655,8 @@ class MainActivity : ComponentActivity() {
 
         var editable = remember { mutableStateOf(true) }
 
-        AnimatedVisibility(visible = editable.value,
+        AnimatedVisibility(
+            visible = editable.value,
             Modifier.clickable { editable.value = !editable.value }) {
             Text(text = "Edit", fontSize = 48.sp)
         }

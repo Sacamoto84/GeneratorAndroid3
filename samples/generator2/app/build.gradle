@@ -104,11 +104,7 @@ android {
 dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
 
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
 
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
@@ -118,15 +114,15 @@ dependencies {
     //androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     //androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
-    implementation "androidx.compose.ui:ui-util:$compose_version"
+
 
     implementation 'com.snatik:storage:2.1.0'
     implementation 'com.github.flipagram:android-assetcopier:0.1.1'
     implementation "com.orhanobut:hawk:2.0.1"
 
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
 
-    implementation "com.google.accompanist:accompanist-drawablepainter:0.25.0"
+
+
 
     implementation "androidx.appcompat:appcompat:1.5.1"
     implementation "androidx.appcompat:appcompat-resources:1.5.1"
@@ -148,13 +144,30 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.9'
 
-    implementation "com.google.accompanist:accompanist-webview:0.26.5-rc"
-    implementation "com.google.accompanist:accompanist-pager:0.26.5-rc"
-    implementation "com.google.accompanist:accompanist-systemuicontroller:0.26.5-rc"
+
 
     implementation 'com.alexstyl:warden:1.0.0-alpha2'
 
-    implementation("androidx.compose.animation:animation-graphics:$compose_version")
+///////////////////
+    //Compose
+    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.material:material:$compose_version"
+
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.ui:ui-util:$compose_version"
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
+
+    implementation "androidx.compose.animation:animation:$compose_version"
+    implementation "androidx.compose.animation:animation-core:$compose_version"
+    implementation "androidx.compose.animation:animation-graphics:$compose_version"
+///////////////////
+    //accompanist
+    implementation "com.google.accompanist:accompanist-navigation-animation:0.28.0"
+    implementation "com.google.accompanist:accompanist-drawablepainter:0.28.0"
+    implementation "com.google.accompanist:accompanist-webview:0.28.0"
+    implementation "com.google.accompanist:accompanist-pager:0.28.0"
+    implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 
 ///////////////////
     //lottie анимация
@@ -185,6 +198,7 @@ dependencies {
 
     //Навигация
     implementation "androidx.navigation:navigation-compose:2.5.3"
+
 
 
 

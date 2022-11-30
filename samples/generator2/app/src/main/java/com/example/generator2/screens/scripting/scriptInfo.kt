@@ -2,26 +2,20 @@ package com.example.generator2.screens.scripting
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import com.example.generator2.console.Console2
-
 
 //Экран описания языка
 @Composable
-fun ScreenScriptInfo()
+fun ScreenScriptInfo(navController: NavHostController)
 {
     val console = Console2()
     Info0(console)
     console.Draw()
 }
 
-@Preview
 @Composable
-fun ScreeScriptInfoReview(){
-    ScreenScriptInfo()
-}
-
-@Composable
-fun Info0( console: Console2 )
+private fun Info0( console: Console2 )
 {
     console.println("Описание работы скриптов V1")
     console.println("╭─── Генератор ────────────────────╮")

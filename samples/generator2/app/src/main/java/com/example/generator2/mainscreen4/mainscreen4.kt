@@ -247,12 +247,13 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
         // content alpha provided by BottomAppBar
         Spacer(modifier = Modifier.weight(1f))
 
-
         IconButton(onClick = {navController.navigate("script") }) {
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
 
-        IconButton(onClick = { }) {
+        Spacer(modifier = Modifier.weight(0.1f))
+
+        IconButton(onClick = {navController.navigate("editor") }) {
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
         }
 
