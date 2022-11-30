@@ -37,7 +37,7 @@ import kotlinx.coroutines.delay
 import libs.MToast
 
 @Composable
-fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global = viewModel()) {
+fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global) {
 
     val context = LocalContext.current
     var value by remember { mutableStateOf("")}

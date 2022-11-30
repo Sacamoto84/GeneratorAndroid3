@@ -33,7 +33,7 @@ object UIspinner {
         Mod: String,
         transparrent: Boolean = false,
         modifier: Modifier = Modifier,
-        global: Global = viewModel()
+        global: Global
     ) {
 
         val expanded = remember { mutableStateOf(false) }
@@ -67,6 +67,8 @@ object UIspinner {
         itemlist.forEachIndexed { index, element ->
             if (element.name == currentValue) indexBitmapCurrent.value = index
         }
+
+        if (itemlist.isEmpty()) return
 
         Box(
             modifier = Modifier

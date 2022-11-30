@@ -26,9 +26,7 @@ import com.example.generator2.ui.wiget.UIspinner
 
 
 @Composable
-fun CardCarrier(str: String = "CH0") {
-
-    val global: Global = viewModel()
+fun CardCarrier(str: String = "CH0", global: Global) {
 
     val chEN: State<Boolean?> = if (str == "CH0") {
         global.liveData.ch1_EN.observeAsState()
@@ -111,7 +109,7 @@ fun CardCarrier(str: String = "CH0") {
                     modifier = Modifier
                         .padding(top = 0.dp, start = 8.dp, end = 8.dp)
                         .wrapContentWidth()
-                        .clip(shape = RoundedCornerShape(4.dp))
+                        .clip(shape = RoundedCornerShape(4.dp)), global = global
                 )
 
             }
@@ -132,8 +130,8 @@ fun CardCarrier(str: String = "CH0") {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            CardAM(str)
-            CardFM(str)
+            CardAM(str, global)
+            CardFM(str, global)
 
         }
 

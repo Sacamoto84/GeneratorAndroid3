@@ -33,7 +33,9 @@ import com.example.generator2.vm.Global
 import com.example.generator2.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.vm.Script
 import com.example.generator2.ui.theme.NoRippleTheme
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
+import javax.inject.Inject
 
 //Экраны для нижнего меню
 enum class RouteKeyboardEnum {
@@ -129,7 +131,7 @@ class ScriptKeyboard(private val s: Script) {
     }
 
     @Composable
-    fun Core() {
+    fun Core(global : Global) {
         println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc.value} list.lastIndex:${list.lastIndex}" )
         if (selectIndex <  0 ) selectIndex = 0
         if (s.pc.value < 0 ) s.pc.value = 0
@@ -151,9 +153,9 @@ class ScriptKeyboard(private val s: Script) {
             RouteKeyboardEnum.FMValue    -> ScreenFMValue(route.value.argument)
             RouteKeyboardEnum.Comparison -> ScreenComparison(route.value.argument)
             RouteKeyboardEnum.IFValue    -> ScreenIFValue(route.value.argument)
-            RouteKeyboardEnum.MODCR      -> ScreenMod(route.value.argument, "CR")
-            RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM")
-            RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM")
+            RouteKeyboardEnum.MODCR      -> ScreenMod(route.value.argument, "CR", global)
+            RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM", global)
+            RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM", global)
         }
 
 
@@ -180,8 +182,12 @@ class ScriptKeyboard(private val s: Script) {
     //var itemlistCarrier: ArrayList<itemList> = ArrayList() //Создать список
     //var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
 
+
     @Composable
-    fun ScreenMod(arg: Int, type: String = "CR", global: Global = viewModel()) {
+    fun ScreenMod(arg: Int, type: String = "CR", global : Global) {
+
+        //val global : Global = viewModel()
+
         val lazyListState: LazyListState = rememberLazyListState()
         val selectedIndex = remember { mutableStateOf(0) }
         Row {

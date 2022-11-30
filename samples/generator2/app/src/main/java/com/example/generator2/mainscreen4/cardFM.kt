@@ -28,8 +28,7 @@ import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UIspinner
 
 @Composable
-fun CardFM(str: String = "CH0", global: Global = viewModel()) {
-
+fun CardFM(str: String = "CH0", global: Global) {
 
 
     val fmEN: State<Boolean?> = if (str == "CH0") {
@@ -127,7 +126,7 @@ fun CardFM(str: String = "CH0", global: Global = viewModel()) {
                     //.fillMaxWidth()
                     .clip(shape = RoundedCornerShape(4.dp))
                     .background(Color.Black)
-            )
+                , global = global)
 
         }
 

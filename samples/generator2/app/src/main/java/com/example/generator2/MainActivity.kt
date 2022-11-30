@@ -1,6 +1,7 @@
 package com.example.generator2
 
 import android.os.Bundle
+import android.provider.ContactsContract
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -28,9 +29,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import colorDarkBackground
 import com.example.generator2.mainscreen4.mainsreen4
+import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.vm.Global
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
@@ -135,11 +141,21 @@ class MainActivity : ComponentActivity() {
 
             Generator2Theme {
 
-
                 val navController = rememberNavController()
 
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home")
+                    {
+                        mainsreen4(navController, global)
+                    }
+                    composable("script") { ScreenScriptCommon(navController, global)  }
+                    composable("editor") { ScreenEditor(navController, global)  }
 
-                mainsreen4()
+                }
+
+
+
+
 
                 //ScriptActivity()
 

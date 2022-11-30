@@ -20,7 +20,7 @@ import com.example.generator2.screens.ui.ScriptItem
 import com.example.generator2.vm.Global
 
 @Composable
-fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global = viewModel()) {
+fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global) {
 
     println("ScriptConsole selectLine:$selectLine" )
 

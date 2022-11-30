@@ -24,9 +24,7 @@ import com.example.generator2.ui.wiget.UIspinner
 
 
 @Composable
-fun CardAM(str: String = "CH0") {
-
-    val global: Global = viewModel()
+fun CardAM(str: String = "CH0", global: Global) {
 
     val amEN: State<Boolean?> = if (str == "CH0") {
         global.liveData.ch1_AM_EN.observeAsState()
@@ -117,7 +115,7 @@ fun CardAM(str: String = "CH0") {
                 modifier = Modifier
                     .padding(top = 0.dp, start = 8.dp, end = 8.dp)
                     .wrapContentWidth()
-                    .clip(shape = RoundedCornerShape(4.dp))
+                    .clip(shape = RoundedCornerShape(4.dp)), global = global
             )
 
 

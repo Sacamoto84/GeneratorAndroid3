@@ -38,7 +38,7 @@ val refresh = mutableStateOf(0)
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScriptTable(global: Global = viewModel()) {
+fun ScriptTable(global: Global) {
 
     val openDialogSaveAs = remember { mutableStateOf(false) }
 
@@ -85,7 +85,7 @@ fun ScriptTable(global: Global = viewModel()) {
                     if (global.script.pc.value > global.script.list.lastIndex) global.script.pc.value =
                         global.script.list.lastIndex
 
-                    ScriptConsole(global.script.list, global.script.pc.value)
+                    ScriptConsole(global.script.list, global.script.pc.value, global = global)
 
                     Text(text = "PC:${global.script.pc.value}", color = Color.Red)
                 }
@@ -260,9 +260,6 @@ fun ScriptTable(global: Global = viewModel()) {
 
                                         global.script.list.removeAt(global.script.pc.value)
 
-                                        //if (pc.value > 1)
-                                        //  pc.value--
-
                                         if (global.script.pc.value > global.script.list.lastIndex) {
                                             global.script.pc.value = global.script.list.lastIndex
                                         }
@@ -271,10 +268,6 @@ fun ScriptTable(global: Global = viewModel()) {
                                 },
                                 resId = R.raw.delete, size = 50.dp,
                             )
-
-
-
-
 
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Up",
@@ -291,7 +284,6 @@ fun ScriptTable(global: Global = viewModel()) {
 
                                 resId = R.raw.up,
                                 size = 50.dp,
-
 
                                 )
 
@@ -321,16 +313,16 @@ fun ScriptTable(global: Global = viewModel()) {
                 }
             }
 
-            DialogSaveAs(openDialogSaveAs)
+            DialogSaveAs(openDialogSaveAs, global)
 
-            DialogDeleteRename(openDialogDeleteRename, filename)
+            DialogDeleteRename(openDialogDeleteRename, filename, global)
 
 
 
             if (global.script.state == StateCommandScript.ISEDITTING) {
                 Column(
                 ) {
-                    global.keyboard.Core()
+                    global.keyboard.Core(global)
                 }
             }
         }

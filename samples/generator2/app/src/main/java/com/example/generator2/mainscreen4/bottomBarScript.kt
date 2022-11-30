@@ -16,7 +16,7 @@ private fun Key0() {
 }
 
 @Composable
-private fun Key1(global: Global = viewModel()) {
+private fun Key1(global: Global) {
 
 
     if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
@@ -41,14 +41,14 @@ private fun Key1(global: Global = viewModel()) {
 }
 
 @Composable
-private fun Key2(global: Global = viewModel()) {
+private fun Key2(global: Global) {
     TemplateButtonBottomBar(str = "Стоп", onClick = {
         global.script.command(StateCommandScript.STOP)
     })
 }
 
 @Composable
-private fun Key4(global: Global = viewModel()) {
+private fun Key4(global: Global ) {
     TemplateButtonBottomBar(
         str = "Назад", onClick = {
             global.bottomBarRoute.value = bottomBarEnum.HOME
@@ -59,18 +59,18 @@ private fun Key4(global: Global = viewModel()) {
 }
 
 @Composable
-private fun Key5(global: Global = viewModel()) {
+private fun Key5(global: Global ) {
     TemplateButtonBottomBar(str = "Назад", onClick = {
         global.bottomBarRoute.value = bottomBarEnum.HOME
     })
 }
 
 @Composable
-fun bottomBarScript() {
+fun bottomBarScript(global : Global) {
     TemplateBottomBar6Key(
-        key0 = { Key1() },
+        key0 = { Key1(global) },
         key2 = { Key0() },
-        key3 = { Key2() },
-        key5 = { Key4() },
+        key3 = { Key2(global) },
+        key5 = { Key4(global) },
     )
 }

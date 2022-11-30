@@ -35,7 +35,7 @@ private fun Key4() {
 
 @Composable
 private fun Key5(
-    global: Global = viewModel()
+    global: Global
 ) {
     TemplateButtonBottomBar(str = "Назад", onClick = {
         global.bottomBarRoute.value = bottomBarEnum.HOME
@@ -43,8 +43,8 @@ private fun Key5(
 }
 
 @Composable
-fun bottomBarEditor() {
+fun bottomBarEditor(global: Global) {
     TemplateBottomBar6Key(
-        key5 = { Key5() },
+        key5 = { Key5(global) },
     )
 }

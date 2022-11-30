@@ -27,7 +27,7 @@ import libs.MToast
 
 
 @Composable
-fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: Global = viewModel()) {
+fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: Global ) {
 
     val context = LocalContext.current
 

@@ -18,7 +18,7 @@ import com.example.generator2.vm.Global
 
 //Блок регистров
 @Composable
-fun RegisterViewDraw(modifier: Modifier = Modifier) {
+fun RegisterViewDraw(modifier: Modifier = Modifier, global: Global) {
     Box(
         modifier = Modifier.padding(start = 6.dp, end = 6.dp)
             .fillMaxWidth() //.background(Color.Red)
@@ -31,13 +31,13 @@ fun RegisterViewDraw(modifier: Modifier = Modifier) {
         ) {
             Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 repeat(5) {
-                    ComposeBoxForF(it, Modifier.weight(1f))
+                    ComposeBoxForF(it, Modifier.weight(1f), global = global)
                 }
             }
 
             Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 repeat(5) {
-                    ComposeBoxForF(it + 5, Modifier.weight(1f))
+                    ComposeBoxForF(it + 5, Modifier.weight(1f), global = global)
                 }
             }
         }
@@ -46,7 +46,8 @@ fun RegisterViewDraw(modifier: Modifier = Modifier) {
 
 //Ячейка регистра
 @Composable
-private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Global = viewModel()) {
+private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Global) {
+
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
             .border(1.dp, Color.White, RoundedCornerShape(4.dp))

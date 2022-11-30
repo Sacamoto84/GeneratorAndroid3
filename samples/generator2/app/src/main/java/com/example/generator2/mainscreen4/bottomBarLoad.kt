@@ -5,7 +5,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.vm.Global
 
 @Composable
-private fun Key0(global: Global = viewModel()) {
+private fun Key0(global: Global) {
     TemplateButtonBottomBar(
         str = "Загрузить текущее",
         onClick = {
@@ -15,7 +15,7 @@ private fun Key0(global: Global = viewModel()) {
 }
 
 @Composable
-private fun Key1(global: Global = viewModel()) {
+private fun Key1(global: Global) {
     TemplateButtonBottomBar(
         str = "Загрузить как",
         onClick = {
@@ -24,7 +24,7 @@ private fun Key1(global: Global = viewModel()) {
 }
 
 @Composable
-private fun Key5(global: Global = viewModel()) {
+private fun Key5(global: Global) {
     TemplateButtonBottomBar(
         str = "Назад",
         onClick = {
@@ -33,13 +33,13 @@ private fun Key5(global: Global = viewModel()) {
 }
 
 @Composable
-fun BottomBarLoad() {
+fun BottomBarLoad(global: Global) {
     TemplateBottomBar6Key(
-        key0 = { Key0() },
-        key1 = { Key1() },
+        key0 = { Key0(global) },
+        key1 = { Key1(global) },
         //key2 = { Key2() },
         //key3 = {  },
         //key4 = { },
-        key5 = { Key5()   },
+        key5 = { Key5(global)   },
     )
 }

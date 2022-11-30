@@ -1,6 +1,7 @@
 package com.example.generator2.vm
 
 import androidx.lifecycle.MutableLiveData
+import com.example.generator2.itemList
 
 class vmLiveData {
 
@@ -27,6 +28,10 @@ class vmLiveData {
         var ch2_FM_Base = MutableLiveData<Float>(2500f) //Частота базы
         var ch2_FM_Dev = MutableLiveData<Float>(1100f) //Частота базы
         var ch2_FM_Fr = MutableLiveData<Float>(5.1f)
+
+
+
+
 
     }
 

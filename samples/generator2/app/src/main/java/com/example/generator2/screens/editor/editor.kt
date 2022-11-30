@@ -11,6 +11,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import colorDarkBackground
 import colorLightBackground
 import com.airbnb.lottie.compose.*
@@ -18,10 +19,11 @@ import com.example.generator2.R
 import com.example.generator2.screens.editor.ui.ButtonLine
 import com.example.generator2.screens.editor.ui.ButtonPoint
 import com.example.generator2.screens.editor.ui.EditorCanvas
+import com.example.generator2.vm.Global
 import libs.modifier.recomposeHighlighter
 
 @Composable
-fun ScreenEditor() {
+fun ScreenEditor(navController: NavHostController, global: Global) {
 
     Column(
         Modifier.fillMaxSize() //  .recomposeHighlighter()
