@@ -20,7 +20,7 @@ import com.smarttoolfactory.gesture.pointerMotionEvents
 @Composable
 fun EditorCanvasLoop() {
 
-    Canvas(modifier = Modifier.padding(16.dp).size(200.dp).background(Color.Black)
+    Canvas(modifier = Modifier.padding(0.dp).size(200.dp).background(Color.Black)
         .border(1.dp, color = Color.DarkGray).clipToBounds()
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
             //model.motionEvent.value = MotionEvent.Down
@@ -59,11 +59,14 @@ fun EditorCanvasLoop() {
         ////////////////////
 
         //Рисуем сам сигнал
-        val pointsSignal = model.createPointLoop(size).first
+        val pointsCache = model.createPointLoop(size)
+
+
+
 
         drawPoints(
             color = Color.Green,
-            points = pointsSignal,
+            points = pointsCache.first,
             cap = StrokeCap.Round,
             pointMode = PointMode.Polygon,
             strokeWidth = 5f
@@ -72,7 +75,7 @@ fun EditorCanvasLoop() {
        //Рисуем кадрат
         drawPath(
             color = Color.Red,
-            path = model.createPointLoop(size).four,
+            path = pointsCache.four,
             style = Stroke(
                 width = 2.dp.toPx(),
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
@@ -82,13 +85,12 @@ fun EditorCanvasLoop() {
         //Рисуем референс
         drawPath(
             color = Color.Blue,
-            path = model.createPointLoop(size).third,
+            path = pointsCache.third,
             style = Stroke(
                 width = 2.dp.toPx(),
                 pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
             )
         )
-
 
     }
 

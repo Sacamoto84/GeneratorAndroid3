@@ -257,16 +257,26 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
         }
 
+
         Spacer(modifier = Modifier.weight(0.2f))
 
+//        IconButton(onClick = { exitProcess(0) }) {
+//            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
+//        }
+//        IconButton(onClick = { exitProcess(0) }) {
+//            Icon(painter = painterResource(R.drawable.close2), contentDescription = null)
+//        }
+//        IconButton(onClick = { exitProcess(0) }) {
+//            Icon(painter = painterResource(R.drawable.close3), contentDescription = null)
+//        }
         IconButton(onClick = { exitProcess(0) }) {
-            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
+            Icon(painter = painterResource(R.drawable.close4), contentDescription = null)
         }
-        //Spacer(modifier = Modifier.weight(0.1f))
+
+    //Spacer(modifier = Modifier.weight(0.1f))
 
     }
 }
-
 
 /**
  * Button for ModalDrawer or BottomDrawer menu items

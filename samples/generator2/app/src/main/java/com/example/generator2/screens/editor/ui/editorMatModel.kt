@@ -17,14 +17,27 @@ enum class PaintingState {
 
 class EditorMatModel {
 
+    //4096
+    val editMax = 128 //Количество строк
+
+    //1024
+    val editWight = 512 //Количество столбцов
+
+    var gainXX = mutableStateOf(1f)
+    var gainYY = mutableStateOf(1f)
+
+    init {
+        //Нормализация при создании
+        gainYYNormalize()
+    }
+
+
+
+
+
     val refsresh = mutableStateOf(0)
     val refsreshButton = mutableStateOf(0)
 
-    //4096
-    val editMax = 32 //Соличество строк
-
-    //1024
-    val editWight = 32 //Количество столбцов
 
     var state = PaintingState.Show
 
@@ -34,19 +47,18 @@ class EditorMatModel {
 
     val signal: IntArray = IntArray(editWight + 1) { editMax / 2 }
 
-
-    var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы
+    var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы рисования самого редактора
 
     var lastPosition: Offset
+
+    var currentPosition = mutableStateOf(Offset(sizeCanvas.width / 2, sizeCanvas.height / 2))
 
     init {
         lastPosition = Offset(sizeCanvas.width / 2, sizeCanvas.height / 2) //Прошлая кордината
     }
 
-    var currentPosition = mutableStateOf(Offset(sizeCanvas.width / 2, sizeCanvas.height / 2))
-
     var position: Offset = Offset(
-        0f, 0f
+        sizeCanvas.width / 2, sizeCanvas.height / 2
     )
 
     //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
@@ -206,38 +218,70 @@ class EditorMatModel {
         return points
     }
 
+
+
+
+    fun gainXXInc()
+    {
+        gainXX.value *= 2.0f
+    }
+    fun gainXXDec()
+    {
+        gainXX.value /= 2.0f
+    }
+
+    fun gainYYInc()
+    {
+        gainYY.value *= 2.0f
+    }
+    fun gainYYDec()
+    {
+        gainYY.value /= 2.0f
+    }
+
+    fun gainYYNormalize()
+    {
+        gainXX.value = 1f
+        gainYY.value = gainXX.value * editWight/editMax
+    }
     /**
      * Создать точки из signal для отображения
      */
+
     fun createPointLoop(size: Size = sizeCanvas): Four<MutableList<Offset>, MutableList<Offset>, Path, Path> {
 
-        var gain = 8
+        println("------------------- createPointLoop")
+
+        val gainX =  1024/editWight * gainXX.value
+        val k = sizeCanvas.height/ sizeCanvas.width
+
+        //val k2 = 1024/editMax
+
+        val gainY = gainX * k * gainYY.value
 
         val points = mutableListOf<Offset>()
         val points2 = mutableListOf<Offset>()
         val points3 = mutableListOf<Offset>()
         val points4 = mutableListOf<Offset>()
 
-        gain = 8
-
         val pathRect = Path() //Вертикальная полоса
         val pathRef = Path()  //Референсные линии
 
-        for (x in 0 until editWight * gain) {
-            val y = gain * signal[x / gain]
+        for (x in 0 until editWight * gainX.toInt()) {
+            val y = gainY * signal[x / gainX.toInt()]
             points.add(
                 Offset(
-                    size.width / 2 + x.toFloat() - position.x * gain,
-                    size.height / 2 + y.toFloat() - position.y * gain
+                    size.width / 2 + x.toFloat() - position.x * gainX,
+                    size.height / 2 + y.toFloat() - position.y * gainY
                 )
             )
 
             //Внешний квадрат
             if (x == 0) {
-                val top = size.height / 2 - position.y * gain
-                val bottom = size.height / 2 - position.y * gain + editMax * gain
-                val left = size.width / 2 - position.x * gain
-                val right = size.width / 2 - position.x * gain + editWight * gain
+                val top = size.height / 2 - position.y * gainY
+                val bottom = size.height / 2 - position.y * gainY + editMax * gainY
+                val left = size.width / 2 - position.x * gainX
+                val right = size.width / 2 - position.x * gainX + editWight * gainX
 
                 pathRect.reset()
                 pathRect.addRect(
@@ -249,10 +293,10 @@ class EditorMatModel {
 
                 //Референсные линии
                 pathRef.reset()
-                pathRef.moveTo(left, size.height / 2 - position.y * gain + editMax * gain / 2)
-                pathRef.lineTo(right, size.height / 2 - position.y * gain + editMax * gain / 2)
-                pathRef.moveTo(size.width / 2 - position.x * gain + editWight * gain / 2, top)
-                pathRef.lineTo(size.width / 2 - position.x * gain + editWight * gain / 2, bottom)
+                pathRef.moveTo(left, size.height / 2 - position.y * gainY + editMax * gainY / 2)
+                pathRef.lineTo(right, size.height / 2 - position.y * gainY + editMax * gainY / 2)
+                pathRef.moveTo(size.width / 2 - position.x * gainX + editWight * gainX / 2, top)
+                pathRef.lineTo(size.width / 2 - position.x * gainX + editWight * gainX / 2, bottom)
             }
 
         }

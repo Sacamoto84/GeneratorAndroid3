@@ -1,4 +1,4 @@
-package com.example.generator2.editor
+package com.example.generator2.screens.editor.ui
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -108,14 +108,6 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
 
             println("recompose EditorPreviewCarrier Canvas")
 
-            drawPoints(
-                color = Color.Yellow,
-                points = points,
-                cap = StrokeCap.Round,
-                pointMode = PointMode.Lines,
-                strokeWidth = 4f
-            )
-
             //Вертикальная линия
             drawLine(
                 color = Color.DarkGray,
@@ -129,6 +121,15 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
                 start = Offset(0f, size.height / 2),
                 end = (Offset(size.width - 1, size.height / 2))
             )
+
+            drawPoints(
+                color = Color.Yellow,
+                points = points,
+                cap = StrokeCap.Round,
+                pointMode = PointMode.Lines,
+                strokeWidth = 1f
+            )
+
         }
     }
 }
@@ -197,14 +198,6 @@ fun EditorPreviewFM(model: EditorMatModel) {
                 }
             }
 
-            drawPoints(
-                color = Color.Magenta,
-                points = points,
-                cap = StrokeCap.Round,
-                pointMode = PointMode.Polygon,
-                strokeWidth = 4f
-            )
-
             //Вертикальная линия
             drawLine(
                 color = Color.DarkGray,
@@ -218,6 +211,17 @@ fun EditorPreviewFM(model: EditorMatModel) {
                 start = Offset(0f, size.height / 2),
                 end = (Offset(size.width - 1, size.height / 2))
             )
+
+
+            drawPoints(
+                color = Color.Magenta,
+                points = points,
+                cap = StrokeCap.Round,
+                pointMode = PointMode.Polygon,
+                strokeWidth = 1f
+            )
+
+
         }
     }
 }

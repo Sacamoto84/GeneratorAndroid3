@@ -14,11 +14,9 @@ import com.example.generator2.screens.editor.EditorMatModel
 import com.example.generator2.screens.editor.PaintingState
 import com.smarttoolfactory.gesture.pointerMotionEvents
 
-
 enum class MotionEvent {
     Idle, Down, Move, Up
 }
-
 
 val model = EditorMatModel()
 
@@ -57,11 +55,8 @@ fun EditorCanvas() {
     var disposable by remember { mutableStateOf(true) }
 
     Box(
-        modifier = Modifier
-            //.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
-            .fillMaxWidth()
-            .aspectRatio(2f)
-            //.clip(RoundedCornerShape(12.dp))
+        modifier = Modifier //.padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp)
+            .fillMaxWidth().aspectRatio(2f) //.clip(RoundedCornerShape(12.dp))
             .background(Color.Black)
     ) {
 
@@ -74,7 +69,18 @@ fun EditorCanvas() {
 
             if (disposable) {
                 disposable = false
+                println("disposable")
+
+                //Позиция на редакторе
                 model.currentPosition.value = Offset(size.width / 2, size.height / 2 + mouseOffset)
+
+                //Для loop
+                model.setOnlyPosition(
+                    Offset(
+                        size.width / 2, size.height / 2
+                    )
+                )
+                model.refsresh.value++
             }
 
             when (model.motionEvent.value) {
@@ -84,7 +90,8 @@ fun EditorCanvas() {
 
                     model.setOnlyPosition(
                         Offset(
-                            model.currentPosition.value.x, model.currentPosition.value.y - mouseOffset
+                            model.currentPosition.value.x,
+                            model.currentPosition.value.y - mouseOffset
                         )
                     )
                     model.lastPosition = model.position
@@ -110,8 +117,7 @@ fun EditorCanvas() {
                                     model.currentPosition.value.x,
                                     model.currentPosition.value.y - mouseOffset
                                 )
-                            )
-                            //println("..PaintLine")
+                            ) //println("..PaintLine")
                         }
                         PaintingState.PaintPoint -> {
                             model.setPositionAndLast(
@@ -125,8 +131,7 @@ fun EditorCanvas() {
                 }
 
                 MotionEvent.Up   -> { //path.lineTo(currentPosition.x, currentPosition.y)
-                    model.motionEvent.value = MotionEvent.Idle
-                    //println(model.motionEvent)
+                    model.motionEvent.value = MotionEvent.Idle //println(model.motionEvent)
                 }
                 else             -> {}
             }
@@ -203,40 +208,33 @@ fun EditorCanvas() {
                 )
 
 
-
-
-
-//                val textPaint = Paint().asFrameworkPaint().apply {
-//                    isAntiAlias = true
-//                    textSize = 24.sp.toPx()
-//                    color = android.graphics.Color.BLUE
-//                    typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
-//                }
-//                //Текст
-//                val paint = android.graphics.Paint()
-//                paint.textSize = 28f
-//                paint.color = 0xffff0000.toInt()
-//                drawIntoCanvas {
-//                    it.nativeCanvas.drawText(
-//                        textConstrain(model.position.x.toInt(), model.position.y.toInt()),
-//                        model.currentPosition.value.x + 50f,
-//                        model.currentPosition.value.y - 250f,
-//                        paint
-//                    )
-//                }
-
-
-
+                //                val textPaint = Paint().asFrameworkPaint().apply {
+                //                    isAntiAlias = true
+                //                    textSize = 24.sp.toPx()
+                //                    color = android.graphics.Color.BLUE
+                //                    typeface = Typeface.create(Typeface.MONOSPACE, Typeface.BOLD)
+                //                }
+                //                //Текст
+                //                val paint = android.graphics.Paint()
+                //                paint.textSize = 28f
+                //                paint.color = 0xffff0000.toInt()
+                //                drawIntoCanvas {
+                //                    it.nativeCanvas.drawText(
+                //                        textConstrain(model.position.x.toInt(), model.position.y.toInt()),
+                //                        model.currentPosition.value.x + 50f,
+                //                        model.currentPosition.value.y - 250f,
+                //                        paint
+                //                    )
+                //                }
 
 
             }
 
             //Рисуем сам сигнал
             val points3 = model.createPoint()
-            drawPoints(
-//                brush = Brush.linearGradient(
-//                    colors = listOf(Color.Red, Color.Yellow)
-//                ),
+            drawPoints( //                brush = Brush.linearGradient(
+                //                    colors = listOf(Color.Red, Color.Yellow)
+                //                ),
                 color = Color.Red,
                 points = points3,
                 cap = StrokeCap.Round,
