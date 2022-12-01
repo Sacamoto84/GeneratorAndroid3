@@ -50,7 +50,7 @@ private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Gl
 
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
-            .border(1.dp, Color.White, RoundedCornerShape(4.dp))
+            .border(1.dp, Color.LightGray, RoundedCornerShape(4.dp))
             .then(modifier) //, contentAlignment = Alignment.CenterStart
 
     ) {

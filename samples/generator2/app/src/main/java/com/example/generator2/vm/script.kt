@@ -1,11 +1,9 @@
 package com.example.generator2.vm
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.lifecycle.viewModelScope
 import com.example.generator2.screens.consoleLog
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
 
 /*
  * ----------------- Логика -----------------
@@ -136,8 +134,13 @@ class Script(private var liveData: vmLiveData) {
         return s
     }
 
+    @OptIn(DelicateCoroutinesApi::class)
     fun log(str: String) { //
-       consoleLog.println(str)
+
+        GlobalScope.launch (Dispatchers.Main) {
+            consoleLog.println(str)
+        }
+
     }
 
     suspend fun run() {
@@ -147,11 +150,10 @@ class Script(private var liveData: vmLiveData) {
         if (System.currentTimeMillis() <= endTime) return
         endTime = 0
         while (!end) {
-
-            cmdExecute(list[pc.value])
+            val list1 = list.toTypedArray()
+            cmdExecute(list1[pc.value])
             if (System.currentTimeMillis() <= endTime) return
             delay(10)
-
         }
     }
 
@@ -161,6 +163,10 @@ class Script(private var liveData: vmLiveData) {
     }
 
     private fun stop() {
+        for (i in f.indices)
+        {
+            f[i] = 0f
+        }
         pc.value = 1
         end = true
         println("Script Stop")

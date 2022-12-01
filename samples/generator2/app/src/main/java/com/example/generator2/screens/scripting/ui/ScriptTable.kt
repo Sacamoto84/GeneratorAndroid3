@@ -9,22 +9,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieAnimatable
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.generator2.*
 import com.example.generator2.R
-import com.example.generator2.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.mainscreen4.TemplateButtonBottomBarAndLottie
+import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
+import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBarAndLottie
 import com.example.generator2.screens.ConsoleLogDraw
 import com.example.generator2.screens.scripting.dialog.DialogDeleteRename
 import com.example.generator2.screens.scripting.dialog.DialogSaveAs
@@ -36,46 +30,53 @@ import java.util.*
 
 val refresh = mutableStateOf(0)
 
+private val files : MutableList<String> = mutableListOf()
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ScriptTable(global: Global) {
 
+    println("0")
     val openDialogSaveAs = remember { mutableStateOf(false) }
-
     val openDialogDeleteRename = remember { mutableStateOf(false) }
 
-    val context = LocalContext.current
+    //val context = LocalContext.current
 
     var filename by remember { mutableStateOf("") }  //Имя выбранного файла в списке
 
-    val files = remember { mutableStateListOf<String>() }
+    //val files =  mutableStateListOf<String>()
+
+    //val composition1 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.delete))
+
+    //var nonce by remember { mutableStateOf(1) }
+    //val animatable = rememberLottieAnimatable()
 
 
-    val composition1 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.delete))
-    var nonce by remember { mutableStateOf(1) }
-    val animatable = rememberLottieAnimatable()
+    //    LaunchedEffect(composition1, nonce) {
+    //        composition1 ?: return@LaunchedEffect
+    //        animatable.animate(
+    //            composition1,
+    //            continueFromPreviousAnimate = false,
+    //        )
+    //    }
 
-    LaunchedEffect(composition1, nonce) {
-        composition1 ?: return@LaunchedEffect
-        animatable.animate(
-            composition1,
-            continueFromPreviousAnimate = false,
-        )
-    }
+    //    LottieAnimation(composition1,
+    //        { animatable.progress },
+    //        modifier = Modifier.clickable { nonce++ })
 
-    LottieAnimation(composition1,
-        { animatable.progress },
-        modifier = Modifier.clickable { nonce++ })
 
+    println("1")
 
 
     Box(modifier = Modifier.fillMaxSize(1f)) {
-
+        println("2")
         Column() {
-
+            println("3")
             Row(
                 modifier = Modifier.fillMaxSize().weight(1f)
             ) {
+
+                println("4")
 
                 Box(
                     modifier = Modifier.fillMaxSize().weight(1f),
@@ -118,17 +119,17 @@ fun ScriptTable(global: Global) {
                             TemplateButtonBottomBarAndLottie(
                                 str = "Изменить", onClick = {
                                     global.script.command(StateCommandScript.EDIT)
-                                },
-                                resId = R.raw.paper_notebook_writing_animation,
-                                autostart = true
+                                }, resId = R.raw.paper_notebook_writing_animation, autostart = false
                             ) //
 
                             // Создать список названий файлов из папки /Script
-                            files.clear()
-                            files.addAll(global.utils.filesInDirToList(
-                                "/Script"
-                            ).map { it.dropLast(3) })
-                            //
+                            if (global.script.state == StateCommandScript.ISTOPPING) {
+                                println("Читаем файлы")
+                                files.clear()
+                                files.addAll(global.utils.filesInDirToList(
+                                    "/Script"
+                                ).map { it.dropLast(3) }) //
+                            }
 
                             //Отображение списка названия скриптов
                             Column(
@@ -138,6 +139,7 @@ fun ScriptTable(global: Global) {
                             ) {
 
                                 Spacer(modifier = Modifier.height(4.dp))
+
                                 for (index in files.indices) {
                                     Text(
                                         text = files[index],
@@ -162,6 +164,7 @@ fun ScriptTable(global: Global) {
                                         fontSize = 18.sp
                                     )
                                 }
+
                             } //
 
                             //Текущее состояние
@@ -169,7 +172,8 @@ fun ScriptTable(global: Global) {
                                 text = global.script.stateToString(),
                                 modifier = Modifier.fillMaxWidth(),
                                 textAlign = TextAlign.Center,
-                                fontSize = 14.sp
+                                fontSize = 14.sp,
+                                color = Color.LightGray
                             )
 
                             //Консоль Логов
@@ -177,10 +181,6 @@ fun ScriptTable(global: Global) {
 
 
                         }
-
-
-
-
 
                         if (global.script.state == StateCommandScript.ISEDITTING) {
 
@@ -228,7 +228,8 @@ fun ScriptTable(global: Global) {
                                 paddingStartText = 12.dp
                             )
 
-                            TemplateButtonBottomBar(modifier = Modifier.height(50.dp),
+                            TemplateButtonBottomBar(
+                                modifier = Modifier.height(50.dp),
                                 str = "Add",
                                 onClick = {
                                     global.script.list.add(global.script.pc.value + 1, "?")
@@ -313,11 +314,13 @@ fun ScriptTable(global: Global) {
                 }
             }
 
-            DialogSaveAs(openDialogSaveAs, global)
+            if (openDialogSaveAs.value) DialogSaveAs(openDialogSaveAs, global)
 
-            DialogDeleteRename(openDialogDeleteRename, filename, global)
-
-
+            if (openDialogDeleteRename.value) DialogDeleteRename(
+                openDialogDeleteRename,
+                filename,
+                global
+            )
 
             if (global.script.state == StateCommandScript.ISEDITTING) {
                 Column(
@@ -328,5 +331,3 @@ fun ScriptTable(global: Global) {
         }
     }
 }
-
-

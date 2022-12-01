@@ -129,7 +129,9 @@ class Console2 {
 
         if (colorlineAndText.isEmpty()) println("")
 
-        val messages: SnapshotStateList<LineTextAndColor> = colorlineAndText
+        //val message: SnapshotStateList<LineTextAndColor> = colorlineAndText
+
+        val messages = colorlineAndText
 
         var update by remember { mutableStateOf(true) }  //для мигания
         val lazyListState: LazyListState = rememberLazyListState()
@@ -137,22 +139,26 @@ class Console2 {
         lastVisibleItemIndex =
             lazyListState.layoutInfo.visibleItemsInfo.lastIndex + lazyListState.firstVisibleItemIndex
 
+        if (messages.isEmpty()) return
+
         LaunchedEffect(key1 = messages) {
             while (true) {
                 delay(700L)
                 update =
-                    !update //telnetWarning.value = (telnetSlegenie.value == false) && (messages.size > lastCount)
+                    !update
             }
         }
 
         LaunchedEffect(key1 = lastVisibleItemIndex, key2 = messages) {
             while (true) {
                 delay(200L) //val s = messages.size
-                //if ((s > 20) && (telnetSlegenie.value == true)) {
-                lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
-                //}
+                if (messages.size > 5) {
+                    lazyListState.scrollToItem(index = messages.size - 1) //Анимация (плавная прокрутка) к данному элементу.
+                }
             }
         } //.background(Color(0xFF090909))
+
+
 
 
         Box(
@@ -170,6 +176,8 @@ class Console2 {
 
                     //val z = manual_recomposeLazy.value
                     //println("LAZY Счетчик рекомпозиций $z")
+
+
 
                     itemsIndexed(messages.toList()) { index, item ->
                         Row() {

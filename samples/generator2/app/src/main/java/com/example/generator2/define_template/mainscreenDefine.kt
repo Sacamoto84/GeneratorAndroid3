@@ -29,7 +29,6 @@ val rangeSliderFmBase = 1000f..3000f
 val sensetingSliderFmDev = 0.2f
 val rangeSliderFmDev = 1f..2500f
 
-
 val modifierInfinitySlider =
     Modifier
         .padding(start = 8.dp)

@@ -1,17 +1,12 @@
 package com.example.generator2.screens.scripting
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import colorLightBackground
 import com.example.generator2.R
@@ -19,67 +14,104 @@ import com.example.generator2.vm.Global
 import com.example.generator2.vm.StateCommandScript
 import com.example.generator2.screens.scripting.ui.RegisterViewDraw
 import com.example.generator2.screens.ui.ScriptTable
-import javax.sql.RowSetReader
 
 
 //Основной экран для скриптов
 @Composable
 fun ScreenScriptCommon(navController: NavHostController, global: Global) {
-
-    Column(
-        //Modifier
-          //  .recomposeHighlighter()
+    println("-3")
+    Column( //Modifier
+        //  .recomposeHighlighter()
         //.background(Color.Cyan)
     ) {
 
-        Box(Modifier.weight(1f))
-        {
+        println("-2")
+        Box(Modifier.weight(1f)) {
+
+            println("-1")
             ScriptTable(global = global)
         }
 
+        //Блок регистров
         if (global.script.state != StateCommandScript.ISEDITTING) {
+            Spacer(modifier = Modifier.height(8.dp))
 
-            //Блок регистров
             RegisterViewDraw(global = global)
         }
-
         Spacer(modifier = Modifier.height(8.dp))
 
         BottomAppBar(
             backgroundColor = colorLightBackground,
-            contentColor = Color.LightGray,
-            elevation = 2.dp,
-            cutoutShape = CircleShape
+            contentColor = Color.White,
         ) {
 
 
             //Кнопка назад
-            IconButton(onClick = {navController.popBackStack()}) {
+            IconButton(onClick = { navController.popBackStack() }) {
                 Icon(painter = painterResource(R.drawable.back4), contentDescription = null)
             }
 
-            // content alpha provided by BottomAppBar
+
+
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(R.drawable.play), contentDescription = null)
+
+
+
+            if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
+
+                //Пауза
+                IconButton(onClick = {
+
+                    if (global.script.state != StateCommandScript.ISPAUSE) global.script.command(
+                        StateCommandScript.PAUSE
+                    )
+                    else {
+                        global.script.state = StateCommandScript.ISRUNNING
+                        global.script.end = false
+                    }
+
+                }) {
+
+                    if (global.script.state != StateCommandScript.ISPAUSE)
+                        Icon(
+                        painter = painterResource(
+                            R.drawable.pause
+                        ), contentDescription = null
+                    )
+                    else
+                        Icon(
+                            painter = painterResource(
+                                R.drawable.play
+                            ), contentDescription = null
+                        )
+
+                }
+            } else {
+                //Старт
+                IconButton(onClick = {
+                    global.script.command(StateCommandScript.START)
+                }) {
+                    Icon(painter = painterResource(R.drawable.play), contentDescription = null)
+                }
             }
-            IconButton(onClick = { }) {
-                Icon(painter = painterResource(R.drawable.pause), contentDescription = null)
-            }
-            IconButton(onClick = { }) {
+
+
+            Spacer(modifier = Modifier.weight(0.1f))
+
+            //Стоп
+            IconButton(onClick = {
+                global.script.command(StateCommandScript.STOP)
+            }) {
                 Icon(painter = painterResource(R.drawable.stop), contentDescription = null)
             }
 
             Spacer(modifier = Modifier.weight(1f))
 
-//            IconButton(onClick = {}) {
-//                Icon(painter = painterResource(R.drawable.info3), contentDescription = null)
-//            }
-
-            IconButton(onClick = {navController.navigate("scriptinfo")}) {
+            IconButton(onClick = { navController.navigate("scriptinfo") }) {
                 Icon(painter = painterResource(R.drawable.info4), contentDescription = null)
             }
+
 
         }
 

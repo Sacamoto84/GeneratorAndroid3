@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.console.Console2
-import com.example.generator2.mainscreen4.bottomBarEnum
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
 import flipagram.assetcopylib.AssetCopier
@@ -44,10 +43,6 @@ class Global @Inject constructor() : ViewModel() {
 
     val onoffconfig: ConfigOnOff = ConfigOnOff()
     val onoffconfig1: ConfigOnOff = ConfigOnOff()
-
-    //Пути для отрисовки нижнего меню
-    var bottomBarRoute = mutableStateOf(bottomBarEnum.HOME)
-
 
     val consoleLog = Console2()
 

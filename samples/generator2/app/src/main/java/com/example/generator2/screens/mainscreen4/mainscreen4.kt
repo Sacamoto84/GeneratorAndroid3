@@ -1,4 +1,4 @@
-package com.example.generator2.mainscreen4
+package com.example.generator2.screens.mainscreen4
 
 import CardCarrier
 import android.annotation.SuppressLint
@@ -21,13 +21,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.vm.Global
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 
 //var bottomBarRoute : bottomBarEnum = bottomBarEnum.HOME
@@ -230,7 +230,7 @@ fun DrawerContentBottom(
 private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHostController) {
     BottomAppBar(
         backgroundColor = colorLightBackground,
-        contentColor = Color.LightGray,
+        contentColor = Color.White,
         elevation = 2.dp,
         cutoutShape = CircleShape
     ) {
@@ -258,6 +258,11 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
         }
 
         Spacer(modifier = Modifier.weight(0.2f))
+
+        IconButton(onClick = { exitProcess(0) }) {
+            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
+        }
+        //Spacer(modifier = Modifier.weight(0.1f))
 
     }
 }

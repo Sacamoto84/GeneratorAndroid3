@@ -27,15 +27,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import colorDarkBackground
 import com.example.generator2.vm.Global
-import com.example.generator2.mainscreen4.TemplateButtonBottomBar
+import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.vm.Script
 import com.example.generator2.ui.theme.NoRippleTheme
-import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
-import javax.inject.Inject
 
 //Экраны для нижнего меню
 enum class RouteKeyboardEnum {
