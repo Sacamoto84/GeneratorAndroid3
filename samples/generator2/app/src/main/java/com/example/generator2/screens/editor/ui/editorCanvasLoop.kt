@@ -3,6 +3,8 @@ package com.example.generator2.screens.editor.ui
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.*
@@ -18,9 +20,9 @@ import com.example.generator2.screens.editor.ui.model
 import com.smarttoolfactory.gesture.pointerMotionEvents
 
 @Composable
-fun EditorCanvasLoop() {
+fun EditorCanvasLoop(modifier: Modifier = Modifier) {
 
-    Canvas(modifier = Modifier.padding(0.dp).size(200.dp).background(Color.Black)
+    Canvas(modifier = Modifier.padding(0.dp).height(200.dp).fillMaxWidth().then(modifier).background(Color.Black)
         .border(1.dp, color = Color.DarkGray).clipToBounds()
         .pointerMotionEvents(onDown = { pointerInputChange: PointerInputChange ->
             //model.motionEvent.value = MotionEvent.Down

@@ -29,11 +29,14 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
 
             if(dispose.value) {
                 dispose.value = false
+
+                model.signal[model.signal.lastIndex] =  model.signal[model.signal.lastIndex - 1]
+
                 val sizeW = size.width
                 points.clear()
-                for (x in 0 until size.width.toInt() / 2) {
+                for (x in 0 until size.width.toInt() / 2 ) {
                     val mapX: Int =
-                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(),
@@ -52,7 +55,7 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
                         sizeW / 2,
                         sizeW - 1,
                         0f,
-                        model.editWight.toFloat() - 1
+                        model.editWight.toFloat()
                     ).toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(),
@@ -68,12 +71,14 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
 
             model.refsresh.value
 
+            model.signal[model.signal.lastIndex] =  model.signal[model.signal.lastIndex - 1]
+
             if (model.refsreshButton.value == 1) {
                 val sizeW = size.width
                 points.clear()
                 for (x in 0 until size.width.toInt() / 2) {
                     val mapX: Int =
-                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(),
@@ -92,7 +97,7 @@ fun EditorPreviewCarrier(model: EditorMatModel) {
                         sizeW / 2,
                         sizeW - 1,
                         0f,
-                        model.editWight.toFloat() - 1
+                        model.editWight.toFloat()
                     ).toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(),
@@ -151,10 +156,14 @@ fun EditorPreviewFM(model: EditorMatModel) {
             {
                 dispose.value = false
                 points.clear()
+                
+                model.signal[model.signal.lastIndex] =  model.signal[model.signal.lastIndex - 1]
+
                 val sizeW = size.width
+
                 for (x in 0 until size.width.toInt() / 2) {
                     val mapX: Int =
-                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(), 0f, model.editMax.toFloat(), 0f, size.height - 1
@@ -164,7 +173,7 @@ fun EditorPreviewFM(model: EditorMatModel) {
                 }
                 for (x in size.width.toInt() / 2 until size.width.toInt()) {
                     val mapX: Int =
-                        model.map(x.toFloat(), sizeW / 2, sizeW - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), sizeW / 2, sizeW - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(), 0f, model.editMax.toFloat(), 0f, size.height - 1
@@ -174,12 +183,15 @@ fun EditorPreviewFM(model: EditorMatModel) {
             }
 
             model.refsresh.value
+
+            model.signal[model.signal.lastIndex] =  model.signal[model.signal.lastIndex - 1]
+
             if (model.refsreshButton.value == 1) {
                 points.clear()
                 val sizeW = size.width
                 for (x in 0 until size.width.toInt() / 2) {
                     val mapX: Int =
-                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), 0f, sizeW / 2 - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(), 0f, model.editMax.toFloat(), 0f, size.height - 1
@@ -189,7 +201,7 @@ fun EditorPreviewFM(model: EditorMatModel) {
                 }
                 for (x in size.width.toInt() / 2 until size.width.toInt()) {
                     val mapX: Int =
-                        model.map(x.toFloat(), sizeW / 2, sizeW - 1, 0f, model.editWight.toFloat() - 1)
+                        model.map(x.toFloat(), sizeW / 2, sizeW - 1, 0f, model.editWight.toFloat())
                             .toInt()
                     val y = model.map(
                         model.signal[mapX].toFloat(), 0f, model.editMax.toFloat(), 0f, size.height - 1

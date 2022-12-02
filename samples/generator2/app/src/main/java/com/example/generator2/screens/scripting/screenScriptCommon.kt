@@ -56,8 +56,6 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
             Spacer(modifier = Modifier.weight(1f))
 
 
-
-
             if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
 
                 //Пауза

@@ -80,6 +80,7 @@ fun EditorCanvas() {
                         size.width / 2, size.height / 2
                     )
                 )
+                model.lastPosition = model.position
                 model.refsresh.value++
             }
 

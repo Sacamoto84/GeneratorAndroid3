@@ -830,7 +830,7 @@ class MainActivity : ComponentActivity() {
         )
 
         Box(
-            modifier = Modifier.size(switchWight, switchHeight).recomposeHighlighter()
+            modifier = Modifier.size(switchWight, switchHeight)
                 .clickable(onClick = {
                     onClick()
                 })

@@ -18,19 +18,27 @@ enum class PaintingState {
 class EditorMatModel {
 
     //4096
-    val editMax = 128 //Количество строк
+    var editMax = 128 //Количество строк
 
     //1024
-    val editWight = 512 //Количество столбцов
+    var editWight = 512 //Количество столбцов
 
     var gainXX = mutableStateOf(1f)
     var gainYY = mutableStateOf(1f)
 
+
+    val signal: MutableList<Int> = mutableListOf(editWight + 1) //{ editMax / 2 }
+
     init {
         //Нормализация при создании
         gainYYNormalize()
-    }
 
+        signal.clear()
+        for (i in 0 ..editWight)
+        {
+            signal.add( editMax / 2)
+        }
+    }
 
 
 
@@ -38,14 +46,16 @@ class EditorMatModel {
     val refsresh = mutableStateOf(0)
     val refsreshButton = mutableStateOf(0)
 
-
     var state = PaintingState.Show
 
     var motionEvent =
         mutableStateOf(MotionEvent.Idle)  // This is our motion event we get from touch motion
 
 
-    val signal: IntArray = IntArray(editWight + 1) { editMax / 2 }
+   //val signal: IntArray = IntArray(editWight + 1) { editMax / 2 }
+
+
+
 
     var sizeCanvas: Size = Size(1f, 1f)  //Размер канвы рисования самого редактора
 
@@ -61,8 +71,27 @@ class EditorMatModel {
         sizeCanvas.width / 2, sizeCanvas.height / 2
     )
 
-    //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
+    fun reinit(_editMax : Int, _editWight : Int)
+    {
+        editMax = _editMax
+        editWight = _editWight
+        gainXX.value = 1f
+        gainYY.value = 1f
+        gainYYNormalize()
 
+        signal.clear()
+
+        for (i in 0 ..editWight)
+        {
+            signal.add( editMax / 2)
+        }
+
+
+
+    }
+
+
+    //Текущая позиция 1024x1024 //        set(value) { //            lastPosition = position //            val x = map(value.x.toInt(), 0, sizeCanvas.width.toInt() - 1, 0, 1023) //            val y = map(value.y.toInt(), 0, sizeCanvas.height.toInt() - 1, editMin, editMax) //            println("modelPosition $x $y") //            field = Offset(x.toFloat(), y.toFloat()) //        }
     fun setOnlyPosition(p: Offset) {
         val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
         val y = map(

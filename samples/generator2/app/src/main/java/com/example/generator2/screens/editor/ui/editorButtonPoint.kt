@@ -25,7 +25,7 @@ fun ButtonPoint() {
     var gestureColor by remember { mutableStateOf(colorLightBackground) }
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxHeight().width(70.dp).clip(shape = RoundedCornerShape(16.dp))
+    Box(modifier = Modifier.fillMaxHeight().width(60.dp).clip(shape = RoundedCornerShape(8.dp))
         .background(gestureColor).pointerInput(Unit) {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray
@@ -53,11 +53,7 @@ fun ButtonPoint() {
             drawCircle(
                 center = Offset(size.width / 2, size.height / 2),
                 radius = 16.dp.toPx(),
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF13C030), Color(0xFF03A9F4)
-                    )
-                )
+                color = Color.Gray
             )
         }
     }
@@ -69,7 +65,7 @@ fun ButtonLine() {
     var gestureColor by remember { mutableStateOf(colorLightBackground) }
     val context = LocalContext.current
 
-    Box(modifier = Modifier.fillMaxHeight().width(70.dp).clip(shape = RoundedCornerShape(16.dp))
+    Box(modifier = Modifier.fillMaxHeight().width(60.dp).clip(shape = RoundedCornerShape(8.dp))
         .background(gestureColor).pointerInput(Unit) {
             detectTapGestures(onPress = { //gestureText = "onPress"
                 gestureColor = Color.DarkGray
@@ -95,11 +91,7 @@ fun ButtonLine() {
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             drawLine(
-                brush = Brush.linearGradient(
-                    colors = listOf(
-                        Color(0xFF13C030), Color(0xFF03A9F4)
-                    )
-                ),
+                color = Color.Gray,
                 start = Offset(16.dp.toPx(), size.height - 16.dp.toPx()),
                 end = Offset(size.width - 16.dp.toPx(), 16.dp.toPx()),
                 strokeWidth = 8.dp.toPx(),
