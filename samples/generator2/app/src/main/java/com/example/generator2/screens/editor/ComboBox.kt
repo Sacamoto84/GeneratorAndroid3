@@ -40,7 +40,7 @@ class ComboBox(val items: List<String>, private val width: Dp = 100.dp) {
             DropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
-                modifier = Modifier.width(100.dp).background(
+                modifier = Modifier.width(80.dp).background(
                     Color.DarkGray
                 )
             ) {

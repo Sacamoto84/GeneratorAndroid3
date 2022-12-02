@@ -40,6 +40,9 @@ class EditorMatModel {
         }
     }
 
+    var stateEditMax = mutableStateOf(editMax)
+    var stateEditWight= mutableStateOf(editWight)
+
 
 
 
@@ -86,7 +89,8 @@ class EditorMatModel {
             signal.add( editMax / 2)
         }
 
-
+        stateEditMax.value = editMax
+        stateEditWight.value = editWight
 
     }
 
@@ -95,7 +99,7 @@ class EditorMatModel {
     fun setOnlyPosition(p: Offset) {
         val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
         val y = map(
-            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1
+            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat()
         )
         //println("setOnlyPosition $x $y")
         position = Offset(x.toFloat(), y.toFloat())
@@ -105,7 +109,7 @@ class EditorMatModel {
         lastPosition = position
         val x = map(p.x, 0f, sizeCanvas.width - 1, 0f, editWight.toFloat())
         val y = map(
-            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat() - 1f
+            p.y, 0f, sizeCanvas.height - 1, 0f, editMax.toFloat()
         )
         //println("setPositionAndLast $x $y")
         position = Offset(x.toFloat(), y.toFloat())

@@ -1,51 +1,36 @@
 package com.example.generator2.screens.editor
 
+import android.view.LayoutInflater
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavHostController
-import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.screens.editor.dialog.DialogNew
-import com.example.generator2.screens.editor.ui.EditorPreviewCarrier
-import com.example.generator2.screens.editor.ui.EditorPreviewFM
 import com.example.generator2.screens.editor.ui.*
 import com.example.generator2.vm.Global
-import com.example.generator2.vm.StateCommandScript
-import kotlinx.coroutines.delay
-import libs.MToast
-import libs.modifier.recomposeHighlighter
 
 private val sizeCanvaChar = 8f
 private val strokeWidth = 6f
 
 val openDialogNew = mutableStateOf(false)
+
+
+
 
 @Composable
 fun ScreenEditor(navController: NavHostController, global: Global) {
@@ -56,10 +41,28 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
         Column(
             Modifier.padding(bottom = it.calculateBottomPadding())
                 .fillMaxSize() //  .recomposeHighlighter()
-                .background(colorDarkBackground).verticalScroll(rememberScrollState())
+                .background(Color.White).verticalScroll(rememberScrollState())
         ) {
 
             if (openDialogNew.value) DialogNew(openDialogNew, global)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             //Preview
             Column(
@@ -157,13 +160,32 @@ private fun BottomBar(navController: NavHostController, global: Global) {
     ) {
 
 
+
+
         //Кнопка назад
         IconButton(onClick = { navController.popBackStack() }) {
             Icon(painter = painterResource(R.drawable.back4), contentDescription = null)
         }
 
+        Column() {
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(painter = painterResource(R.drawable.row_triple), contentDescription = null, modifier = Modifier.size(20.dp))
+                Text(" " + model.stateEditMax.value.toString())
+            }
+
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(painter = painterResource(R.drawable.column_triple), contentDescription = null, modifier = Modifier.size(20.dp))
+                Text(text = " " + model.stateEditWight.value.toString())
+            }
+            
+        }
+
         Spacer(modifier = Modifier.weight(0.1f))
 
+        IconButton(onClick = { openDialogNew.value = true }) {
+            Icon(painter = painterResource(R.drawable.set_square_geometry), contentDescription = null)
+        }
 
         IconButton(onClick = { }) {
             Icon(painter = painterResource(R.drawable.folder_open2), contentDescription = null)
@@ -174,9 +196,6 @@ private fun BottomBar(navController: NavHostController, global: Global) {
         }
 
 
-        IconButton(onClick = { openDialogNew.value = true }) {
-            Icon(painter = painterResource(R.drawable.set_square_geometry), contentDescription = null)
-        }
 
 
 

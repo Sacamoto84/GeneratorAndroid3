@@ -29,8 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
-import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
 import com.example.generator2.ui.theme.Generator2Theme
@@ -43,7 +43,6 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
-import libs.modifier.recomposeHighlighter
 import javax.inject.Inject
 
 

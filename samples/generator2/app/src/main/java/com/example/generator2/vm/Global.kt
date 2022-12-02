@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
+import com.example.generator2.audio_device.AudioDevice
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,6 +30,9 @@ class Global @Inject constructor() : ViewModel() {
     @Inject lateinit var script: Script
     @Inject lateinit var keyboard: ScriptKeyboard
     @Inject lateinit var playbackEngine: PlaybackEngine
+    @Inject lateinit var audioDevice: AudioDevice
+
+
 
     var contextActivity: Context? = null
     var componentActivity: ComponentActivity? = null
@@ -45,6 +49,9 @@ class Global @Inject constructor() : ViewModel() {
     val onoffconfig1: ConfigOnOff = ConfigOnOff()
 
     val consoleLog = Console2()
+
+
+
 
     fun init() {
 
@@ -78,6 +85,10 @@ class Global @Inject constructor() : ViewModel() {
 
         //keyboard = ScriptKeyboard(script)
         consoleLog.println("")
+
+
+
+
     }
 
     fun sendAlltoGen() {

@@ -24,8 +24,8 @@ import com.example.generator2.screens.editor.ui.model
 import com.example.generator2.vm.Global
 
 
-val comboboxLine = ComboBox(listOf("8", "16", "32", "128 ", "256", "512"))
-val comboboxRow = ComboBox(listOf("8", "16", "32", "128 ", "256", "512"))
+val comboboxLine = ComboBox(listOf("2","4","6","16", "32", "128 ", "256", "512"))
+val comboboxRow = ComboBox(listOf("4", "8", "16", "32", "64", "128 ", "256", "512"))
 
 @Composable
 fun DialogNew(openDialog: MutableState<Boolean>, global: Global) {
