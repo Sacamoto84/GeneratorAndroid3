@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.media.AudioDeviceInfo;
 import android.media.AudioManager;
 
+import androidx.annotation.NonNull;
+
 import java.util.List;
 import java.util.Vector;
 
@@ -30,8 +32,9 @@ public class AudioDeviceListEntry {
         return mName;
     }
 
+    @NonNull
     public String toString(){
-        return getName();
+        return "| "+mId+":"+getName();
     }
 
     @Override

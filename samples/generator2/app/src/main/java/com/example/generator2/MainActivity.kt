@@ -94,6 +94,10 @@ class MainActivity : ComponentActivity() {
         global.onoffconfig1.groupPositionOn = 34.dp
         global.onoffconfig1.groupPositionOff = 0.dp
 
+
+        global.onoffconfig1.pathOn = "png/switch/no1.png"
+        global.onoffconfig1.pathOff = "png/switch/yes1.png"
+        //global.onoffconfig1.pathGroup = "png/switch/group1.png"
         global.onoffconfig.componentW = 64.0f
         global.onoffconfig.componentPixelW = 108.0f
         global.onoffconfig.componentPixelH = 64.0f
@@ -102,7 +106,7 @@ class MainActivity : ComponentActivity() {
         global.onoffconfig.groupPixelH = 49.0f
         global.onoffconfig.groupDeltaY = 2.dp
         global.onoffconfig.groupPositionOn = 29.dp
-        global.onoffconfig.groupPositionOff = 5.dp
+        global.onoffconfig.groupPositionOff = 7.dp
 
 
         //PlaybackEngine.CH_EN(0,true)

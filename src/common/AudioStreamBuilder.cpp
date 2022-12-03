@@ -89,9 +89,6 @@ bool AudioStreamBuilder::isCompatible(AudioStreamBase &other) {
 }
 
 Result AudioStreamBuilder::openStream(AudioStream **streamPP) {
-
-
-
     auto result = isValidConfig();
     if (result != Result::OK) {
         LOGW("%s() invalid config %d", __func__, result);

@@ -2,6 +2,7 @@ package com.example.generator2.screens.mainscreen4
 
 import CardCarrier
 import android.annotation.SuppressLint
+import android.media.Spatializer
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -26,6 +27,7 @@ import androidx.navigation.NavHostController
 import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
+import com.example.generator2.ui.wiget.UIswitch.ON_OFF
 import com.example.generator2.vm.Global
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -61,18 +63,23 @@ fun mainsreen4(
 
     Scaffold(isFloatingActionButtonDocked = false,
         floatingActionButtonPosition = FabPosition.Center,
+
         bottomBar = {
             BottomAppBarComponent(toggleDrawer, navController)
         }) {
 
-        BottomDrawer(gesturesEnabled = drawerState.isOpen,
-            drawerState = drawerState, // scrimColor color of the scrim that obscures content when the drawer is open. If the
-            // color passed is [androidx.compose.ui.graphics.Color.Unspecified],
-            // then a scrim will no longer be applied and the bottom
-            //        scrimColor = Color.Unspecified,
+
+        BottomDrawer(
+            //gesturesEnabled = drawerState.isOpen,
+            drawerState = drawerState,
             drawerContent = {
 
-                DrawerContentBottom(global)
+                Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding()).background(Color(
+                    0xFF242323
+                )
+                )) {
+                    DrawerContentBottom(global)
+                }
 
             },
             content = { // Select user from list in main screen and send it to BottomDrawer via this lambda
@@ -81,6 +88,9 @@ fun mainsreen4(
                         .verticalScroll(rememberScrollState()).background(colorDarkBackground),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
+
+                    //ON_OFF(true, global.onoffconfig, {})
+
                     CardCarrier("CH0", global)
                     CardCarrier("CH1", global)
                 }
@@ -110,69 +120,84 @@ fun DrawerContentBottom(
     global: Global
 
 ) {
+
+
+
+//    Column(
+//        modifier = Modifier.fillMaxWidth()
+//            //.heightIn(max = 80000.dp) //
+//            //.wrapContentHeight()
+//            //            .fillMaxSize()
+//            .padding(8.dp).background(Color.Black)
+//    ) {
+
+
+//        Column(modifier = Modifier.padding(8.dp)) {
+//            Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+//
+//            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) { //Text(text = "$selectedUser@abc.com")
+//
+//            }
+//        }
+
+
     Column(
-        modifier = Modifier.fillMaxWidth()
-            //.heightIn(min = 100.dp, max = 1000.dp) //            .height(500.dp)
-            //            .fillMaxSize()
-            .padding(8.dp).background(Color.Black)
+        modifier = Modifier
+            //.fillMaxHeight(0.7f)
+            .fillMaxWidth()
     ) {
 
 
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) { //Text(text = "$selectedUser@abc.com")
+        Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp, modifier = Modifier.padding(8.dp))
 
+    //Получить список устройств
+    global.audioDevice.mDeviceAdapter.forEachIndexed { index, pair ->
+
+        val label = pair.id.toString() + " " + pair.name.toString()
+
+        var imageVector: Painter = painterResource(R.drawable.info)
+
+        val str = pair.name.toString()
+
+        if (str.indexOf("earphone") != -1) imageVector = painterResource(R.drawable.earphone)
+
+        if (str.indexOf("built-in speaker") != -1) imageVector =
+            painterResource(R.drawable.speaker2)
+
+        if (str.indexOf("headphones") != -1) imageVector = painterResource(R.drawable.headphones)
+
+        if (str.indexOf("Bluetooth") != -1) imageVector = painterResource(R.drawable.headset)
+
+        if (str.indexOf("A2DP") != -1) imageVector = painterResource(R.drawable.bluetooth)
+
+        if (str.indexOf("Auto select") != -1) imageVector = painterResource(R.drawable.auto2)
+
+        DrawerButton(icon = imageVector, label = label, action = {
+
+            GlobalScope.launch(Dispatchers.Main) {
+                global.playbackEngine.stop()
+
+                global.playbackEngine.delete()
+                global.playbackEngine.create()
+
+                global.audioDevice.OnItemSelectedListener(index)
+                global.playbackEngine.start()
+                delay(1000)
+                global.sendAlltoGen()
             }
-        }
 
-        //Получить список устройств
-        global.audioDevice.mDeviceAdapter.forEachIndexed { index, pair ->
-
-            val label = pair.id.toString() + " " + pair.name.toString()
-
-            var imageVector : Painter = painterResource(R.drawable.info)
-
-            val str = pair.name.toString()
-
-            if (str.indexOf("earphone") !=  -1 )
-                imageVector = painterResource(R.drawable.earphone)
-
-            if (str.indexOf("built-in speaker") !=  -1 )
-                imageVector = painterResource(R.drawable.speaker2)
-
-            if (str.indexOf("headphones") !=  -1 )
-                imageVector = painterResource(R.drawable.headphones)
-
-            if (str.indexOf("Bluetooth") !=  -1 )
-                imageVector = painterResource(R.drawable.headset)
-
-            if (str.indexOf("A2DP") !=  -1 )
-                imageVector = painterResource(R.drawable.bluetooth)
-
-            if (str.indexOf("Auto select") !=  -1 )
-                imageVector = painterResource(R.drawable.auto2)
-
-            DrawerButton(icon = imageVector, label = label, isSelected = false, action = {
-
-                GlobalScope.launch(Dispatchers.Main) {
-                    global.playbackEngine.stop()
-
-                    global.playbackEngine.delete()
-                    global.playbackEngine.create()
-
-                    global.audioDevice.OnItemSelectedListener(index)
-                    global.playbackEngine.start()
-                    delay(1000)
-                    global.sendAlltoGen()
-                }
-
-            })
-
-
-        }
+        })
 
 
     }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+
+}
+
+
+    //}
 }
 
 
@@ -236,30 +261,13 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
 fun DrawerButton(
     icon: Painter,
     label: String,
-    isSelected: Boolean,
     action: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val colors = MaterialTheme.colors
-    val imageAlpha = if (isSelected) {
-        1f
-    } else {
-        0.8f
-    }
-    val textIconColor = if (isSelected) {
-        colors.primary
-    } else {
-        colors.onSurface.copy(alpha = 0.9f)
-    }
-    val backgroundColor = if (isSelected) {
-        colors.primary.copy(alpha = 0.12f)
-    } else {
-        Color.Transparent
-    }
 
     val surfaceModifier = modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp).fillMaxWidth()
     Surface(
-        modifier = surfaceModifier, color = backgroundColor, shape = MaterialTheme.shapes.small
+        modifier = surfaceModifier, color = Color.DarkGray, shape = MaterialTheme.shapes.small
     ) {
         TextButton(
             onClick = action, modifier = Modifier.fillMaxWidth()
@@ -278,11 +286,15 @@ fun DrawerButton(
                     fontWeight = FontWeight.Bold,
                     text = label,
                     style = MaterialTheme.typography.body2,
-                    color = textIconColor
+                    color = Color.White
                 )
             }
         }
     }
+
+
+
+
 }
 
 

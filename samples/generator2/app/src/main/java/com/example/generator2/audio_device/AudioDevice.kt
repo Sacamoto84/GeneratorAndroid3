@@ -58,7 +58,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
                 println("┌----------------------------------------------------------------------------┐")
                 println("│  onAudioDevicesAdded                                                       │")
                 println("├----------------------------------------------------------------------------┘")
-                println("│ " + deviceList.joinToString(", "))
+                println(deviceList.joinToString("\n"))
                 println("└----------------------------------------------------------------------------┘")
 
             }
@@ -72,7 +72,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
                 println("┌----------------------------------------------------------------------------┐")
                 println("│  onAudioDevicesRemoved                                                     │")
                 println("├----------------------------------------------------------------------------┘")
-                println("│ " + deviceList.joinToString(", "))
+                println(deviceList.joinToString(", "))
                 println("└----------------------------------------------------------------------------┘")
 
             }

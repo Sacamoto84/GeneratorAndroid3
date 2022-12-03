@@ -140,8 +140,9 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
     oboe::AudioStreamBuilder builder;
 
     oboe::Result result =
-         builder.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
-        ->setPerformanceMode(oboe::PerformanceMode::None)
+         builder.setSharingMode(oboe::SharingMode::Shared) //Эксклюзивный доступ
+         //.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
+        ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
         ->setFormat(oboe::AudioFormat::Float) //16 бит или float
         ->setFormatConversionAllowed(true)
         ->setDataCallback(mLatencyCallback.get())

@@ -1,15 +1,7 @@
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Switch
 import androidx.compose.material.Text
@@ -25,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.vm.Global
 import com.example.generator2.ui.wiget.InfinitySlider
+import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
 
 @Composable
@@ -55,29 +48,15 @@ fun CardFM(str: String = "CH0", global: Global) {
         global.liveData.ch2_FM_Dev.observeAsState()
     }
 
-
-//    Card(
-//
-//        backgroundColor = Color(0xFF2A2D36),
-//        modifier = Modifier
-//            .wrapContentHeight()
-//            .fillMaxWidth()
-//            .padding(start = 16.dp, end = 16.dp, top = 16.dp),
-//        elevation = 5.dp
-//    )
-//    {
     Column()
     {
         Box(
             modifier = Modifier
-                .background(if (str == "CH0") colorGreen else colorOrange)
-                .height(8.dp)
-                .fillMaxWidth(),
-            contentAlignment = Alignment.Center
+                .background(Color.DarkGray)//colorGreen else colorOrange)
+                .height(1.dp)
+                .fillMaxWidth()
         )
-        {
-            //Text("FM")
-        }
+
 
         Row(
             Modifier
@@ -87,11 +66,28 @@ fun CardFM(str: String = "CH0", global: Global) {
         ) {
 
 
-            Switch(
-                modifier = Modifier.width(ms4SwitchWidth),
-                checked = fmEN.value!!, onCheckedChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_EN.value = it else global.liveData.ch2_FM_EN.value = it
-                })
+//            Switch(
+//                modifier = Modifier.width(ms4SwitchWidth),
+//                checked = fmEN.value!!, onCheckedChange = {
+//                    if (str == "CH0") global.liveData.ch1_FM_EN.value = it else global.liveData.ch2_FM_EN.value = it
+//                })
+
+            Box(modifier = Modifier.padding(start = 4.dp).height(24.dp).width(ms4SwitchWidth)
+                .border(
+                    2.dp,
+                    color = if (fmEN.value!!) Color(0xFF1B5E20) else Color.DarkGray,
+                    RoundedCornerShape(8.dp)
+                )
+                .clip(RoundedCornerShape(8.dp))
+                .background(
+                    color = if (fmEN.value!!) Color(0xFF01AE0F) else colorDarkBackground
+                ).noRippleClickable(onClick = {
+                    if (str == "CH0") global.liveData.ch1_FM_EN.value =
+                        !global.liveData.ch1_FM_EN.value!!
+                    else global.liveData.ch2_FM_EN.value = !global.liveData.ch2_FM_EN.value!!
+                })) {}
+
+
 
             MainscreenTextBox(
                 String.format("%.1f", fmFr.value),
@@ -156,7 +152,7 @@ fun CardFM(str: String = "CH0", global: Global) {
 
             Box(
                 modifier = Modifier
-                    .padding(start=4.dp)
+                    .padding(start=8.dp)
                     .height(48.dp)
                     .width(ms4SwitchWidth)
                     //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
@@ -252,7 +248,7 @@ fun CardFM(str: String = "CH0", global: Global) {
             MainscreenTextBox(
                 String.format("± %d", fmDev.value!!.toInt()),
                 Modifier
-                    .padding(start=4.dp)
+                    .padding(start=8.dp)
                     .fillMaxHeight()
                     .fillMaxWidth()
                     .weight(1f)
