@@ -4,7 +4,7 @@ import android.content.Context
 import android.media.AudioManager
 import android.util.Log
 
-class PlaybackEngine {
+class PlaybackEngine(val context: Context) {
 
     private var mEngineHandle: Long = 0
 
@@ -13,7 +13,8 @@ class PlaybackEngine {
     }
 
 
-    fun create(context: Context): Boolean {
+    //fun create(context: Context): Boolean {
+    fun create(): Boolean {
         Log.d("!!!", "---PlaybackEngine.create()---")
         if (mEngineHandle == 0L) {
             setDefaultStreamValues(context)
@@ -71,6 +72,13 @@ class PlaybackEngine {
             deviceId
         )
     }
+
+//    //Получить текущий номер устройства
+//    fun getAudioDeviceId(deviceId: Int) : Int {
+//        if (mEngineHandle != 0L)
+//           return native_getAudioDeviceId( mEngineHandle)
+//        return 0
+//    }
 
     fun setChannelCount(channelCount: Int) {
         if (mEngineHandle != 0L) native_setChannelCount(
@@ -186,6 +194,8 @@ class PlaybackEngine {
     private external fun native_setAudioApi(engineHandle: Long, audioApi: Int)
 
     private external fun native_setAudioDeviceId(engineHandle: Long, deviceId: Int)
+
+    //private external fun native_getAudioDeviceId(engineHandle: Long) : Int
 
     private external fun native_setChannelCount(mEngineHandle: Long, channelCount: Int)
 

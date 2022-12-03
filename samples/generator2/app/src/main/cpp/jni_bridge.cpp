@@ -97,6 +97,23 @@ Java_com_example_generator2_PlaybackEngine_native_1setAudioDeviceId(
     engine->setDeviceId(deviceId);
 }
 
+//JNIEXPORT jint JNICALL
+//Java_com_example_generator2_PlaybackEngine_native_1getAudioDeviceId(
+//        JNIEnv *env,
+//        jobject,
+//        jlong engineHandle,
+//        )
+//        {
+//
+//    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+//    if (engine == nullptr) {
+//        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+//        return 0;
+//    }
+//
+//    return   engine->mDeviceId
+//}
+
 JNIEXPORT void JNICALL
 Java_com_example_generator2_PlaybackEngine_native_1setChannelCount(
         JNIEnv *env,

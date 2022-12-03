@@ -41,7 +41,11 @@ public:
         // Restart the stream if the error is a disconnect, otherwise do nothing and log the error
         // reason.
         if (error == oboe::Result::ErrorDisconnected) {
-            LOGI("Restarting AudioStream");
+
+            LOGI("┌-- !!! Ошибка !!! ------------------------┐");
+            LOGI("│ onErrorAfterClose Restarting AudioStream │");
+            LOGI("└------------------------------------------┘");
+
             mParent.restart();
         }
         LOGE("Error was %s", oboe::convertToText(error));

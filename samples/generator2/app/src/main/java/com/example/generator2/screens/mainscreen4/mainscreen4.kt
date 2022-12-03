@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,6 +27,9 @@ import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.vm.Global
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlin.system.exitProcess
 
@@ -68,7 +72,7 @@ fun mainsreen4(
             //        scrimColor = Color.Unspecified,
             drawerContent = {
 
-                DrawerContentBottom()
+                DrawerContentBottom(global)
 
             },
             content = { // Select user from list in main screen and send it to BottomDrawer via this lambda
@@ -84,99 +88,6 @@ fun mainsreen4(
 
 
     }
-
-
-    //    Scaffold(
-    //        bottomBar = {
-    //            when ( global.bottomBarRoute.value) {
-    //                bottomBarEnum.HOME -> BottomBarGenerator()
-    //                bottomBarEnum.SAVE -> BottomBarSave()
-    //                bottomBarEnum.SAVEAS -> BottomBarSave()
-    //                bottomBarEnum.LOAD -> BottomBarLoad()
-    //                bottomBarEnum.LOADAS -> BottomBarLoad()
-    //                bottomBarEnum.SCRIPT -> bottomBarScript()
-    //                bottomBarEnum.EDITOR -> bottomBarEditor()
-    //
-    //                else -> BottomBarGenerator()
-    //            }
-    //        },
-    //        backgroundColor = colorDarkBackground
-    //    )
-    //    {
-    //
-    //        when ( global.bottomBarRoute.value) {
-    //
-    //            bottomBarEnum.HOME -> {
-    //                Column(
-    //                    Modifier
-    //                        .fillMaxSize()
-    //                        .padding(bottom = it.calculateBottomPadding())
-    //                        .verticalScroll(rememberScrollState()),
-    //                    verticalArrangement = Arrangement.SpaceEvenly
-    //                ) {
-    //                    CardCarrier("CH0")
-    //                    CardCarrier("CH1")
-    //                }
-    //            }
-    //
-    //            bottomBarEnum.SAVEAS -> {
-    //
-    //                Box(
-    //                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
-    //                        .fillMaxSize()
-    //                        .background(Color.Red)
-    //                )
-    //                {
-    //                    Text("SAVEAS")
-    //                }
-    //
-    //            }
-    //
-    //            bottomBarEnum.LOADAS -> {
-    //
-    //                Box(
-    //                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
-    //                        .fillMaxSize()
-    //                        .background(Color.Green)
-    //
-    //                )
-    //                {
-    //                    Text("LOADAS")
-    //                }
-    //
-    //            }
-    //
-    //            bottomBarEnum.SCRIPT -> {
-    //                Box(
-    //                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
-    //                        .fillMaxSize()
-    //                )
-    //                {
-    //                    ScreenScriptCommon()
-    //                }
-    //            }
-    //
-    //            bottomBarEnum.EDITOR -> {
-    //                Box(
-    //                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
-    //                        .fillMaxSize()
-    //                )
-    //                {
-    //                    ScreenEditor()
-    //                }
-    //            }
-    //
-    //
-    //
-    //            else -> {
-    //                CardCarrier("CH0")
-    //                CardCarrier("CH1")
-    //            }
-    //
-    //        }
-    //
-    //
-    //    }
 
 }
 
@@ -196,31 +107,71 @@ val bottomDrawerList = listOf(
  */
 @Composable
 fun DrawerContentBottom(
+    global: Global
 
 ) {
     Column(
         modifier = Modifier.fillMaxWidth()
-            .heightIn(min = 100.dp, max = 600.dp) //            .height(500.dp)
+            //.heightIn(min = 100.dp, max = 1000.dp) //            .height(500.dp)
             //            .fillMaxSize()
-            .padding(8.dp)
+            .padding(8.dp).background(Color.Black)
     ) {
 
+
         Column(modifier = Modifier.padding(8.dp)) {
-            Text("Mail", fontWeight = FontWeight.Bold, fontSize = 20.sp)
+            Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp)
             CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) { //Text(text = "$selectedUser@abc.com")
 
             }
         }
 
-        bottomDrawerList.forEachIndexed { index, pair ->
-            val label = pair.first
-            val imageVector = pair.second
-            DrawerButton(icon = imageVector,
-                label = label,
-                isSelected = false,
-                action = { //onSelected(index)
-                })
+        //Получить список устройств
+        global.audioDevice.mDeviceAdapter.forEachIndexed { index, pair ->
+
+            val label = pair.id.toString() + " " + pair.name.toString()
+
+            var imageVector : Painter = painterResource(R.drawable.info)
+
+            val str = pair.name.toString()
+
+            if (str.indexOf("earphone") !=  -1 )
+                imageVector = painterResource(R.drawable.earphone)
+
+            if (str.indexOf("built-in speaker") !=  -1 )
+                imageVector = painterResource(R.drawable.speaker2)
+
+            if (str.indexOf("headphones") !=  -1 )
+                imageVector = painterResource(R.drawable.headphones)
+
+            if (str.indexOf("Bluetooth") !=  -1 )
+                imageVector = painterResource(R.drawable.headset)
+
+            if (str.indexOf("A2DP") !=  -1 )
+                imageVector = painterResource(R.drawable.bluetooth)
+
+            if (str.indexOf("Auto select") !=  -1 )
+                imageVector = painterResource(R.drawable.auto2)
+
+            DrawerButton(icon = imageVector, label = label, isSelected = false, action = {
+
+                GlobalScope.launch(Dispatchers.Main) {
+                    global.playbackEngine.stop()
+
+                    global.playbackEngine.delete()
+                    global.playbackEngine.create()
+
+                    global.audioDevice.OnItemSelectedListener(index)
+                    global.playbackEngine.start()
+                    delay(1000)
+                    global.sendAlltoGen()
+                }
+
+            })
+
+
         }
+
+
     }
 }
 
@@ -247,33 +198,33 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
         // content alpha provided by BottomAppBar
         Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(onClick = {navController.navigate("script") }) {
+        IconButton(onClick = { navController.navigate("script") }) {
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
 
         Spacer(modifier = Modifier.weight(0.1f))
 
-        IconButton(onClick = {navController.navigate("editor") }) {
+        IconButton(onClick = { navController.navigate("editor") }) {
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
         }
 
 
         Spacer(modifier = Modifier.weight(0.2f))
 
-//        IconButton(onClick = { exitProcess(0) }) {
-//            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
-//        }
-//        IconButton(onClick = { exitProcess(0) }) {
-//            Icon(painter = painterResource(R.drawable.close2), contentDescription = null)
-//        }
-//        IconButton(onClick = { exitProcess(0) }) {
-//            Icon(painter = painterResource(R.drawable.close3), contentDescription = null)
-//        }
+        //        IconButton(onClick = { exitProcess(0) }) {
+        //            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
+        //        }
+        //        IconButton(onClick = { exitProcess(0) }) {
+        //            Icon(painter = painterResource(R.drawable.close2), contentDescription = null)
+        //        }
+        //        IconButton(onClick = { exitProcess(0) }) {
+        //            Icon(painter = painterResource(R.drawable.close3), contentDescription = null)
+        //        }
         IconButton(onClick = { exitProcess(0) }) {
             Icon(painter = painterResource(R.drawable.close4), contentDescription = null)
         }
 
-    //Spacer(modifier = Modifier.weight(0.1f))
+        //Spacer(modifier = Modifier.weight(0.1f))
 
     }
 }
@@ -283,7 +234,7 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
  */
 @Composable
 fun DrawerButton(
-    icon: ImageVector,
+    icon: Painter,
     label: String,
     isSelected: Boolean,
     action: () -> Unit,
@@ -318,10 +269,10 @@ fun DrawerButton(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Image(
-                    imageVector = icon, contentDescription = null, // decorative
-                    colorFilter = ColorFilter.tint(textIconColor), alpha = imageAlpha
-                )
+
+
+                Icon(painter = icon, contentDescription = null,  tint = Color.White, modifier = Modifier.size(24.dp))
+
                 Spacer(Modifier.width(16.dp))
                 Text(
                     fontWeight = FontWeight.Bold,

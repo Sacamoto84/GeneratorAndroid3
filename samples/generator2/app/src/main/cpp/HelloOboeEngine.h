@@ -89,6 +89,8 @@ public:
     std::shared_ptr<SoundGenerator> mAudioSource; //Там лежат калбеки
     std::unique_ptr<LatencyTuningCallback> mLatencyCallback;
 
+    int32_t        mDeviceId = oboe::Unspecified; //Текущий номер устройства
+
 private:
     oboe::Result reopenStream();
     oboe::Result openPlaybackStream();  //Постсроитель аудиопотока
@@ -100,7 +102,7 @@ private:
 
     bool mIsLatencyDetectionSupported = false;
 
-    int32_t        mDeviceId = oboe::Unspecified;
+
     int32_t        mChannelCount = oboe::Unspecified;
     oboe::AudioApi mAudioApi = oboe::AudioApi::Unspecified;
     std::mutex     mLock;

@@ -78,7 +78,7 @@ class MainActivity : ComponentActivity() {
         /** Запуск Звука
          */
 
-        playbackEngine.create(this)
+        playbackEngine.create()
         playbackEngine.start()
 
         global.onoffconfig1.pathOn = "png/switch/on.png"

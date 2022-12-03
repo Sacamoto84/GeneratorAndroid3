@@ -59,14 +59,14 @@ object HomeActivityModule {
 
     @Provides
     @Singleton
-    fun providePlaybackEngine(): PlaybackEngine {
-        return PlaybackEngine()
+    fun providePlaybackEngine( @ApplicationContext context: Context,): PlaybackEngine {
+        return PlaybackEngine(context)
     }
 
     @Provides
     @Singleton
-    fun provideAudioDevice( @ApplicationContext context: Context): AudioDevice {
-        return AudioDevice(context)
+    fun provideAudioDevice( @ApplicationContext context: Context, playbackEngine: PlaybackEngine): AudioDevice {
+        return AudioDevice(context, playbackEngine)
     }
 
 }

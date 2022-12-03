@@ -100,8 +100,12 @@ void HelloOboeEngine::setChannelCount(int channelCount) {
 
 void HelloOboeEngine::setDeviceId(int32_t deviceId) {
     /////////////////////////////////////////
-    deviceId = 0;
-    LOGD("~~~HelloOboeEngine::setDeviceId(%d)~~~", deviceId);
+    //deviceId = 0;
+
+    LOGI("┌---------------------------------------┐");
+    LOGI("│ HelloOboeEngine::setDeviceId(%5d)   │", deviceId);
+    LOGI("└---------------------------------------┘");
+
     if (mDeviceId != deviceId) {
         mDeviceId = deviceId;
         if (reopenStream() != oboe::Result::OK) {
@@ -110,6 +114,9 @@ void HelloOboeEngine::setDeviceId(int32_t deviceId) {
         }
     }
 }
+
+
+
 
 bool HelloOboeEngine::isLatencyDetectionSupported() {
     return mIsLatencyDetectionSupported;
@@ -123,8 +130,13 @@ void HelloOboeEngine::tap(bool isDown) {
 
 //Постсроитель аудиопотока
 oboe::Result HelloOboeEngine::openPlaybackStream() {
-    LOGD("~~~HelloOboeEngine::openPlaybackStream()~~~");
-    LOGD("Функция Постсроитель аудиопотока");
+
+    LOGI("│┌---------------------------------------┐");
+    LOGI("││ HelloOboeEngine::openPlaybackStream() │");
+    LOGI("│├---------------------------------------┤");
+    LOGI("││ Функция Постсроитель аудиопотока      │");
+    LOGI("│└---------------------------------------┘");
+
     oboe::AudioStreamBuilder builder;
 
     oboe::Result result =
@@ -148,42 +160,55 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
 }
 
 void HelloOboeEngine::restart() {
-    LOGD("~~~HelloOboeEngine::restart()~~~");
+
+    LOGI("┌----------------------------┐\n");
+    LOGI("│ HelloOboeEngine::restart() │\n");
+    LOGI("└----------------------------┘\n");
+
     // The stream will have already been closed by the error callback.
     mLatencyCallback->reset();
     start();
 }
 
 oboe::Result HelloOboeEngine::start() {
-    LOGD("~~~HelloOboeEngine::start()~~~");
+
+    LOGI("┌--------------------------┐");
+    LOGI("│ HelloOboeEngine::start() │");
+    LOGI("├--------------------------┘");
+
     std::lock_guard<std::mutex> lock(mLock);
     mIsLatencyDetectionSupported = false;
     auto result = openPlaybackStream(); //Постсроитель аудиопотока
+
     if (result == oboe::Result::OK){
 
         mAudioSource =  std::make_shared<SoundGenerator>(mStream->getSampleRate(), mStream->getChannelCount());
 
         mLatencyCallback->setSource(std::dynamic_pointer_cast<IRenderableAudio>(mAudioSource));
 
-        LOGI("Stream открыт: AudioAPI = %d, channelCount = %d, deviceID = %d",
+        LOGI("│ Stream открыт: AudioAPI = %d, channelCount = %d, deviceID = %d",
                  mStream->getAudioApi(),
                  mStream->getChannelCount(),
                  mStream->getDeviceId());
 
-
-
-        LOGI("start() -> Запуск потока");
+        LOGI("│ Запуск потока");
         result = mStream->start(); //Запуск потока
+
         if (result != oboe::Result::OK) {
-            LOGE("Error starting playback stream. Error: %s", oboe::convertToText(result));
+            LOGI("| Error starting playback stream. Error: %s", oboe::convertToText(result));
             mStream->close();
             mStream.reset();
         } else {
+
             mIsLatencyDetectionSupported = (mStream->getTimestamp((CLOCK_MONOTONIC)) != oboe::Result::ErrorUnimplemented);
+
         }
     } else {
+
         LOGE("Error creating playback stream. Error: %s", oboe::convertToText(result));
     }
+
+    LOGI("└--------------------------┘");
     return result;
 }
 
