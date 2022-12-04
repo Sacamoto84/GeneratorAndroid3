@@ -73,12 +73,12 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-//    //Получить текущий номер устройства
-//    fun getAudioDeviceId(deviceId: Int) : Int {
-//        if (mEngineHandle != 0L)
-//           return native_getAudioDeviceId( mEngineHandle)
-//        return 0
-//    }
+    //Получить текущий номер устройства
+    fun getAudioDeviceId() : Int {
+        if (mEngineHandle != 0L)
+           return native_getAudioDeviceId( mEngineHandle)
+        return -1
+    }
 
     fun setChannelCount(channelCount: Int) {
         if (mEngineHandle != 0L) native_setChannelCount(
@@ -195,7 +195,7 @@ class PlaybackEngine(val context: Context) {
 
     private external fun native_setAudioDeviceId(engineHandle: Long, deviceId: Int)
 
-    //private external fun native_getAudioDeviceId(engineHandle: Long) : Int
+    private external fun native_getAudioDeviceId(engineHandle: Long) : Int
 
     private external fun native_setChannelCount(mEngineHandle: Long, channelCount: Int)
 

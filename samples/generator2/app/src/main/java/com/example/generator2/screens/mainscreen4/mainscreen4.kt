@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.input.pointer.motionEventSpy
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,27 +61,19 @@ fun mainsreen4(
         }
     }
 
+    Scaffold(bottomBar = {
+        BottomAppBarComponent(toggleDrawer, navController, global)
+    }) {
 
-    Scaffold(isFloatingActionButtonDocked = false,
-        floatingActionButtonPosition = FabPosition.Center,
-
-        bottomBar = {
-            BottomAppBarComponent(toggleDrawer, navController)
-        }) {
-
-
-        BottomDrawer(
-            //gesturesEnabled = drawerState.isOpen,
+        BottomDrawer(gesturesEnabled = drawerState.isOpen,
             drawerState = drawerState,
             drawerContent = {
-
-                Box(modifier = Modifier.padding(bottom = it.calculateBottomPadding()).background(Color(
-                    0xFF242323
-                )
-                )) {
+                Box(
+                    modifier = Modifier.padding(bottom = it.calculateBottomPadding())
+                        .background(Color(0xFF242323))
+                ) {
                     DrawerContentBottom(global)
                 }
-
             },
             content = { // Select user from list in main screen and send it to BottomDrawer via this lambda
                 Column(
@@ -88,122 +81,89 @@ fun mainsreen4(
                         .verticalScroll(rememberScrollState()).background(colorDarkBackground),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
-
-                    //ON_OFF(true, global.onoffconfig, {})
-
                     CardCarrier("CH0", global)
                     CardCarrier("CH1", global)
                 }
             })
-
-
     }
 
 }
 
-
-val bottomDrawerList = listOf(
-    Pair("Inbox", Icons.Filled.Favorite),
-    Pair("Outbox", Icons.Filled.AccountBox),
-    Pair("Favorites", Icons.Filled.Favorite),
-    Pair("Archive", Icons.Filled.Favorite),
-    Pair("Trash", Icons.Filled.Delete),
-)
-
-
 /**
  * Заполняем Drawer
- * Drawer content for [BottomDrawer]
  */
 @Composable
 fun DrawerContentBottom(
     global: Global
-
 ) {
-
-
-
-//    Column(
-//        modifier = Modifier.fillMaxWidth()
-//            //.heightIn(max = 80000.dp) //
-//            //.wrapContentHeight()
-//            //            .fillMaxSize()
-//            .padding(8.dp).background(Color.Black)
-//    ) {
-
-
-//        Column(modifier = Modifier.padding(8.dp)) {
-//            Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp)
-//
-//            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) { //Text(text = "$selectedUser@abc.com")
-//
-//            }
-//        }
-
-
     Column(
-        modifier = Modifier
-            //.fillMaxHeight(0.7f)
+        modifier = Modifier //.fillMaxHeight(0.7f)
             .fillMaxWidth()
     ) {
 
+        Text(
+            "Audio Devices",
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            modifier = Modifier.padding(8.dp)
+        )
 
-        Text("Audio Devices", fontWeight = FontWeight.Bold, fontSize = 20.sp, modifier = Modifier.padding(8.dp))
+        //Получить список устройств
+        global.audioDevice.mDeviceAdapter.forEachIndexed { index, pair ->
 
-    //Получить список устройств
-    global.audioDevice.mDeviceAdapter.forEachIndexed { index, pair ->
+            val label = pair.id.toString() + " " + pair.name.toString()
 
-        val label = pair.id.toString() + " " + pair.name.toString()
+            val imageVector = nameToPainter(pair.name.toString())
 
-        var imageVector: Painter = painterResource(R.drawable.info)
+            DrawerButton(isSelect = pair.id == global.audioDevice.mDeviceId,
+                icon = imageVector,
+                label = label,
+                action = {
 
-        val str = pair.name.toString()
+                    GlobalScope.launch(Dispatchers.Main) {
 
-        if (str.indexOf("earphone") != -1) imageVector = painterResource(R.drawable.earphone)
+                        global.audioDevice.playbackEngine.stop()
 
-        if (str.indexOf("built-in speaker") != -1) imageVector =
-            painterResource(R.drawable.speaker2)
+                        global.audioDevice.playbackEngine.delete()
+                        global.audioDevice.playbackEngine.create()
 
-        if (str.indexOf("headphones") != -1) imageVector = painterResource(R.drawable.headphones)
-
-        if (str.indexOf("Bluetooth") != -1) imageVector = painterResource(R.drawable.headset)
-
-        if (str.indexOf("A2DP") != -1) imageVector = painterResource(R.drawable.bluetooth)
-
-        if (str.indexOf("Auto select") != -1) imageVector = painterResource(R.drawable.auto2)
-
-        DrawerButton(icon = imageVector, label = label, action = {
-
-            GlobalScope.launch(Dispatchers.Main) {
-                global.playbackEngine.stop()
-
-                global.playbackEngine.delete()
-                global.playbackEngine.create()
-
-                global.audioDevice.OnItemSelectedListener(index)
-                global.playbackEngine.start()
-                delay(1000)
-                global.sendAlltoGen()
-            }
-
-        })
-
-
-    }
-
+                        global.audioDevice.OnItemSelectedListener(index)
+                        global.audioDevice.playbackEngine.start()
+                        global.audioDevice.getDeviceId()
+                        delay(1000)
+                        global.sendAlltoGen()
+                    }
+                })
+        }
         Spacer(modifier = Modifier.height(8.dp))
-
-
+    }
 }
 
+@Composable
+private fun nameToPainter(str: String): Painter {
+    var imageVector: Painter = painterResource(R.drawable.info)
 
-    //}
+    if (str.indexOf("earphone") != -1) imageVector = painterResource(R.drawable.earphone)
+
+    if (str.indexOf("built-in speaker") != -1) imageVector = painterResource(R.drawable.speaker2)
+
+    if (str.indexOf("headphones") != -1) imageVector = painterResource(R.drawable.headphones)
+
+    if (str.indexOf("Bluetooth") != -1) imageVector = painterResource(R.drawable.headset)
+
+    if (str.indexOf("A2DP") != -1) imageVector = painterResource(R.drawable.bluetooth)
+
+    if (str.indexOf("Auto select") != -1) imageVector = painterResource(R.drawable.auto2)
+
+    return imageVector
 }
 
 
 //Нижняя панель с кнопками
 @Composable
-private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHostController) {
+private fun BottomAppBarComponent(
+    toggleDrawer: () -> Unit, navController: NavHostController, global: Global
+) {
     BottomAppBar(
         backgroundColor = colorLightBackground,
         contentColor = Color.White,
@@ -211,16 +171,24 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
         cutoutShape = CircleShape
     ) {
 
-        // Leading icons should typically have a high content alpha
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
-            IconButton(
-                onClick = toggleDrawer
-            ) {
-                Icon(Icons.Filled.Menu, contentDescription = null)
-            }
+        global.audioDevice.getDeviceId()
 
-        } // The actions should be at the end of the BottomAppBar. They use the default medium
-        // content alpha provided by BottomAppBar
+        IconButton(
+            onClick = toggleDrawer
+        ) {
+            val id  = global.audioDevice.mDeviceId
+            var str = "Auto select"
+            global.audioDevice.mDeviceAdapter.forEach {
+                if (id == it.id)
+                    str = it.name
+            }
+            val imageVector =
+                nameToPainter(str)
+            Icon(imageVector, contentDescription = null, modifier = Modifier.size(32.dp))
+        }
+
+        //Text(text = global.audioDevice.mDeviceId.toString())
+
         Spacer(modifier = Modifier.weight(1f))
 
         IconButton(onClick = { navController.navigate("script") }) {
@@ -254,20 +222,22 @@ private fun BottomAppBarComponent(toggleDrawer: () -> Unit, navController: NavHo
     }
 }
 
-/**
- * Button for ModalDrawer or BottomDrawer menu items
- */
+
 @Composable
 fun DrawerButton(
+    modifier: Modifier = Modifier,
+    isSelect: Boolean = false,
     icon: Painter,
     label: String,
     action: () -> Unit,
-    modifier: Modifier = Modifier
 ) {
+    val surfaceModifier =
+        Modifier.then(modifier).padding(start = 8.dp, top = 8.dp, end = 8.dp).fillMaxWidth()
 
-    val surfaceModifier = modifier.padding(start = 8.dp, top = 8.dp, end = 8.dp).fillMaxWidth()
     Surface(
-        modifier = surfaceModifier, color = Color.DarkGray, shape = MaterialTheme.shapes.small
+        modifier = surfaceModifier,
+        color = if (isSelect) Color.Gray else Color.DarkGray,
+        shape = MaterialTheme.shapes.small
     ) {
         TextButton(
             onClick = action, modifier = Modifier.fillMaxWidth()
@@ -278,9 +248,12 @@ fun DrawerButton(
                 modifier = Modifier.fillMaxWidth()
             ) {
 
-
-                Icon(painter = icon, contentDescription = null,  tint = Color.White, modifier = Modifier.size(24.dp))
-
+                Icon(
+                    painter = icon,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(24.dp)
+                )
                 Spacer(Modifier.width(16.dp))
                 Text(
                     fontWeight = FontWeight.Bold,
@@ -291,10 +264,6 @@ fun DrawerButton(
             }
         }
     }
-
-
-
-
 }
 
 

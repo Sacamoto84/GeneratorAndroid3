@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.audio_device.AudioDevice
+import com.example.generator2.PlaybackEngine
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,7 @@ class Global @Inject constructor() : ViewModel() {
     @Inject lateinit var liveData: vmLiveData
     @Inject lateinit var script: Script
     @Inject lateinit var keyboard: ScriptKeyboard
-    @Inject lateinit var playbackEngine: PlaybackEngine
+   //@Inject lateinit var playbackEngine: PlaybackEngine
     @Inject lateinit var audioDevice: AudioDevice
 
 
@@ -92,48 +93,48 @@ class Global @Inject constructor() : ViewModel() {
     }
 
     fun sendAlltoGen() {
-        playbackEngine.CH_EN(0, liveData.ch1_EN.value!!)
-        playbackEngine.CH_EN(1, liveData.ch2_EN.value!!)
-        playbackEngine.CH_AM_EN(
+        audioDevice.playbackEngine.CH_EN(0, liveData.ch1_EN.value!!)
+        audioDevice.playbackEngine.CH_EN(1, liveData.ch2_EN.value!!)
+        audioDevice.playbackEngine.CH_AM_EN(
             0, liveData.ch1_AM_EN.value!!
         )
-        playbackEngine.CH_AM_EN(
+        audioDevice.playbackEngine.CH_AM_EN(
             1, liveData.ch2_AM_EN.value!!
         )
-        playbackEngine.CH_FM_EN(
+        audioDevice.playbackEngine.CH_FM_EN(
             0, liveData.ch1_FM_EN.value!!
         )
-        playbackEngine.CH_FM_EN(
+        audioDevice.playbackEngine.CH_FM_EN(
             1, liveData.ch2_FM_EN.value!!
         )
-        playbackEngine.CH_Carrier_fr(
+        audioDevice.playbackEngine.CH_Carrier_fr(
             0, liveData.ch1_Carrier_Fr.value!!
         )
-        playbackEngine.CH_Carrier_fr(
+        audioDevice.playbackEngine.CH_Carrier_fr(
             1, liveData.ch2_Carrier_Fr.value!!
         )
-        playbackEngine.CH_AM_fr(
+        audioDevice.playbackEngine.CH_AM_fr(
             0, liveData.ch1_AM_Fr.value!!
         )
-        playbackEngine.CH_AM_fr(
+        audioDevice.playbackEngine.CH_AM_fr(
             1, liveData.ch2_AM_Fr.value!!
         )
-        playbackEngine.CH_FM_Base(
+        audioDevice.playbackEngine.CH_FM_Base(
             0, liveData.ch1_FM_Base.value!!
         )
-        playbackEngine.CH_FM_Base(
+        audioDevice.playbackEngine.CH_FM_Base(
             1, liveData.ch2_FM_Base.value!!
         )
-        playbackEngine.CH_FM_Dev(
+        audioDevice.playbackEngine.CH_FM_Dev(
             0, liveData.ch1_FM_Dev.value!!
         )
-        playbackEngine.CH_FM_Dev(
+        audioDevice.playbackEngine.CH_FM_Dev(
             1, liveData.ch2_FM_Dev.value!!
         )
-        playbackEngine.CH_FM_fr(
+        audioDevice.playbackEngine.CH_FM_fr(
             0, liveData.ch1_FM_Fr.value!!
         )
-        playbackEngine.CH_FM_fr(
+        audioDevice.playbackEngine.CH_FM_fr(
             1, liveData.ch2_FM_Fr.value!!
         )
 
@@ -161,9 +162,16 @@ class Global @Inject constructor() : ViewModel() {
 
     ////////////////////////////////////////////////////////
     fun launchScriptScope() {
+
         viewModelScope.launch {
             scriptRun()
         }
+
+        viewModelScope.launch {
+            audioDevice.getDeviceId()
+            delay(2000)
+        }
+
     }
 
     private suspend fun scriptRun() = withContext(Dispatchers.Default) {

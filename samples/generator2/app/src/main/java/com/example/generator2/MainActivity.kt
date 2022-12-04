@@ -54,8 +54,8 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var observe: Observe
 
-    @Inject
-    lateinit var playbackEngine: PlaybackEngine
+    //@Inject
+    //lateinit var playbackEngine: PlaybackEngine
 
 
     @OptIn(ExperimentalAnimationApi::class)
@@ -74,12 +74,6 @@ class MainActivity : ComponentActivity() {
         global.liveData.ch1_EN.value = false
 
         Utils.ContextMainActivity = applicationContext
-
-        /** Запуск Звука
-         */
-
-        playbackEngine.create()
-        playbackEngine.start()
 
         global.onoffconfig1.pathOn = "png/switch/on.png"
         global.onoffconfig1.pathOff = "png/switch/off.png"

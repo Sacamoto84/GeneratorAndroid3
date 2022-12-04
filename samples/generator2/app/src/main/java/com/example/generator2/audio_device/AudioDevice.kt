@@ -4,10 +4,12 @@ import android.content.Context
 import android.media.AudioDeviceCallback
 import android.media.AudioDeviceInfo
 import android.media.AudioManager
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.R
-
 
 class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine) {
 
@@ -22,8 +24,15 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
     var mScoStarted = false
 
+    var mDeviceId by mutableStateOf(0)
+
+
+
 
     init {
+
+        playbackEngine.create()
+        playbackEngine.start()
 
         println("┌----------------------┐")
         println("│  AudioDevice init{}  │")
@@ -39,6 +48,12 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
         setupAudioDeviceCallback()
 
     }
+
+    fun getDeviceId()
+    {
+        mDeviceId = playbackEngine.getAudioDeviceId()
+    }
+
 
 
     private fun setupAudioDeviceCallback() {
@@ -61,6 +76,9 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
                 println(deviceList.joinToString("\n"))
                 println("└----------------------------------------------------------------------------┘")
 
+                mDeviceId = playbackEngine.getAudioDeviceId()
+
+
             }
 
             override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) {
@@ -74,6 +92,8 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
                 println("├----------------------------------------------------------------------------┘")
                 println(deviceList.joinToString(", "))
                 println("└----------------------------------------------------------------------------┘")
+
+                mDeviceId = playbackEngine.getAudioDeviceId()
 
             }
 

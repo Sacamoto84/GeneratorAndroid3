@@ -91,11 +91,13 @@ public:
 
     int32_t        mDeviceId = oboe::Unspecified; //Текущий номер устройства
 
+    std::shared_ptr<oboe::AudioStream> mStream; //Сам аудиопоток
+
 private:
     oboe::Result reopenStream();
     oboe::Result openPlaybackStream();  //Постсроитель аудиопотока
 
-    std::shared_ptr<oboe::AudioStream> mStream; //Сам аудиопоток
+
 
 
     std::unique_ptr<DefaultErrorCallback> mErrorCallback;
