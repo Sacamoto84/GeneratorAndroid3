@@ -65,8 +65,8 @@ object HomeActivityModule {
 
     @Provides
     @Singleton
-    fun provideAudioDevice( @ApplicationContext context: Context, playbackEngine: PlaybackEngine): AudioDevice {
-        return AudioDevice(context, playbackEngine)
+    fun provideAudioDevice( @ApplicationContext context: Context, playbackEngine: PlaybackEngine, script : Script): AudioDevice {
+        return AudioDevice(context, playbackEngine, script)
     }
 
 }

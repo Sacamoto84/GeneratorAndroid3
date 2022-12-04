@@ -71,7 +71,7 @@ class MainActivity : ComponentActivity() {
 
         //global.observe()
 
-        global.liveData.ch1_EN.value = false
+        //global.liveData.ch1_EN.value = false
 
         Utils.ContextMainActivity = applicationContext
 

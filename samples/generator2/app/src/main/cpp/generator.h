@@ -58,7 +58,9 @@ public:
 
     generator()
     {
+        LOGI("----------------------------------------");
         LOGI("---generator::generator() конструктор---");
+        LOGI("----------------------------------------");
     }
     ~generator() = default;
 
@@ -67,7 +69,7 @@ public:
     void renderAudio(float *audioData, int32_t numFrames);
 
     float convertHzToR(float hz) {
-        hz = hz * 16384.0F / 3.798F * 2.0F    * 1000.0/48.8 / 2.0 * 1000.0/988.0 / 4;
+        hz = hz * 16384.0F / 3.798F * 2.0F    * 1000.0/48.8 / 2.0 * 1000.0/988.0;
         return hz;
     }
     float convertHzToR_FM(float hz) {

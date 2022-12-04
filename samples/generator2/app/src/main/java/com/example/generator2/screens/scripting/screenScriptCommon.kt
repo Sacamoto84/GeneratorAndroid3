@@ -19,16 +19,12 @@ import com.example.generator2.screens.ui.ScriptTable
 //Основной экран для скриптов
 @Composable
 fun ScreenScriptCommon(navController: NavHostController, global: Global) {
-    println("-3")
     Column( //Modifier
         //  .recomposeHighlighter()
         //.background(Color.Cyan)
     ) {
 
-        println("-2")
         Box(Modifier.weight(1f)) {
-
-            println("-1")
             ScriptTable(global = global)
         }
 

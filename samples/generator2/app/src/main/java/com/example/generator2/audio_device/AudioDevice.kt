@@ -10,8 +10,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.R
+import com.example.generator2.vm.Script
+import com.example.generator2.vm.StateCommandScript
 
-class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine) {
+class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine, var script : Script) {
 
     private var mDirectionType = 0
 
@@ -64,6 +66,8 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
             override fun onAudioDevicesAdded(addedDevices: Array<AudioDeviceInfo>) {
 
+                //script.command( StateCommandScript.STOP )
+
                 val deviceList = AudioDeviceListEntry.createListFrom(addedDevices, mDirectionType)
 
                 if (deviceList.size > 0) {
@@ -82,6 +86,9 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
             }
 
             override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) {
+
+                //script.command(StateCommandScript.STOP)
+
                 val deviceList = AudioDeviceListEntry.createListFrom(removedDevices, mDirectionType)
                 for (entry in deviceList) {
                     mDeviceAdapter.remove(entry)

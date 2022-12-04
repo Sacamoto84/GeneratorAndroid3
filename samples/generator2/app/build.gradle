@@ -203,6 +203,8 @@ dependencies {
 
 
 
+    //https://github.com/tfaki/ComposableSweetToast?ref=androidexample365.com
+    implementation 'com.github.tfaki:ComposableSweetToast:1.0.1'
 
 
 }

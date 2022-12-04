@@ -80,6 +80,19 @@ class PlaybackEngine(val context: Context) {
         return -1
     }
 
+    //Прочесть признак того что требуются новые данные
+    fun getNeedAllData() : Int {
+        if (mEngineHandle != 0L)
+            return native_getAllData( mEngineHandle)
+        return 0
+    }
+
+    //Прочесть признак того что требуются новые данные
+    fun resetNeedAllData() {
+        if (mEngineHandle != 0L)
+            return native_resetAllData( mEngineHandle)
+    }
+
     fun setChannelCount(channelCount: Int) {
         if (mEngineHandle != 0L) native_setChannelCount(
             mEngineHandle,
@@ -195,7 +208,14 @@ class PlaybackEngine(val context: Context) {
 
     private external fun native_setAudioDeviceId(engineHandle: Long, deviceId: Int)
 
+
+
     private external fun native_getAudioDeviceId(engineHandle: Long) : Int
+
+    //Прочесть признак того что требуются новые данные
+    private external fun native_getAllData(engineHandle: Long) : Int
+
+    private external fun native_resetAllData(engineHandle: Long)
 
     private external fun native_setChannelCount(mEngineHandle: Long, channelCount: Int)
 

@@ -167,14 +167,26 @@ class Global @Inject constructor() : ViewModel() {
             scriptRun()
         }
 
-        viewModelScope.launch {
-            audioDevice.getDeviceId()
-            delay(2000)
+        viewModelScope.launch(Dispatchers.Main) {
+
+            while (true) {
+                if (audioDevice.playbackEngine.getNeedAllData() == 1)
+                {
+                    //delay(100)
+                    audioDevice.getDeviceId()
+                    audioDevice.playbackEngine.resetNeedAllData()
+                    //delay(2000)
+                    println("Global Отсылаем все данные")
+                    sendAlltoGen()
+                }
+                delay(1000)
+            }
+
         }
 
     }
 
-    private suspend fun scriptRun() = withContext(Dispatchers.Default) {
+    private suspend fun scriptRun() = withContext(Dispatchers.Main) {
         while (true) {
             script.run()
             delay(50)

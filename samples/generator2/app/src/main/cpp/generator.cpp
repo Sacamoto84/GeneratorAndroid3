@@ -43,7 +43,9 @@ uint16_t Sine1_1024[1024]={
 
 void generator::init()
 {
-    LOGD("---generator::init()---");
+    LOGI("-----------------------");
+    LOGI("---generator::init()---");
+    LOGI("-----------------------");
     int i;
     i=0;
     CH1.CH_EN = 0;
@@ -112,7 +114,8 @@ void generator::renderAudio(float *audioData, int numFrames) {
                 O1 = 2048;
 
             audioData[i_Frame] = (float) (O1 - 2048.0F) / 2024.0F * 1.0F;
-        } else {
+        }
+        else {
 
             if (CH2.CH_EN) {
                 if (CH2.FM_EN) {

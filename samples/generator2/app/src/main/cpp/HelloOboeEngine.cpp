@@ -142,16 +142,16 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
     oboe::Result result =
          builder.setSharingMode(oboe::SharingMode::Shared) //Эксклюзивный доступ
          //.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
-        ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
+        ->setPerformanceMode(oboe::PerformanceMode::None)
         ->setFormat(oboe::AudioFormat::Float) //16 бит или float
-        ->setFormatConversionAllowed(true)
+        //->setFormatConversionAllowed(true)
         ->setDataCallback(mLatencyCallback.get())
         ->setErrorCallback(mErrorCallback.get())
         ->setAudioApi(mAudioApi)
         ->setChannelCount(mChannelCount) //Количество каналов
         ->setDeviceId(mDeviceId)
-        ->setSampleRate(192000)
-        ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best) //Улучшает качество звука
+        ->setSampleRate(48000)
+        //->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best) //Улучшает качество звука
         ->openStream(mStream); //В конце открываем поток
     if (result == oboe::Result::OK) {
         mChannelCount = mStream->getChannelCount();
@@ -168,6 +168,7 @@ void HelloOboeEngine::restart() {
 
     // The stream will have already been closed by the error callback.
     mLatencyCallback->reset();
+
     start();
 }
 
@@ -209,6 +210,9 @@ oboe::Result HelloOboeEngine::start() {
         LOGE("Error creating playback stream. Error: %s", oboe::convertToText(result));
     }
 
+    LOGI("│ Требуем все данные");
+    //Зартебываем тут все данные
+    needAllData = 1; //Требуем все данные
     LOGI("└--------------------------┘");
     return result;
 }

@@ -93,6 +93,9 @@ public:
 
     std::shared_ptr<oboe::AudioStream> mStream; //Сам аудиопоток
 
+
+    int32_t        needAllData = 0; //Признак того что требуется получить все данные
+
 private:
     oboe::Result reopenStream();
     oboe::Result openPlaybackStream();  //Постсроитель аудиопотока

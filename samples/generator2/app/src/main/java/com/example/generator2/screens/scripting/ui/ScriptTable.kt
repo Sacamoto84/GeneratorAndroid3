@@ -36,7 +36,7 @@ private val files : MutableList<String> = mutableListOf()
 @Composable
 fun ScriptTable(global: Global) {
 
-    println("0")
+
     val openDialogSaveAs = remember { mutableStateOf(false) }
     val openDialogDeleteRename = remember { mutableStateOf(false) }
 
@@ -65,19 +65,13 @@ fun ScriptTable(global: Global) {
     //        modifier = Modifier.clickable { nonce++ })
 
 
-    println("1")
 
 
     Box(modifier = Modifier.fillMaxSize(1f)) {
-        println("2")
-        Column() {
-            println("3")
-            Row(
+          Column() {
+              Row(
                 modifier = Modifier.fillMaxSize().weight(1f)
             ) {
-
-                println("4")
-
                 Box(
                     modifier = Modifier.fillMaxSize().weight(1f),
                     contentAlignment = Alignment.BottomEnd

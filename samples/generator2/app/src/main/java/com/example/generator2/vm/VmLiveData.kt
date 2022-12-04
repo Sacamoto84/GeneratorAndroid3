@@ -5,7 +5,7 @@ import com.example.generator2.itemList
 
 class vmLiveData {
 
-        var ch1_EN = MutableLiveData<Boolean>(true)
+        var ch1_EN = MutableLiveData<Boolean>(false)
         var ch1_Carrier_Filename = MutableLiveData<String>("03_HWave2")
         var ch1_Carrier_Fr = MutableLiveData<Float>(2000.0f)     //Частота несущей
         var ch1_AM_EN = MutableLiveData<Boolean>(false)

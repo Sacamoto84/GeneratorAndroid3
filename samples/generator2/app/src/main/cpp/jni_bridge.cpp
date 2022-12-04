@@ -114,6 +114,40 @@ Java_com_example_generator2_PlaybackEngine_native_1getAudioDeviceId(
     return static_cast<jint>(engine->mStream->getDeviceId());
 }
 
+//Прочесть признак того что требуются новые данные
+JNIEXPORT jint JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1getAllData(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle
+)
+{
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return -1;
+    }
+
+    return static_cast<jint>(engine->needAllData);
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1resetAllData(
+        JNIEnv *env,
+        jclass type,
+        jlong engineHandle,
+        jint channelCount) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+    engine->needAllData = 0;
+}
+
+
 JNIEXPORT void JNICALL
 Java_com_example_generator2_PlaybackEngine_native_1setChannelCount(
         JNIEnv *env,
@@ -206,7 +240,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1EN(
 
     LOGI("JNI:setCH_1EN: CH:%d EN:%d", CH, EN);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH)
             engine->mAudioSource->mGenerator->CH2.CH_EN = EN;
         else
@@ -230,7 +264,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1AMEN(
 
     LOGI("JNI:setCH_1AMEN: CH:%d EN:%d", CH, EN);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH)
             engine->mAudioSource->mGenerator->CH2.AM_EN = EN;
         else
@@ -254,7 +288,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FMEN(
 
     LOGI("JNI:setCH_1FMEN: CH:%d EN:%d", CH, EN);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH)
             engine->mAudioSource->mGenerator->CH2.FM_EN = EN;
         else
@@ -279,7 +313,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1Carrier_1fr(
 
     LOGI("JNI:setCH_Carrier_fr: CH:%d fr%f", CH, fr);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH == 0)
             engine->mAudioSource->mGenerator->CH1.Carrier_fr = fr;
         else
@@ -304,7 +338,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1AM_1fr(
 
     LOGI("JNI:setCH_AM_fr: CH:%d FR%f", CH, fr);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH == 0)
             engine->mAudioSource->mGenerator->CH1.AM_fr = fr;
         else
@@ -329,7 +363,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FM_1fr(
 
     LOGI("JNI:setCH_FM_fr: CH:%d FR%f", CH, fr);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH == 0)
             engine->mAudioSource->mGenerator->CH1.FM_mod_fr = fr;
         else
@@ -355,67 +389,72 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1Send_1Buffer(JNIEnv *e
 
     LOGI("JNI:setCH_Send_Buffer: CH:%d mod%d", CH, mod);
 
-    jbyte *arrayBody = env->GetByteArrayElements(buf, 0);
-    jsize theArrayLengthJ = env->GetArrayLength(buf);
 
-    uint8_t *starter = (uint8_t *) arrayBody;
+    if (engine->mAudioSource->mGenerator) {
 
-    starter++;
-    int i = (int) theArrayLengthJ;
-    if (i != 2048) {
-        LOGI("!ERROR JNI:Send: buf != 2048");
-        return;
-    }
-    uint8_t inBuf[2048];
 
-    for (i = 0; i < 2048; i++)
-        inBuf[i] = *starter++;
+        jbyte *arrayBody = env->GetByteArrayElements(buf, 0);
+        jsize theArrayLengthJ = env->GetArrayLength(buf);
 
-    uint16_t inBuf16[1024];
-    for (i = 0; i < 1024; i++)
-        inBuf16[i] = (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
+        uint8_t *starter = (uint8_t *) arrayBody;
 
-    if (CH == 0) {
-        if (mod == 0) {
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH1.buffer_carrier[i] = inBuf16[i];
+        starter++;
+        int i = (int) theArrayLengthJ;
+        if (i != 2048) {
+            LOGI("!ERROR JNI:Send: buf != 2048");
+            return;
         }
+        uint8_t inBuf[2048];
 
-        if (mod == 1)  //AM
-        {
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH1.buffer_am[i] = inBuf16[i];
-        }
+        for (i = 0; i < 2048; i++)
+            inBuf[i] = *starter++;
 
-        if (mod == 2) //FM
-        {
-            //Помещаем в буффер исходника FM модуляции
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH1.source_buffer_fm[i] = inBuf16[i];
+        uint16_t inBuf16[1024];
+        for (i = 0; i < 1024; i++)
+            inBuf16[i] = (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
 
-            engine->mAudioSource->mGenerator->CreateFM_CH1();
+        if (CH == 0) {
+            if (mod == 0) {
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH1.buffer_carrier[i] = inBuf16[i];
+            }
 
-        }
-    } else {
-        if (mod == 0) {
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH2.buffer_carrier[i] =
-                        (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
-        }
+            if (mod == 1)  //AM
+            {
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH1.buffer_am[i] = inBuf16[i];
+            }
 
-        if (mod == 1) {
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH2.buffer_am[i] =
-                        (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
-        }
+            if (mod == 2) //FM
+            {
+                //Помещаем в буффер исходника FM модуляции
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH1.source_buffer_fm[i] = inBuf16[i];
 
-        if (mod == 2) //FM
-        {
-            //Помещаем в буффер исходника FM модуляции
-            for (i = 0; i < 1024; i++)
-                engine->mAudioSource->mGenerator->CH2.source_buffer_fm[i] = inBuf16[i];
+                engine->mAudioSource->mGenerator->CreateFM_CH1();
 
-            engine->mAudioSource->mGenerator->CreateFM_CH2();
+            }
+        } else {
+            if (mod == 0) {
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH2.buffer_carrier[i] =
+                            (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
+            }
+
+            if (mod == 1) {
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH2.buffer_am[i] =
+                            (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
+            }
+
+            if (mod == 2) //FM
+            {
+                //Помещаем в буффер исходника FM модуляции
+                for (i = 0; i < 1024; i++)
+                    engine->mAudioSource->mGenerator->CH2.source_buffer_fm[i] = inBuf16[i];
+
+                engine->mAudioSource->mGenerator->CreateFM_CH2();
+            }
         }
     }
 }
@@ -436,7 +475,7 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FM_1Base(JNIEnv *env,
 
     LOGI("JNI:setCH_FM_Base: CH:%d FR%f", CH, fr);
 
-    if (engine->mAudioSource) {
+    if (engine->mAudioSource->mGenerator) {
         if (CH == 0) {
             engine->mAudioSource->mGenerator->CH1.FM_Base = fr;
             engine->mAudioSource->mGenerator->CreateFM_CH1();
@@ -464,14 +503,16 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FM_1Dev(JNIEnv *env,
 
     LOGI("JNI:setCH_FM_Dev: CH:%d FR%f", CH, fr);
 
-    if (CH == 0) {
-        engine->mAudioSource->mGenerator->CH1.FM_Dev = fr;
-        engine->mAudioSource->mGenerator->CreateFM_CH1();
-    } else {
-        engine->mAudioSource->mGenerator->CH2.FM_Dev = fr;
-        engine->mAudioSource->mGenerator->CreateFM_CH2();
-    }
+    if (engine->mAudioSource->mGenerator) {
 
+        if (CH == 0) {
+            engine->mAudioSource->mGenerator->CH1.FM_Dev = fr;
+            engine->mAudioSource->mGenerator->CreateFM_CH1();
+        } else {
+            engine->mAudioSource->mGenerator->CH2.FM_Dev = fr;
+            engine->mAudioSource->mGenerator->CreateFM_CH2();
+        }
+    }
 }
 
 

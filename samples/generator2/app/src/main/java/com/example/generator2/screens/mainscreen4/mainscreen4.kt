@@ -2,24 +2,20 @@ package com.example.generator2.screens.mainscreen4
 
 import CardCarrier
 import android.annotation.SuppressLint
-import android.media.Spatializer
-import androidx.compose.foundation.Image
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.input.pointer.motionEventSpy
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,12 +24,10 @@ import androidx.navigation.NavHostController
 import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
-import com.example.generator2.ui.wiget.UIswitch.ON_OFF
 import com.example.generator2.vm.Global
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetError
+import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetSuccess
+import kotlinx.coroutines.*
 import kotlin.system.exitProcess
 
 
@@ -89,6 +83,9 @@ fun mainsreen4(
 
 }
 
+
+
+
 /**
  * Заполняем Drawer
  */
@@ -96,6 +93,18 @@ fun mainsreen4(
 fun DrawerContentBottom(
     global: Global
 ) {
+
+    var work by remember { mutableStateOf(false) }
+
+    var openDialogSuccess by remember { mutableStateOf(false) }
+
+
+    if (openDialogSuccess) {
+        openDialogSuccess = false
+
+        SweetSuccess(message = "Audio device changed", duration = Toast.LENGTH_SHORT, padding = PaddingValues(top = 0.dp), contentAlignment = Alignment.BottomCenter)
+    }
+
     Column(
         modifier = Modifier //.fillMaxHeight(0.7f)
             .fillMaxWidth()
@@ -115,24 +124,46 @@ fun DrawerContentBottom(
 
             val imageVector = nameToPainter(pair.name.toString())
 
+            val mContext = LocalContext.current
+
+
+
             DrawerButton(isSelect = pair.id == global.audioDevice.mDeviceId,
                 icon = imageVector,
                 label = label,
                 action = {
 
-                    GlobalScope.launch(Dispatchers.Main) {
 
-                        global.audioDevice.playbackEngine.stop()
 
-                        global.audioDevice.playbackEngine.delete()
-                        global.audioDevice.playbackEngine.create()
+                    if (!work) {
 
-                        global.audioDevice.OnItemSelectedListener(index)
-                        global.audioDevice.playbackEngine.start()
-                        global.audioDevice.getDeviceId()
-                        delay(1000)
-                        global.sendAlltoGen()
+                        GlobalScope.launch(Dispatchers.Main) {
+
+                            val numDeferred1 = async{
+                            work = true
+                            global.audioDevice.playbackEngine.stop()
+                            global.audioDevice.playbackEngine.delete()
+                            global.audioDevice.playbackEngine.create()
+                            global.audioDevice.OnItemSelectedListener(index)
+                            global.audioDevice.playbackEngine.start()
+                            //global.audioDevice.getDeviceId()
+                            //delay(2000)
+                            //global.sendAlltoGen()
+                            work = false
+
+                            //Toast.makeText(mContext, "Audio device changed",Toast.LENGTH_SHORT).show()
+                            openDialogSuccess = true
+                            global.audioDevice.getDeviceId()}
+
+                            numDeferred1.await()
+
+
+                        }
+
+
+
                     }
+
                 })
         }
         Spacer(modifier = Modifier.height(8.dp))
@@ -141,17 +172,20 @@ fun DrawerContentBottom(
 
 @Composable
 private fun nameToPainter(str: String): Painter {
+
     var imageVector: Painter = painterResource(R.drawable.info)
 
-    if (str.indexOf("earphone") != -1) imageVector = painterResource(R.drawable.earphone)
+    if (str.indexOf("telephony") != -1) imageVector = painterResource(R.drawable.telephone_200)
+
+    if (str.indexOf("earphone") != -1) imageVector = painterResource(R.drawable.telephone3)
 
     if (str.indexOf("built-in speaker") != -1) imageVector = painterResource(R.drawable.speaker2)
 
     if (str.indexOf("headphones") != -1) imageVector = painterResource(R.drawable.headphones)
 
-    if (str.indexOf("Bluetooth") != -1) imageVector = painterResource(R.drawable.headset)
+    if (str.indexOf("Bluetooth") != -1) imageVector = painterResource(R.drawable.headset2)
 
-    if (str.indexOf("A2DP") != -1) imageVector = painterResource(R.drawable.bluetooth)
+    if (str.indexOf("A2DP") != -1) imageVector = painterResource(R.drawable.bluetooth3)
 
     if (str.indexOf("Auto select") != -1) imageVector = painterResource(R.drawable.auto2)
 

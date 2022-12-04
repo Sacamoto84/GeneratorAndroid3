@@ -22,10 +22,9 @@ import com.example.generator2.vm.Global
 @Composable
 fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global) {
 
-    println("ScriptConsole selectLine:$selectLine" )
+    //println("ScriptConsole selectLine:$selectLine" )
 
     val indexSelect = remember { mutableStateOf(selectLine)  }
-
     indexSelect.value = selectLine
 
     val l = list.toList()
@@ -57,21 +56,14 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                             selected = indexSelect.value == index,
                             onClick = { global.script.pc.value = index })
                     ) {
-
-                        //if (indexSelect.value == 0)
-                        //    indexSelect.value = 1
-
                         val select = indexSelect.value == index
-
                         ScriptItem().Draw( str = item, index = index, select )
-
-
                     }
                 }
             }
         }
     }
 
-    println("ScriptConsole..end" )
+    //println("ScriptConsole..end" )
 }
 

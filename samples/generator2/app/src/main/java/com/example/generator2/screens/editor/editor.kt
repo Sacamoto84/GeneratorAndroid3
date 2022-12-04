@@ -41,7 +41,8 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
         Column(
             Modifier.padding(bottom = it.calculateBottomPadding())
                 .fillMaxSize() //  .recomposeHighlighter()
-                .background(Color.White).verticalScroll(rememberScrollState())
+                //.background(Color.White)
+                .verticalScroll(rememberScrollState())
         ) {
 
             if (openDialogNew.value) DialogNew(openDialogNew, global)
