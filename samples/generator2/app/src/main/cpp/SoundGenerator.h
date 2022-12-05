@@ -20,46 +20,50 @@
 #include <logging_macros.h>
 
 #include <Oscillator.h>
-#include <TappableAudioSource.h>
+//#include <TappableAudioSource.h>
 #include "generator.h"
 
-/**
- * Generates a fixed frequency tone for each channel.
- * Implements RenderableTap (sound source with toggle) which is required for AudioEngines.
- */
-class SoundGenerator : public TappableAudioSource {
-    static constexpr size_t kSharedBufferSize = 1024*16;
+
+class SoundGenerator : public IRenderableAudio
+{
 public:
-    /**
-     * Create a new SoundGenerator object.
-     *
-     * @param sampleRate - The output sample rate.
-     * @param maxFrames - The maximum number of audio frames which will be rendered, this is used to
-     * calculate this object's internal buffer size.
-     * @param channelCount - The number of channels in the output, one tone will be created for each
-     * channel, the output will be interlaced.
-     *
-     */
-    SoundGenerator(int32_t sampleRate, int32_t channelCount);
+
+    SoundGenerator(int32_t sampleRate, int32_t channelCount) {
+
+        mGenerator = std::make_unique<generator>();
+        LOGI("_-_ SoundGenerator::SoundGenerator Constructor_-_");
+        mGenerator->init();
+        LOGI("_-_ SoundGenerator::SoundGenerator sampleRate %d channelCount %d _-_", sampleRate,
+             channelCount);
+    }
+
     ~SoundGenerator() = default;
 
-    SoundGenerator(SoundGenerator&& other) = default;
-    SoundGenerator& operator= (SoundGenerator&& other) = default;
+    SoundGenerator(SoundGenerator &&other) = default;
 
-    // Switch the tones on
-    void tap(bool isOn) override;
+    SoundGenerator &operator=(SoundGenerator &&other) = default;
 
-    void renderAudio(float *audioData, int32_t numFrames) override;
+    //void renderAudio(float *audioData, int32_t numFrames) override;
 
     //Мои функции
-
-
     std::unique_ptr<generator> mGenerator;
+
+    //Рендер звука
+    void renderAudio(float *audioData, int32_t numFrames) override {
+
+        for (int j = 0; j < 1024; j++) {
+           mGenerator->buffer_carrier1[j] = mGenerator->CH1.buffer_carrier[j];
+        }
+
+        mGenerator->renderAudio(audioData, numFrames);
+    }
+
+
 private:
 
     //std::unique_ptr<Oscillator[]> mOscillators;
-    std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(kSharedBufferSize);
+    //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(kSharedBufferSize);
 };
 
 
-#endif //SAMPLES_SOUNDGENERATOR_H
+#endif

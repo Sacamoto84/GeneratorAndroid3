@@ -594,7 +594,7 @@ private:
      */
     oboe::AudioStream *build();
 
-    AudioApi       mAudioApi = AudioApi::Unspecified;
+    AudioApi       mAudioApi = AudioApi::OpenSLES;
 };
 
 } // namespace oboe

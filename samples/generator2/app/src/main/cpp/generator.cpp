@@ -66,80 +66,159 @@ void generator::init()
         CH1.buffer_fm[i] = 2500;
         CH2.buffer_fm[i] = 2500;
     }
+
+
+
+
+
+
+
+
+
 }
+
+
 
 void generator::renderAudio(float *audioData, int numFrames) {
 
-    uint16_t O1;
-    uint16_t O2;
-
-    uint32_t i;
-    uint32_t i_Frame;
-    //volatile static uint32_t i_max;
-
-    CH1.rC  = convertHzToR(CH1.Carrier_fr);
-    CH2.rC  = convertHzToR(CH2.Carrier_fr);
-    CH1.rAM = convertHzToR(CH1.AM_fr);
-    CH2.rAM = convertHzToR(CH2.AM_fr);
-    CH1.rFM = convertHzToR(CH1.FM_mod_fr);
-    CH2.rFM = convertHzToR(CH2.FM_mod_fr);
-
-    CH1.Volume = 0.65F;
-    CH2.Volume = 0.55F;
-
-    i=0;
-
-    for (i_Frame = 0; i_Frame < numFrames * 2 ; i_Frame++) {
 
 
 
-        if (i_Frame % 2 == 0) {
-            if (CH1.CH_EN) {
-                if (CH1.FM_EN) {
-                    CH1.phase_accumulator_fm = CH1.phase_accumulator_fm + CH1.rFM;
-                    CH1.phase_accumulator_carrier = CH1.phase_accumulator_carrier + (uint32_t) (
-                            (CH1.buffer_fm[CH1.phase_accumulator_fm >> 22]) * 16384.0F * 1000.0f/731.0f  );
-                } else
-                    CH1.phase_accumulator_carrier += CH1.rC;
-
-                if (CH1.AM_EN) {
-                    CH1.phase_accumulator_mod = CH1.phase_accumulator_mod + CH1.rAM;
-                    O1 = 2048 + CH1.Volume *
-                                (CH1.buffer_carrier[CH1.phase_accumulator_carrier >> 22] - 2048.F) *
-                                (CH1.buffer_am[CH1.phase_accumulator_mod >> 22] / 4095.0F);
-                } else
-                    O1 = 2048 + CH1.Volume *
-                                (CH1.buffer_carrier[CH1.phase_accumulator_carrier >> 22] - 2048.0F);
-            } else
-                O1 = 2048;
-
-            audioData[i_Frame] = (float) (O1 - 2048.0F) / 2024.0F * 1.0F;
-        }
-        else {
-
-            if (CH2.CH_EN) {
-                if (CH2.FM_EN) {
-                    CH2.phase_accumulator_fm = CH2.phase_accumulator_fm + CH2.rFM;
-                    CH2.phase_accumulator_carrier = CH2.phase_accumulator_carrier + (uint32_t) (
-                            (CH2.buffer_fm[CH2.phase_accumulator_fm >> 22]) * 16384.0F * 1000.0f/731.0f);
-                } else
-                    CH2.phase_accumulator_carrier += CH2.rC;
-
-                if (CH2.AM_EN) {
-                    CH2.phase_accumulator_mod = CH2.phase_accumulator_mod + CH2.rAM;
-                    O2 = 2048 + CH2.Volume *
-                                (CH2.buffer_carrier[CH2.phase_accumulator_carrier >> 22] - 2048.F) *
-                                (CH2.buffer_am[CH2.phase_accumulator_mod >> 22] / 4095.0F);
-                } else
-                    O2 = 2048 + CH2.Volume *
-                                (CH2.buffer_carrier[CH2.phase_accumulator_carrier >> 22] - 2048.0F);
-            } else
-                O2 = 2048;
-
-            audioData[i_Frame] = (float) (O2 - 2048.0F) / 2024.0F;
-        }
+    //LOGI("numFrames : %d", numFrames);
 
 
+//    float O1 = 0;
+//    //float O2 = 0;
+//
+//    //uint32_t i;
+//    uint32_t i_Frame;
+//
+//
+      CH1.rC  = (uint32_t)convertHzToR(CH1.Carrier_fr);
+//    CH2.rC  = (uint32_t)convertHzToR(CH2.Carrier_fr);
+//    CH1.rAM = (uint32_t)convertHzToR(CH1.AM_fr);
+//    CH2.rAM = (uint32_t)convertHzToR(CH2.AM_fr);
+//    CH1.rFM = (uint32_t)convertHzToR(CH1.FM_mod_fr);
+//    CH2.rFM = (uint32_t)convertHzToR(CH2.FM_mod_fr);
+
+    //CH1.Volume = 0.65F;
+    //CH2.Volume = 0.55F;
+
+    //i=0;
+
+//    for (i_Frame = 0; i_Frame < 2 * numFrames ; i_Frame++) {
+//
+//        CH1.phase_accumulator_carrier += CH1.rC;
+//
+//        O1 = ((float)CH1.buffer_carrier[CH1.phase_accumulator_carrier >> 23] - 2048.0F)/4096.0F;
+//
+//        audioData[i_Frame] = ;
+//
+//    }
+
+
+
+
+
+//    // Render each oscillator into its own channel
+//    std::fill_n(mBuffer.get(), kSharedBufferSize, 0);
+//    for (int i = 0; i < 2; ++i) {
+//
+//        //mOscillators->renderAudio(mBuffer.get(), numFrames);
+//
+//        for (int j = 0; j < numFrames; ++j) {
+//            //audioData[(j * 2) + i] = mBuffer[j];
+//            audioData[(j * 2) + i] = CH1.buffer_carrier[j];
+//
+//        }
+//    }
+
+//    uint16_t temp[1024];
+//    for(int j = 0 ; j < 1024 ; j++)
+//    {
+//        temp[j] = Sine1_1024[j];
+//                //CH1.buffer_carrier[j];
+//    }
+
+
+    for (int i = 0; i < numFrames; i++) {
+
+         CH1.phase_accumulator_carrier += CH1.rC;
+
+        audioData[i * 2]     = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
+        audioData[i * 2 + 1] = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
     }
+
+
+
+
+
+
+
+
+//
+//    for (i_Frame = 0; i_Frame < numFrames * 2 + 1 ; i_Frame++) {
+//
+//
+//
+//        if (i_Frame % 2 == 0) {
+//            if (CH1.CH_EN) {
+//                if (CH1.FM_EN) {
+//                    CH1.phase_accumulator_fm = CH1.phase_accumulator_fm + CH1.rFM;
+//                    CH1.phase_accumulator_carrier = CH1.phase_accumulator_carrier + (uint32_t) (
+//                            (   CH1.buffer_fm[CH1.phase_accumulator_fm >> 22]  ) * 16384.0F * 1000.0F/731.0F  );
+//                } else
+//                    CH1.phase_accumulator_carrier += CH1.rC;
+//
+//                if (CH1.AM_EN) {
+//                    CH1.phase_accumulator_mod = CH1.phase_accumulator_mod + CH1.rAM;
+//                    O1 = 2048.0f + CH1.Volume *
+//
+//                                           ((float)CH1.buffer_carrier[CH1.phase_accumulator_carrier >> 22]   -  2048.0F )
+//
+//                                *
+//
+//                                (  (float)CH1.buffer_am[CH1.phase_accumulator_mod >> 22] / 4095.0F);
+//                } else
+//
+//                    O1 = 2048.0f + CH1.Volume *
+//                                ((float)CH1.buffer_carrier[CH1.phase_accumulator_carrier >> 22] - 2048.0F);
+//
+//            } else
+//                O1 = 2048.0f;
+//
+//            audioData[i_Frame] = (float) (O1 - 2048.0F) / 2024.0F * 1.0F;
+//
+//
+//
+//
+//        }
+//        else {
+//
+//            if (CH2.CH_EN) {
+//                if (CH2.FM_EN) {
+//                    CH2.phase_accumulator_fm = CH2.phase_accumulator_fm + CH2.rFM;
+//                    CH2.phase_accumulator_carrier = CH2.phase_accumulator_carrier + (uint32_t) (
+//                            (CH2.buffer_fm[CH2.phase_accumulator_fm >> 22]) * 16384.0F * 1000.0f/731.0f);
+//                } else
+//                    CH2.phase_accumulator_carrier += CH2.rC;
+//
+//                if (CH2.AM_EN) {
+//                    CH2.phase_accumulator_mod = CH2.phase_accumulator_mod + CH2.rAM;
+//                    O2 = 2048 + CH2.Volume *
+//                                (CH2.buffer_carrier[CH2.phase_accumulator_carrier >> 22] - 2048.F) *
+//                                (CH2.buffer_am[CH2.phase_accumulator_mod >> 22] / 4095.0F);
+//                } else
+//                    O2 = 2048 + CH2.Volume *
+//                                (CH2.buffer_carrier[CH2.phase_accumulator_carrier >> 22] - 2048.0F);
+//            } else
+//                O2 = 2048;
+//
+//            audioData[i_Frame] = (float) (O2 - 2048.0F) / 2024.0F;
+//            audioData[i_Frame] = 0;
+//        }
+//
+//
+//    }
 
 }

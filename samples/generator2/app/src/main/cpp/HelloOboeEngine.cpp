@@ -122,11 +122,7 @@ bool HelloOboeEngine::isLatencyDetectionSupported() {
     return mIsLatencyDetectionSupported;
 }
 
-void HelloOboeEngine::tap(bool isDown) {
-    if (mAudioSource) {
-        mAudioSource->tap(isDown);
-    }
-}
+
 
 //Постсроитель аудиопотока
 oboe::Result HelloOboeEngine::openPlaybackStream() {
@@ -140,22 +136,22 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
     oboe::AudioStreamBuilder builder;
 
     oboe::Result result =
-         builder.setSharingMode(oboe::SharingMode::Shared) //Эксклюзивный доступ
+         builder.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
          //.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
-        ->setPerformanceMode(oboe::PerformanceMode::None)
+        ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
         ->setFormat(oboe::AudioFormat::Float) //16 бит или float
-        //->setFormatConversionAllowed(true)
+        ->setFormatConversionAllowed(true)
         ->setDataCallback(mLatencyCallback.get())
         ->setErrorCallback(mErrorCallback.get())
         ->setAudioApi(mAudioApi)
-        ->setChannelCount(mChannelCount) //Количество каналов
+        ->setChannelCount(2) //Количество каналов
         ->setDeviceId(mDeviceId)
         ->setSampleRate(48000)
-        //->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best) //Улучшает качество звука
+        ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best) //Улучшает качество звука
         ->openStream(mStream); //В конце открываем поток
     if (result == oboe::Result::OK) {
         mChannelCount = mStream->getChannelCount();
-        mStream->setBufferSizeInFrames(mStream->getFramesPerBurst() * 2); //Размер буффера
+        mStream->setBufferSizeInFrames(mStream->getFramesPerBurst() ); //Размер буффера
     }
     return result;
 }

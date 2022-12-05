@@ -25,21 +25,10 @@
 #include <DefaultDataCallback.h>
 #include <trace.h>
 
-/**
- * This callback object extends the functionality of `DefaultDataCallback` by automatically
- * tuning the latency of the audio stream. @see onAudioReady for more details on this.
- *
- * It also demonstrates how to use tracing functions for logging inside the audio callback without
- * blocking.
- */
 class LatencyTuningCallback: public DefaultDataCallback {
 public:
-    LatencyTuningCallback() : DefaultDataCallback() {
 
-        // Initialize the trace functions, this enables you to output trace statements without
-        // blocking. See https://developer.android.com/studio/profile/systrace-commandline.html
-        Trace::initialize();
-    }
+    LatencyTuningCallback() : DefaultDataCallback() { }
 
     /**
      * Every time the playback stream requires data this method will be called.
@@ -50,20 +39,21 @@ public:
      * @return Either oboe::DataCallbackResult::Continue if the stream should continue requesting data
      * or oboe::DataCallbackResult::Stop if the stream should stop.
      */
-    oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override;
+    //oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) override;
 
-    void setBufferTuneEnabled(bool enabled) {mBufferTuneEnabled = enabled;}
+    oboe::DataCallbackResult onAudioReady(oboe::AudioStream *oboeStream, void *audioData, int32_t numFrames) {
 
-    void useStream(std::shared_ptr<oboe::AudioStream>  stream);
+        if (oboeStream != mStream) {
+            mStream = oboeStream;
+            //mLatencyTuner = std::make_unique<oboe::LatencyTuner>(*oboeStream);
+        }
 
-    float CPU_usage; //Загрузка проца
-    long time_render;
-    long time_other;
+        auto result = DefaultDataCallback::onAudioReady(oboeStream, audioData, numFrames);
+        return result;
+    }
+
 
 private:
-    bool mBufferTuneEnabled = true;
-
-    // This will be used to automatically tune the buffer size of the stream, obtaining optimal latency
     std::unique_ptr<oboe::LatencyTuner> mLatencyTuner;
     oboe::AudioStream  *mStream = nullptr;
 };

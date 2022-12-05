@@ -33,8 +33,6 @@ public:
 
     virtual ~HelloOboeEngine() = default;
 
-    void tap(bool isDown);
-
     /**
      * Open and start a stream.
      * @return error or OK
@@ -86,7 +84,7 @@ public:
 
     bool isLatencyDetectionSupported();
 
-    std::shared_ptr<SoundGenerator> mAudioSource; //Там лежат калбеки
+    std::shared_ptr<SoundGenerator>        mAudioSource; //Там лежат калбеки
     std::unique_ptr<LatencyTuningCallback> mLatencyCallback;
 
     int32_t        mDeviceId = oboe::Unspecified; //Текущий номер устройства

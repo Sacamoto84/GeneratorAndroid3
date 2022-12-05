@@ -1,7 +1,3 @@
-//
-// Created by Ivan on 31.12.2021.
-//
-
 #ifndef SAMPLES_GENERATOR_H
 #define SAMPLES_GENERATOR_H
 
@@ -13,6 +9,8 @@
 #include "signal.h"
 
 #include "logging_macros.h"
+
+#include <Oscillator.h>
 
 typedef struct {
 
@@ -30,6 +28,9 @@ typedef struct {
     float FM_mod_fr;        //Часта модуляции
 
     //Буфферы
+
+
+
     uint16_t buffer_carrier[1024];
     uint16_t buffer_am[1024];
     uint16_t buffer_fm[1024];
@@ -56,11 +57,16 @@ typedef struct {
 class generator{
 public:
 
+    _structure_ch CH1;
+    _structure_ch CH2;
+
     generator()
     {
         LOGI("----------------------------------------");
         LOGI("---generator::generator() конструктор---");
         LOGI("----------------------------------------");
+
+
     }
     ~generator() = default;
 
@@ -80,9 +86,6 @@ public:
         hz = hz / 16384.0F * 3.798F / 2.0F;
         return hz;
     }
-
-    _structure_ch CH1;
-    _structure_ch CH2;
 
     void CreateFM_CH1(void)
     {
@@ -104,10 +107,25 @@ public:
             CH2.buffer_fm[i] =  x + (y * CH2.source_buffer_fm[i] / 4095.0F);
     }
 
+    std::unique_ptr<uint16_t[]> buffer_carrier1 = std::make_unique<uint16_t[]>(1024);
+    std::unique_ptr<uint16_t[]> buffer_carrier2 = std::make_unique<uint16_t[]>(1024);
+
+    std::unique_ptr<uint16_t[]> buffer_am1 = std::make_unique<uint16_t[]>(1024);
+    std::unique_ptr<uint16_t[]> buffer_am2 = std::make_unique<uint16_t[]>(1024);
+
+    std::unique_ptr<uint16_t[]> buffer_fm1 = std::make_unique<uint16_t[]>(1024);
+    std::unique_ptr<uint16_t[]> buffer_fm2 = std::make_unique<uint16_t[]>(1024);
 private:
 //int steamSampleRate;
 //unsigned int buffer_temp[1024+16]; //Сохраняются данные файлов
+
+    //static constexpr size_t kSharedBufferSize = 1024;
+    //std::unique_ptr<Oscillator> mOscillators;
+    //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(kSharedBufferSize);
+
+
+
 };
 
 
-#endif //SAMPLES_GENERATOR_H
+#endif

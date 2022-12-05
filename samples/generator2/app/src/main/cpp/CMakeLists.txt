@@ -27,8 +27,7 @@ set (APP_SOURCES
     jni_bridge.cpp
     HelloOboeEngine.cpp
     generator.cpp
-    SoundGenerator.cpp
-    LatencyTuningCallback.cpp
+        LatencyTuningCallback.cpp
 )
 
 # Build the libhello-oboe library
@@ -42,4 +41,5 @@ target_link_libraries(app android log oboe)
 
 # Enable optimization flags: if having problems with source level debugging,
 # disable -Ofast ( and debug ), re-enable after done debugging.
-target_compile_options(app PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")
+
+target_compile_options(app PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-O1>")

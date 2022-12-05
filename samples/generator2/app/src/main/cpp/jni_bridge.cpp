@@ -415,8 +415,9 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1Send_1Buffer(JNIEnv *e
 
         if (CH == 0) {
             if (mod == 0) {
-                for (i = 0; i < 1024; i++)
+                for (i = 0; i < 1024; i++) {
                     engine->mAudioSource->mGenerator->CH1.buffer_carrier[i] = inBuf16[i];
+                }
             }
 
             if (mod == 1)  //AM

@@ -530,7 +530,7 @@ class Script(private var liveData: vmLiveData) {
         list.add("IF F1 < 10000")
         list.add("CR1 FR F1")
         list.add("PLUS F1 100")
-        list.add("DELAY 500")
+        list.add("DELAY 0")
         list.add("GOTO 2")
         list.add("ENDIF")
         list.add("END")

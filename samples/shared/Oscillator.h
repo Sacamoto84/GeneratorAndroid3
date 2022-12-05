@@ -61,14 +61,14 @@ public:
             for (int i = 0; i < numFrames; ++i) {
 
                 // Sine wave (sinf)
-                //audioData[i] = sinf(mPhase) * mAmplitude;
+                audioData[i] = sinf(mPhase) * mAmplitude;
 
-                // Square wave
-                if (mPhase <= kPi){
-                    audioData[i] = -mAmplitude;
-                } else {
-                    audioData[i] = mAmplitude;
-                }
+//                // Square wave
+//                if (mPhase <= kPi){
+//                    audioData[i] = -mAmplitude;
+//                } else {
+//                    audioData[i] = mAmplitude;
+//                }
 
                 mPhase += mPhaseIncrement;
                 if (mPhase > kTwoPi) mPhase -= kTwoPi;
@@ -79,10 +79,10 @@ public:
     };
 
 private:
-    std::atomic<bool> mIsWaveOn { false };
+    std::atomic<bool> mIsWaveOn { true };
     float mPhase = 0.0;
-    std::atomic<float> mAmplitude { 0 };
-    std::atomic<double> mPhaseIncrement { 0.0 };
+    std::atomic<float> mAmplitude { 0.5 };
+    std::atomic<double> mPhaseIncrement { 0.01 };
     double mFrequency = kDefaultFrequency;
     int32_t mSampleRate = kDefaultSampleRate;
 
