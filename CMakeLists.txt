@@ -83,7 +83,7 @@ target_compile_options(oboe
         -Wextra-semi
         -Wshadow
         -Wshadow-field
-        -Ofast
+        -Fast
         -Werror
         "$<$<CONFIG:DEBUG>:-Werror>")
 

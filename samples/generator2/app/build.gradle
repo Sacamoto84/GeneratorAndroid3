@@ -47,7 +47,7 @@ android {
     defaultConfig {
         applicationId "com.example.generator2"
         minSdk 23
-        targetSdk 32
+        targetSdk 33
         versionCode 146
         versionName "1.4.6"
 

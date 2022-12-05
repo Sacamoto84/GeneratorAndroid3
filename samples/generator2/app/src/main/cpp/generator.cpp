@@ -4,6 +4,8 @@
 
 #include "generator.h"
 
+_structure_ch CH1;
+_structure_ch CH2;
 
 uint16_t Sine1_1024[1024]={
         0x807,0x80F,0x817,0x81F,0x827,0x82F,0x837,0x83F,0x847,0x84F,0x857,0x85F,0x867,0x86F,0x877,0x87F,0x887,0x88F,0x897,0x89F,0x8A7,0x8AF,0x8B7,0x8BF,0x8C7,0x8CF,0x8D7,0x8DF,0x8E7,0x8EF,0x8F7,0x8FF
@@ -41,45 +43,11 @@ uint16_t Sine1_1024[1024]={
 
 
 
-void generator::init()
-{
-    LOGI("-----------------------");
-    LOGI("---generator::init()---");
-    LOGI("-----------------------");
-    int i;
-    i=0;
-    CH1.CH_EN = 0;
-    CH2.CH_EN = 0;
-
-    for(i = 0; i<1024; i++){
-        CH1.buffer_carrier[i] = Sine1_1024[i];
-        CH2.buffer_carrier[i] = Sine1_1024[i];
-        CH1.buffer_am[i] = Sine1_1024[i];
-        CH2.buffer_am[i] = Sine1_1024[i];
-    }
-    CH1.Carrier_fr = 1000;
-    CH2.Carrier_fr = 1000;
-    CH1.AM_fr = 10.0;
-    CH2.AM_fr = 10.0;
-    for(i=0;i<1024;i++)
-    {
-        CH1.buffer_fm[i] = 2500;
-        CH2.buffer_fm[i] = 2500;
-    }
 
 
 
 
-
-
-
-
-
-}
-
-
-
-void generator::renderAudio(float *audioData, int numFrames) {
+//void generator::renderAudio(float *audioData, int numFrames) {
 
 
 
@@ -94,7 +62,7 @@ void generator::renderAudio(float *audioData, int numFrames) {
 //    uint32_t i_Frame;
 //
 //
-      CH1.rC  = (uint32_t)convertHzToR(CH1.Carrier_fr);
+//      CH1.rC  = (uint32_t)convertHzToR(CH1.Carrier_fr);
 //    CH2.rC  = (uint32_t)convertHzToR(CH2.Carrier_fr);
 //    CH1.rAM = (uint32_t)convertHzToR(CH1.AM_fr);
 //    CH2.rAM = (uint32_t)convertHzToR(CH2.AM_fr);
@@ -141,13 +109,13 @@ void generator::renderAudio(float *audioData, int numFrames) {
 //    }
 
 
-    for (int i = 0; i < numFrames; i++) {
-
-         CH1.phase_accumulator_carrier += CH1.rC;
-
-        audioData[i * 2]     = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
-        audioData[i * 2 + 1] = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
-    }
+//    for (int i = 0; i < numFrames; i++) {
+//
+//         CH1.phase_accumulator_carrier += CH1.rC;
+//
+//        audioData[i * 2]     = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
+//        audioData[i * 2 + 1] = (float)(buffer_carrier1[CH1.phase_accumulator_carrier >> 22]-2048)/2048.0F;
+//    }
 
 
 
@@ -221,4 +189,4 @@ void generator::renderAudio(float *audioData, int numFrames) {
 //
 //    }
 
-}
+//}

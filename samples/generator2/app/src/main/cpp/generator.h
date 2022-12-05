@@ -52,80 +52,12 @@ typedef struct {
     uint32_t phase_accumulator_mod;
     uint32_t phase_accumulator_fm;
 
+
+    float mBuffer[4096];
+
 } _structure_ch;
 
-class generator{
-public:
-
-    _structure_ch CH1;
-    _structure_ch CH2;
-
-    generator()
-    {
-        LOGI("----------------------------------------");
-        LOGI("---generator::generator() конструктор---");
-        LOGI("----------------------------------------");
-
-
-    }
-    ~generator() = default;
-
-    void init(void);
-
-    void renderAudio(float *audioData, int32_t numFrames);
-
-    float convertHzToR(float hz) {
-        hz = hz * 16384.0F / 3.798F * 2.0F    * 1000.0/48.8 / 2.0 * 1000.0/988.0;
-        return hz;
-    }
-    float convertHzToR_FM(float hz) {
-        hz = hz * 16384.0F;
-        return hz;
-    }
-    float convertRToHz(float hz) {
-        hz = hz / 16384.0F * 3.798F / 2.0F;
-        return hz;
-    }
-
-    void CreateFM_CH1(void)
-    {
-        int x, y;
-        int i = 0;
-        x = CH1.FM_Base - CH1.FM_Dev;
-        y = CH1.FM_Dev * 2;
-        for (i = 0; i < 1024; i++)
-            CH1.buffer_fm[i] =  x + (y * CH1.source_buffer_fm[i] / 4095.0F);
-    }
-
-    void CreateFM_CH2(void)
-    {
-        int x, y;
-        int i = 0;
-        x = CH2.FM_Base - CH2.FM_Dev;
-        y = CH2.FM_Dev * 2;
-        for (i = 0; i < 1024; i++)
-            CH2.buffer_fm[i] =  x + (y * CH2.source_buffer_fm[i] / 4095.0F);
-    }
-
-    std::unique_ptr<uint16_t[]> buffer_carrier1 = std::make_unique<uint16_t[]>(1024);
-    std::unique_ptr<uint16_t[]> buffer_carrier2 = std::make_unique<uint16_t[]>(1024);
-
-    std::unique_ptr<uint16_t[]> buffer_am1 = std::make_unique<uint16_t[]>(1024);
-    std::unique_ptr<uint16_t[]> buffer_am2 = std::make_unique<uint16_t[]>(1024);
-
-    std::unique_ptr<uint16_t[]> buffer_fm1 = std::make_unique<uint16_t[]>(1024);
-    std::unique_ptr<uint16_t[]> buffer_fm2 = std::make_unique<uint16_t[]>(1024);
-private:
-//int steamSampleRate;
-//unsigned int buffer_temp[1024+16]; //Сохраняются данные файлов
-
-    //static constexpr size_t kSharedBufferSize = 1024;
-    //std::unique_ptr<Oscillator> mOscillators;
-    //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(kSharedBufferSize);
-
-
-
-};
-
+extern _structure_ch CH1;
+extern _structure_ch CH2;
 
 #endif

@@ -19,20 +19,17 @@
 
 #include <logging_macros.h>
 
-#include <Oscillator.h>
-//#include <TappableAudioSource.h>
 #include "generator.h"
 
+#include "signal.h"
 
-class SoundGenerator : public IRenderableAudio
-{
+class SoundGenerator : public IRenderableAudio {
 public:
 
     SoundGenerator(int32_t sampleRate, int32_t channelCount) {
 
-        mGenerator = std::make_unique<generator>();
         LOGI("_-_ SoundGenerator::SoundGenerator Constructor_-_");
-        mGenerator->init();
+        init();
         LOGI("_-_ SoundGenerator::SoundGenerator sampleRate %d channelCount %d _-_", sampleRate,
              channelCount);
     }
@@ -43,26 +40,133 @@ public:
 
     SoundGenerator &operator=(SoundGenerator &&other) = default;
 
-    //void renderAudio(float *audioData, int32_t numFrames) override;
-
-    //Мои функции
-    std::unique_ptr<generator> mGenerator;
-
     //Рендер звука
     void renderAudio(float *audioData, int32_t numFrames) override {
 
-        for (int j = 0; j < 1024; j++) {
-           mGenerator->buffer_carrier1[j] = mGenerator->CH1.buffer_carrier[j];
+        CH1.Volume = 0.65F;
+        CH2.Volume = 0.55F;
+
+        renderChanel(&CH1, numFrames);
+        renderChanel(&CH2, numFrames);
+
+        for (int i = 0; i < numFrames; i++) {
+            audioData[i * 2]     = CH1.mBuffer[i];
+            audioData[i * 2 + 1] = CH2.mBuffer[i];
         }
 
-        mGenerator->renderAudio(audioData, numFrames);
+    }
+
+    //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(4096);
+
+    void renderChanel(_structure_ch * CH, int numFrames) {
+
+        float O = 0.0F;
+
+        CH->rC = (uint32_t) convertHzToR(CH->Carrier_fr);
+        CH->rAM = (uint32_t) convertHzToR(CH->AM_fr);
+        CH->rFM = (uint32_t) convertHzToR(CH->FM_mod_fr);
+
+        //std::fill_n(CH->mBuffer, numFrames, 0);
+
+        for (int i = 0; i < numFrames; i++) {
+
+            if (CH->CH_EN) {
+
+                if (CH->FM_EN) {
+                    CH->phase_accumulator_fm = CH->phase_accumulator_fm + CH->rFM;
+                    CH->phase_accumulator_carrier = CH->phase_accumulator_carrier + (uint32_t) (
+                            (CH->buffer_fm[CH->phase_accumulator_fm >> 22]) * 16384.0F * 1000.0F / 731.0F);
+                }
+                else
+                    CH->phase_accumulator_carrier += CH->rC;
+
+
+                if (CH->AM_EN) {
+                    CH->phase_accumulator_mod = CH->phase_accumulator_mod + CH->rAM;
+
+                    O = CH->Volume
+                            *  (float)(CH->buffer_carrier[CH->phase_accumulator_carrier >> 22] - 2048.0F)/2048.0F
+                            * ((float) CH->buffer_am[CH->phase_accumulator_mod >> 22] / 4095.0F);
+                } else
+                    O = CH->Volume
+                            *  (float)(CH->buffer_carrier[CH->phase_accumulator_carrier >> 22] - 2048.0F)/2048.0F;
+
+            } else
+                O = 0;
+
+            CH->mBuffer[i] = O;
+        }
+
     }
 
 
-private:
+    void init() {
+        LOGI("-----------------------");
+        LOGI("---init()---");
+        LOGI("-----------------------");
+        int i;
+        i = 0;
+        CH1.CH_EN = 0;
+        CH2.CH_EN = 0;
 
-    //std::unique_ptr<Oscillator[]> mOscillators;
-    //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(kSharedBufferSize);
+        for (i = 0; i < 1024; i++) {
+            CH1.buffer_carrier[i] = Ramp_1024[i];
+            CH2.buffer_carrier[i] = Ramp_1024[i];
+            CH1.buffer_am[i] = Ramp_1024[i];
+            CH2.buffer_am[i] = Ramp_1024[i];
+        }
+        CH1.Carrier_fr = 1000;
+        CH2.Carrier_fr = 1000;
+        CH1.AM_fr = 10.0;
+        CH2.AM_fr = 10.0;
+        for (i = 0; i < 1024; i++) {
+            CH1.buffer_fm[i] = 2500;
+            CH2.buffer_fm[i] = 2500;
+        }
+
+    }
+
+    //std::unique_ptr<uint16_t[]> buffer_carrier1 = std::make_unique<uint16_t[]>(1024);
+    //std::unique_ptr<uint16_t[]> buffer_carrier2 = std::make_unique<uint16_t[]>(1024);
+
+    //std::unique_ptr<uint16_t[]> buffer_am1 = std::make_unique<uint16_t[]>(1024);
+    //std::unique_ptr<uint16_t[]> buffer_am2 = std::make_unique<uint16_t[]>(1024);
+
+    //std::unique_ptr<uint16_t[]> buffer_fm1 = std::make_unique<uint16_t[]>(1024);
+    //std::unique_ptr<uint16_t[]> buffer_fm2 = std::make_unique<uint16_t[]>(1024);
+
+    float convertHzToR(float hz) {
+        hz = hz * 16384.0F / 3.798F * 2.0F * 1000.0 / 48.8 / 2.0 * 1000.0 / 988.0;
+        return hz;
+    }
+
+    float convertHzToR_FM(float hz) {
+        hz = hz * 16384.0F;
+        return hz;
+    }
+
+    float convertRToHz(float hz) {
+        hz = hz / 16384.0F * 3.798F / 2.0F;
+        return hz;
+    }
+
+    void CreateFM_CH1(void) {
+        int x, y;
+        int i = 0;
+        x = CH1.FM_Base - CH1.FM_Dev;
+        y = CH1.FM_Dev * 2;
+        for (i = 0; i < 1024; i++)
+            CH1.buffer_fm[i] = x + (y * CH1.source_buffer_fm[i] / 4095.0F);
+    }
+
+    void CreateFM_CH2(void) {
+        int x, y;
+        int i = 0;
+        x = CH2.FM_Base - CH2.FM_Dev;
+        y = CH2.FM_Dev * 2;
+        for (i = 0; i < 1024; i++)
+            CH2.buffer_fm[i] = x + (y * CH2.source_buffer_fm[i] / 4095.0F);
+    }
 };
 
 

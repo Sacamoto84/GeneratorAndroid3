@@ -98,13 +98,9 @@ private:
     oboe::Result reopenStream();
     oboe::Result openPlaybackStream();  //Постсроитель аудиопотока
 
-
-
-
     std::unique_ptr<DefaultErrorCallback> mErrorCallback;
 
     bool mIsLatencyDetectionSupported = false;
-
 
     int32_t        mChannelCount = oboe::Unspecified;
     oboe::AudioApi mAudioApi = oboe::AudioApi::Unspecified;
