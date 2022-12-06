@@ -39,6 +39,11 @@ class ScriptItem {
 
     @Composable
     fun Draw(str: String, index: Int = 0, select: Boolean = false) {
+
+        println("Draw")
+
+
+
         convertStringToPairTextAndColor(str, index)
 
         Box(
@@ -272,9 +277,9 @@ class ScriptItem {
 fun Xxx_preview() {
     val items = ScriptItem()
     Column() {
-        items.Draw("CH1 CR ON")
-        items.Draw("CH1 CR ON")
-        items.Draw("CH1 CR ON")
-        items.Draw("CH1 CR ON")
+//        items.Draw("CH1 CR ON")
+//        items.Draw("CH1 CR ON")
+//        items.Draw("CH1 CR ON")
+//        items.Draw("CH1 CR ON")
     }
 }

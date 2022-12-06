@@ -74,15 +74,11 @@ enum class StateCommandScript {
 //Основной класс скриптовой системы
 class Script(private var liveData: vmLiveData) {
 
-
-    val channel = Channel<Float>()
-
     //╭─ Генератор ───────────────────────╮
     var end = true
     private var endTime = 0L              //Время > которого можно продолжать работу
 
     var f = mutableStateListOf<Float>()
-    //var pc = mutableStateOf(0)
 
     var pc = 0
 
@@ -90,12 +86,15 @@ class Script(private var liveData: vmLiveData) {
     val list = mutableStateListOf<String>()
 
 
+    var pc_ex by mutableStateOf(0)
 
     var state by mutableStateOf(StateCommandScript.ISTOPPING)
 
     init {
         f.addAll(FloatArray(10).toList())
         command(StateCommandScript.STOP)
+
+
     }
 
     fun command(s: StateCommandScript) {
@@ -148,8 +147,7 @@ class Script(private var liveData: vmLiveData) {
     @OptIn(DelicateCoroutinesApi::class)
     fun log(str: String) { //
 
-        GlobalScope.launch (Dispatchers.Main) {
-            //consoleLog.println(str)
+        GlobalScope.launch(Dispatchers.Main) { //consoleLog.println(str)
         }
 
     }
@@ -158,63 +156,44 @@ class Script(private var liveData: vmLiveData) {
     //val unit5 = listOf<String>("New", "LOAD F1 1000", "IF F1 < 10000","CR1 FR F1","PLUS F1 100","GOTO 2", "ENDIF", "END")
 
 
-
     suspend fun run() {
-
         if (end) return
         end = false
         if (System.currentTimeMillis() <= endTime) return
         endTime = 0
-
         while (!end) {
-
-
-              //val list1 = list.toList().toTypedArray()
-
-
-          // cmdExecute(list1[pc.value])
-
-
-
-try {
-    val list1 = list.toList()
-    if ((pc >= 0) && (pc <= list1.lastIndex)) {
-
-        val s = list1[pc]
-        println("QQQQQQQQQQQ S="+s +" pc:"+ pc)
-        cmdExecute(s)
-
-    }
-    else {
-        println("Ошибка индекса pc:" + pc)
-        println(list.joinToString(","))
-        pc = 1
-    }
-}
-catch (e : Exception)
-{
-    println("Exception Ошибка "+e.message + " pc:"+ pc)
-}
-
-
-          if (System.currentTimeMillis() <= endTime) return
-          delay(1)
-
+            try {
+                val list1 = list.toList()
+                if ((pc >= 0) && (pc <= list1.lastIndex)) {
+                    val s = list1[pc]
+                    println("QQQQQQQQQQQ S=" + s + " pc:" + pc)
+                    cmdExecute(s)
+                } else {
+                    println("Ошибка индекса pc:" + pc)
+                    println(list.joinToString(","))
+                    pc = 1
+                    pc_ex = pc
+                }
+            } catch (e: Exception) {
+                println("Exception Ошибка " + e.message + " pc:" + pc)
+            }
+            if (System.currentTimeMillis() <= endTime) return
+            delay(1)
         }
-
     }
 
     private fun start() {
         pc = 1
+        pc_ex = pc
         end = false
     }
 
     private fun stop() {
-        for (i in f.indices)
-        {
+        for (i in f.indices) {
             f[i] = 0f
         }
         pc = 1
+        pc_ex = pc
         end = true
         println("Script Stop")
     }
@@ -226,11 +205,6 @@ catch (e : Exception)
     private fun resume() {
         end = false
     }
-
-
-
-
-
 
 
     //Выполнить команду по строке
@@ -254,6 +228,7 @@ catch (e : Exception)
                 while (true) {
                     if (list[currentPC] == "ENDIF") {
                         pc = currentPC
+                        pc_ex = pc
                         break
                     }
                     currentPC++
@@ -263,6 +238,7 @@ catch (e : Exception)
 
             "ENDIF"                                                -> {
                 pc++
+                pc_ex = pc
             }
 
             "END"                                                  -> {
@@ -278,31 +254,37 @@ catch (e : Exception)
             "CH1", "CH2", "CR1", "CR2", "AM1", "AM2", "FM1", "FM2" -> {
                 generatorComand(comand)
                 pc++
+                pc_ex = pc
             }
 
             "MINUS", "PLUS"                                        -> {
                 comandPlusMinus(comand)
                 pc++
+                pc_ex = pc
             }
 
             "GOTO"                                                 -> {
                 pc = listCMD[1].toInt()
+                pc_ex = pc
             }
 
             "DELAY"                                                -> {
                 val d = listCMD[1].toLong()
                 endTime = System.currentTimeMillis() + d
                 pc++
+                pc_ex = pc
             }
 
             "LOAD"                                                 -> { //LOAD F1 2344.0  │ 2344.0 -> F1
                 load(comand)
                 pc++
+                pc_ex = pc
             }
 
             else                                                   -> {
                 println("Script:? pc:$pc :$comand")
                 pc++
+                pc_ex = pc
                 if (pc >= PC_MAX) end = true
             }
 
@@ -311,19 +293,15 @@ catch (e : Exception)
     }
 
     fun load(comand: String) { //LOAD F1 2344.0  │ 2344.0 -> F1
-
         //Разобрать строку на список команд
         val listCMD = comand.split(" ")
         if (listCMD.isEmpty()) {
             println("Script: Error Load размер listCMD == 0")
             return
         }
-
         val index = listCMD[1].drop(1).toInt()
-
         f[index] = if ((listCMD[2].first() == 'F')) f[listCMD[2].drop(1).toInt()]
         else listCMD[2].toFloat()
-
     }
 
     // IF R1 < 5500
@@ -354,17 +332,20 @@ catch (e : Exception)
 
         if (boolResult) {
             pc++ //Переход на следующую строку, ибо условие выполнено
+            pc_ex = pc
         } else { //Ищем первое ELSE или ENDIF, ибо условие не выполнено
             var currentPC = pc
             while (true) {
                 if (list[currentPC] == "ELSE") //+1 к ELSE
                 {
                     pc = currentPC + 1
+                    pc_ex = pc
                     break
                 }
 
                 if (list[currentPC] == "ENDIF") {
                     pc = currentPC
+                    pc_ex = pc
                     break
                 }
                 currentPC++
@@ -373,7 +354,7 @@ catch (e : Exception)
         }
     }
 
-    private suspend fun generatorComand( command: String ) {
+    private suspend fun generatorComand(command: String) {
 
         //Разобрать строку на список команд
         val listCMD = command.split(" ")
@@ -387,8 +368,7 @@ catch (e : Exception)
         //╭─ CH1 CH2 ─────────────────────────────────────────────────────────────────╮
         if ((listCMD[0] == "CH1") || (listCMD[0] == "CH2")) {                       //│                                                                       //│
             val onoff =                                                             //│
-                listCMD[2] == "ON"                                                  //│
-            //────────────────────────────────────────────┬───────────────────────────┤
+                listCMD[2] == "ON"                                                  //│ //────────────────────────────────────────────┬───────────────────────────┤
             if (listCMD[1] == "CR")                    //│  CH1 CR ON   CH2 CR OFF  //│
             {                                          //╰────────────────────────────┤
                 if (chanel == 1)                                                    //│
@@ -400,17 +380,17 @@ catch (e : Exception)
             if (listCMD[1] == "AM")                     //│  CH1 AM ON   CH2 AM OFF //│
             {                                           //╰───────────────────────────┤
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_AM_EN.update{onoff}                                //│
+                    liveData.ch1_AM_EN.update { onoff }                                //│
                 else                                                                //│
-                    liveData.ch2_AM_EN.update{onoff}                                //│
+                    liveData.ch2_AM_EN.update { onoff }                                //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             if (listCMD[1] == "FM")                                                 //│
             {                                                                       //│
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_FM_EN.update{onoff}                                //│
+                    liveData.ch1_FM_EN.update { onoff }                                //│
                 else                                                                //│
-                    liveData.ch2_FM_EN.update{onoff}                                //│
+                    liveData.ch2_FM_EN.update { onoff }                                //│
             }                                                                       //│
             //────────────────────────────────────────────────────────────────────────┤
             return                                                                  //│
@@ -424,9 +404,9 @@ catch (e : Exception)
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 println(listCMD[2])                                                 //│
-                if (chanel == 1) liveData.ch1_Carrier_Filename.update{listCMD[2]}    //│
+                if (chanel == 1) liveData.ch1_Carrier_Filename.update { listCMD[2] }    //│
                 else                                                                //│
-                    liveData.ch2_Carrier_Filename.update{listCMD[2]}             //│
+                    liveData.ch2_Carrier_Filename.update { listCMD[2] }             //│
             }                                                                       //│
 
             //CR[1 2] FR 1000.3                                                     //│
@@ -435,16 +415,16 @@ catch (e : Exception)
 
                 val value = if (listCMD[2].first() == 'F') {
                     f[listCMD[2].drop(1).toInt()]
-                } else  {
+                } else {
                     listCMD[2].toFloat()
                 }
 
-                if (chanel == 1){
-                    //liveData.ch1_Carrier_Fr.update { value }
+                if (chanel == 1) {
+                    liveData.ch1_Carrier_Fr.update { value }
                     //channel.send(value)
-                }
-                else   {                                             //│
-                    liveData.ch2_Carrier_Fr.update{value} }                       //│
+                } else {                                             //│
+                    liveData.ch2_Carrier_Fr.update { value }
+                }                       //│
             }
 
 
@@ -466,19 +446,19 @@ catch (e : Exception)
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_AM_Fr.update{value}                             //│
+                    liveData.ch1_AM_Fr.update { value }                             //│
                 else                                                                //│
-                    liveData.ch2_AM_Fr.update{value}                             //│
+                    liveData.ch2_AM_Fr.update { value }                             //│
             }                                                                       //│
 
             //AM[1 2] MOD 02_HWawe { 1.9ms }                                        //│
             if (listCMD[1] == "MOD")                                                //│
             {                                                                       //│
                 if (chanel == 1) {                                                  //│
-                    liveData.ch1_AM_Filename.update{listCMD[2]}                  //│
+                    liveData.ch1_AM_Filename.update { listCMD[2] }                  //│
                 }                                                                   //│
                 else                                                                //│
-                    liveData.ch2_AM_Filename.update{listCMD[2]}                  //│
+                    liveData.ch2_AM_Filename.update { listCMD[2] }                  //│
             }                                                                       //│
             return                                                                  //│
         }                                                                           //│
@@ -497,9 +477,9 @@ catch (e : Exception)
                     listCMD[2].toFloat()                                            //│
 
                 if (chanel == 1)                                                    //│
-                    liveData.ch1_FM_Base.update{value}                           //│
+                    liveData.ch1_FM_Base.update { value }                           //│
                 else                                                                //│
-                    liveData.ch2_FM_Base.update{value}                           //│
+                    liveData.ch2_FM_Base.update { value }                           //│
             }                                                                       //│
         }                                                                           //│
         //│
@@ -510,17 +490,17 @@ catch (e : Exception)
                 f[listCMD[2].drop(1).toInt()]
             } else listCMD[2].toFloat()
 
-            if (chanel == 1) liveData.ch1_FM_Dev.update{value}
+            if (chanel == 1) liveData.ch1_FM_Dev.update { value }
             else                                                                     //│
-                liveData.ch2_FM_Dev.update{value}                                    //│
+                liveData.ch2_FM_Dev.update { value }                                    //│
         }                                                                            //│
 
         //FM[1 2] MOD 02_HWawe                                                       //│
         if (listCMD[1] == "MOD")                                                     //│
         {                                                                            //│
-            if (chanel == 1) liveData.ch1_FM_Filename.update{listCMD[2]}
+            if (chanel == 1) liveData.ch1_FM_Filename.update { listCMD[2] }
             else                                                                     //│
-                liveData.ch2_FM_Filename.update{listCMD[2]}                          //│
+                liveData.ch2_FM_Filename.update { listCMD[2] }                          //│
         }                                                                            //│
 
         //FM[1 2] FR   3.5                                                           //│
@@ -530,13 +510,12 @@ catch (e : Exception)
                 f[listCMD[2].drop(1).toInt()]
             } else listCMD[2].toFloat()
 
-            if (chanel == 1) liveData.ch1_FM_Fr.update{value}
+            if (chanel == 1) liveData.ch1_FM_Fr.update { value }
             else                                                                      //│
-                liveData.ch2_FM_Fr.update{value}                                      //│
+                liveData.ch2_FM_Fr.update { value }                                      //│
         }                                                                             //│
         return                                                                        //│
-    }                                                                                 //│
-    // ╰────────────────────────────────────────────────────────────────────────────────╯
+    }                                                                                 //│ // ╰────────────────────────────────────────────────────────────────────────────────╯
 
     private fun comandPlusMinus(comand: String) { //MINUS F1 5000.0
         //MINUS F1 F2
@@ -548,29 +527,24 @@ catch (e : Exception)
         val index = listCMD[1].drop(1).toInt() //Индекс первой ячейки 0..9 //MINUS F1 F2
         if (listCMD[2].first() == 'F') { //Второй операнд это регистор
             val secondIndex = listCMD[2].drop(1)
-                .toInt() //Индекс второго регистра
-            // ┌── MINUS ────────────────────────────────────┐
+                .toInt() //Индекс второго регистра // ┌── MINUS ────────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - f[secondIndex]  //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + f[secondIndex]          //PLUS F* F*
             } //└────────────────────────────────────────────┘
         } else { //Второй операнд это константа
             //MINUS F1 5000.0
-            val fvalue = listCMD[2].toFloat()
-            //┌── MINUS ───────────────────────────────────┐
+            val fvalue = listCMD[2].toFloat() //┌── MINUS ───────────────────────────────────┐
             if (listCMD[0] == "MINUS") {
                 f[index] = f[index] - fvalue //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
             //┌── PLUS ────────────────────────────────────┐
             if (listCMD[0] == "PLUS") {
                 f[index] = f[index] + fvalue //MINUS F* F*
-            }
-            //└────────────────────────────────────────────┘
+            } //└────────────────────────────────────────────┘
         }
     }
 
@@ -582,7 +556,7 @@ catch (e : Exception)
         list.add("IF F1 < 10000")
         list.add("CR1 FR F1")
         list.add("PLUS F1 100")
-        //list.add("DELAY 500")
+        list.add("DELAY 50")
         list.add("GOTO 2")
         list.add("ENDIF")
         list.add("END")

@@ -42,54 +42,72 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
+import javax.inject.Singleton
 
-
+@Singleton
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
+    override fun onStop() {
+        super.onStop()
+        println("...........................................................................")
+        println("..................................onStop..................................")
+        println("...........................................................................")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        println("...........................................................................")
+        println("..................................onPause..................................")
+        println("...........................................................................")
+    }
     private val global: Global by viewModels()
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        global.componentActivity = this
-        global.contextActivity = applicationContext
+        println("...........................................................................")
+        println("..................................onCreate.................................")
+        println("...........................................................................")
 
-        global.init()
+        //global.componentActivity = this
+        //global.contextActivity = applicationContext
 
+
+        //global.init()
         //global.observe()
-
         //global.liveData.ch1_EN.value = false
 
         Utils.ContextMainActivity = applicationContext
 
-        global.onoffconfig1.pathOn = "png/switch/on.png"
-        global.onoffconfig1.pathOff = "png/switch/off.png"
-        global.onoffconfig1.pathGroup = "png/switch/switch.png"
-        global.onoffconfig1.componentW = 64.0f
-        global.onoffconfig1.componentPixelW = 108.0f
-        global.onoffconfig1.componentPixelH = 64.0f
-        global.onoffconfig1.groupW = 30.0f
-        global.onoffconfig1.groupPixelW = 37.0f
-        global.onoffconfig1.groupPixelH = 49.0f
-        global.onoffconfig1.groupDeltaY = 0.dp
-        global.onoffconfig1.groupPositionOn = 34.dp
-        global.onoffconfig1.groupPositionOff = 0.dp
-
-
-        global.onoffconfig1.pathOn = "png/switch/no1.png"
-        global.onoffconfig1.pathOff = "png/switch/yes1.png"
-        //global.onoffconfig1.pathGroup = "png/switch/group1.png"
-        global.onoffconfig.componentW = 64.0f
-        global.onoffconfig.componentPixelW = 108.0f
-        global.onoffconfig.componentPixelH = 64.0f
-        global.onoffconfig.groupW = 30.0f
-        global.onoffconfig.groupPixelW = 37.0f
-        global.onoffconfig.groupPixelH = 49.0f
-        global.onoffconfig.groupDeltaY = 2.dp
-        global.onoffconfig.groupPositionOn = 29.dp
-        global.onoffconfig.groupPositionOff = 7.dp
+//        global.onoffconfig1.pathOn = "png/switch/on.png"
+//        global.onoffconfig1.pathOff = "png/switch/off.png"
+//        global.onoffconfig1.pathGroup = "png/switch/switch.png"
+//        global.onoffconfig1.componentW = 64.0f
+//        global.onoffconfig1.componentPixelW = 108.0f
+//        global.onoffconfig1.componentPixelH = 64.0f
+//        global.onoffconfig1.groupW = 30.0f
+//        global.onoffconfig1.groupPixelW = 37.0f
+//        global.onoffconfig1.groupPixelH = 49.0f
+//        global.onoffconfig1.groupDeltaY = 0.dp
+//        global.onoffconfig1.groupPositionOn = 34.dp
+//        global.onoffconfig1.groupPositionOff = 0.dp
+//
+//
+//        global.onoffconfig1.pathOn = "png/switch/no1.png"
+//        global.onoffconfig1.pathOff = "png/switch/yes1.png"
+//        //global.onoffconfig1.pathGroup = "png/switch/group1.png"
+//        global.onoffconfig.componentW = 64.0f
+//        global.onoffconfig.componentPixelW = 108.0f
+//        global.onoffconfig.componentPixelH = 64.0f
+//        global.onoffconfig.groupW = 30.0f
+//        global.onoffconfig.groupPixelW = 37.0f
+//        global.onoffconfig.groupPixelH = 49.0f
+//        global.onoffconfig.groupDeltaY = 2.dp
+//        global.onoffconfig.groupPositionOn = 29.dp
+//        global.onoffconfig.groupPositionOff = 7.dp
 
 
         //PlaybackEngine.CH_EN(0,true)
@@ -100,21 +118,6 @@ class MainActivity : ComponentActivity() {
 
         //Hawk.init(this).setLogInterceptor { message -> Log.i("HAWK:", message) }.build()
 
-        val arrFilesCarrier: Array<String> = Utils.listFileInCarrier() //Заполняем список
-        for (i in arrFilesCarrier.indices) {
-            global.itemlistCarrier.add(itemList(global.patchCarrier, arrFilesCarrier[i], 0))
-        }
-        val arrFilesMod: Array<String> = Utils.listFileInMod() //Получение списка файлов в папке Mod
-        for (i in arrFilesMod.indices) {
-            global.itemlistAM.add(itemList(global.patchMod, arrFilesMod[i], 1))
-            global.itemlistFM.add(itemList(global.patchMod, arrFilesMod[i], 0))
-        }
-
-        global.sendAlltoGen()
-
-        global.launchScriptScope() //Запуск скриптового потока
-
-        global.script.unit5Load() //Загрузить тест
 
 
         setContent {

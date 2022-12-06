@@ -147,7 +147,7 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
         ->setChannelCount(2) //Количество каналов
         ->setDeviceId(mDeviceId)
         ->setSampleRate(48000)
-        ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Best) //Улучшает качество звука
+        ->setSampleRateConversionQuality(oboe::SampleRateConversionQuality::Low) //Улучшает качество звука
         ->openStream(mStream); //В конце открываем поток
     if (result == oboe::Result::OK) {
         mChannelCount = mStream->getChannelCount();

@@ -5,6 +5,7 @@ import android.content.Context
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
+import androidx.core.math.MathUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
@@ -13,6 +14,7 @@ import com.example.generator2.PlaybackEngine
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -24,24 +26,25 @@ import javax.inject.Inject
 
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
-class Global @Inject constructor() : ViewModel() {
-
-    @Inject
-    lateinit var utils: UtilsKT
-    @Inject
-    lateinit var liveData: vmLiveData
-    @Inject
-    lateinit var script: Script
-    @Inject
-    lateinit var keyboard: ScriptKeyboard
-    @Inject
-    lateinit var playbackEngine: PlaybackEngine
-    @Inject
-    lateinit var audioDevice: AudioDevice
+class Global @Inject constructor(
 
 
-    var contextActivity: Context? = null
-    var componentActivity: ComponentActivity? = null
+    @ApplicationContext contextActivity: Context,
+
+     var utils: UtilsKT,
+     var liveData: vmLiveData,
+     var  script: Script,
+     var keyboard: ScriptKeyboard,
+     var playbackEngine: PlaybackEngine,
+     var audioDevice: AudioDevice
+
+) : ViewModel() {
+
+//    @Inject
+//    lateinit var utils: UtilsKT
+
+    //var contextActivity: Context? = null
+    //var componentActivity: ComponentActivity? = null
 
     var patchDocument = ""
     var patchCarrier = "$patchDocument/Carrier/"
@@ -56,15 +59,17 @@ class Global @Inject constructor() : ViewModel() {
 
     val consoleLog = Console2()
 
+    init {
 
-    fun init() {
+
+        println("global init{}")
 
         //utils.context = contextActivity!!
 
-        val file = contextActivity!!.getExternalFilesDir("") //Создать если нет папку generator2
-        contextActivity!!.getExternalFilesDir("/Carrier")
-        contextActivity!!.getExternalFilesDir("/Mod")
-        contextActivity!!.getExternalFilesDir("/Script")
+        val file = contextActivity.getExternalFilesDir("") //Создать если нет папку generator2
+        contextActivity.getExternalFilesDir("/Carrier")
+        contextActivity.getExternalFilesDir("/Mod")
+        contextActivity.getExternalFilesDir("/Script")
         patchDocument = file!!.toString()
         patchCarrier = "$patchDocument/Carrier/"
         patchMod = "$patchDocument/Mod/"
@@ -89,12 +94,35 @@ class Global @Inject constructor() : ViewModel() {
 
         //keyboard = ScriptKeyboard(script)
         consoleLog.println("")
-
+        print("observe()..")
         observe()
+        println("OK")
 
+        val arrFilesCarrier: Array<String> = Utils.listFileInCarrier() //Заполняем список
+        for (i in arrFilesCarrier.indices) {
+            itemlistCarrier.add(itemList(patchCarrier, arrFilesCarrier[i], 0))
+        }
+        val arrFilesMod: Array<String> = Utils.listFileInMod() //Получение списка файлов в папке Mod
+        for (i in arrFilesMod.indices) {
+            itemlistAM.add(itemList(patchMod, arrFilesMod[i], 1))
+            itemlistFM.add(itemList(patchMod, arrFilesMod[i], 0))
+        }
+
+        print("sendAlltoGen()..")
+        sendAlltoGen()
+        println("OK")
+        print("unit5Load()..")
+        script.unit5Load() //Загрузить тест
+        println("OK")
+        print("launchScriptScope()..")
+        launchScriptScope() //Запуск скриптового потока
+        println("OK")
     }
 
     fun sendAlltoGen() {
+
+        println("global sendAlltoGen()")
+
         audioDevice.playbackEngine.CH_EN(0, liveData.ch1_EN.value)
         audioDevice.playbackEngine.CH_EN(1, liveData.ch2_EN.value)
         audioDevice.playbackEngine.CH_AM_EN(
@@ -165,20 +193,13 @@ class Global @Inject constructor() : ViewModel() {
     ////////////////////////////////////////////////////////
     fun launchScriptScope() {
 
+        println("global launchScriptScope()")
+
         viewModelScope.launch(Dispatchers.Default) {
             while (true) {
                 script.run()
-                delay(5)
+                delay(10)
             }
-        }
-
-        viewModelScope.launch(Dispatchers.Main) {
-           // while (true) {
-                //val f = script.channel.receive()
-                //liveData.ch1_Carrier_Fr.emit(f)
-                delay(1)
-
-            //}
         }
 
         viewModelScope.launch(Dispatchers.Main) {
@@ -204,6 +225,7 @@ class Global @Inject constructor() : ViewModel() {
      */
 
     fun saveListToScript(name: String) {
+        println("global saveListToScript()")
         utils.saveListToScriptFile(script.list, name)
     }
 
@@ -215,10 +237,13 @@ class Global @Inject constructor() : ViewModel() {
 
     private fun observe() {
 
-        val dispatchers = Dispatchers.Default
+        println("observe()--------------------------------------------------------------")
+
+        val dispatchers = Dispatchers.IO
 
         viewModelScope.launch(dispatchers) {
             liveData.ch1_EN.collect { ch1_EN ->
+                println("collect")
                 playbackEngine.CH_EN(0, ch1_EN)
             }
         }

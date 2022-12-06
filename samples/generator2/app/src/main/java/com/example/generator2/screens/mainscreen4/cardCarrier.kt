@@ -17,12 +17,13 @@ import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
 import com.example.generator2.vm.Global
+import kotlinx.coroutines.flow.update
 
 
 @Composable
 fun CardCarrier(str: String = "CH0", global: Global) {
 
-    val chEN: State<Boolean?> = if (str == "CH0") {
+    val chEN: State<Boolean> = if (str == "CH0") {
         global.liveData.ch1_EN.collectAsState()
     } else {
         global.liveData.ch2_EN.collectAsState()
@@ -68,15 +69,17 @@ fun CardCarrier(str: String = "CH0", global: Global) {
                         2.dp,
                         color = if (chEN.value!!) Color(0xFF1B5E20) else Color.DarkGray,
                         RoundedCornerShape(8.dp)
-                    )
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(
+                    ).clip(RoundedCornerShape(8.dp)).background(
                         color = if (chEN.value!!) Color(0xFF4DD0E1) else colorDarkBackground
                     ).noRippleClickable(onClick = {
                         if (str == "CH0") global.liveData.ch1_EN.value =
-                            !global.liveData.ch1_EN.value!!
-                        else global.liveData.ch2_EN.value = !global.liveData.ch2_EN.value!!
-                    })) {}
+                            !global.liveData.ch1_EN.value
+                        else global.liveData.ch2_EN.value = !global.liveData.ch2_EN.value
+
+                        println("Кнопка")
+
+                    })
+                ) {}
 
 
                 //val r1 by global.liveData.ch1_AM_EN.observeAsState()

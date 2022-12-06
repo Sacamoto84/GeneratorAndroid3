@@ -77,12 +77,12 @@ fun ScriptTable(global: Global) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
 
-                    if (global.script.pc > global.script.list.lastIndex) global.script.pc =
+                    if (global.script.pc_ex > global.script.list.lastIndex) global.script.pc_ex =
                         global.script.list.lastIndex
 
-                    ScriptConsole(global.script.list, global.script.pc, global = global)
+                    ScriptConsole(global.script.list, global.script.pc_ex, global = global)
 
-                    Text(text = "PC:${global.script.pc}", color = Color.Red)
+                    Text(text = "PC:${global.script.pc_ex}", color = Color.Red)
                 }
 
                 Box(
@@ -195,7 +195,7 @@ fun ScriptTable(global: Global) {
                                         global.utils.saveListToScriptFile(
                                             global.script.list, global.script.list[0]
                                         )
-                                        MToast(contex = global.contextActivity!!, "Сохранено")
+                                        //MToast(contex = global.contextActivity!!, "Сохранено")
                                     }
                                 },
 
@@ -227,6 +227,7 @@ fun ScriptTable(global: Global) {
                                 str = "Add",
                                 onClick = {
                                     global.script.list.add(global.script.pc + 1, "?")
+                                    global.script.pc_ex = global.script.pc
                                 })
 
                             TemplateButtonBottomBarAndLottie(
@@ -236,6 +237,7 @@ fun ScriptTable(global: Global) {
                                 str = "Add END",
                                 onClick = {
                                     global.script.list.add(global.script.pc + 1, "END")
+                                    global.script.pc_ex = global.script.pc
                                 },
 
                                 resId = R.raw.add2,
@@ -258,6 +260,8 @@ fun ScriptTable(global: Global) {
                                         if (global.script.pc > global.script.list.lastIndex) {
                                             global.script.pc = global.script.list.lastIndex
                                         }
+
+                                        global.script.pc_ex = global.script.pc
                                     }
 
                                 },
@@ -267,6 +271,7 @@ fun ScriptTable(global: Global) {
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Up",
                                 onClick = {
+
                                     if (global.script.pc > 1) {
                                         Collections.swap(
                                             global.script.list,
@@ -275,6 +280,8 @@ fun ScriptTable(global: Global) {
                                         )
                                         global.script.pc--
                                     }
+
+                                    global.script.pc_ex = global.script.pc
                                 },
 
                                 resId = R.raw.up,
@@ -293,6 +300,7 @@ fun ScriptTable(global: Global) {
                                         )
                                         global.script.pc++
                                     }
+                                    global.script.pc_ex = global.script.pc
                                 },
                                 resId = R.raw.down,
                                 size = 50.dp,

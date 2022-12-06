@@ -12,6 +12,9 @@ import com.example.generator2.PlaybackEngine
 import com.example.generator2.R
 import com.example.generator2.vm.Script
 import com.example.generator2.vm.StateCommandScript
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine, var script : Script) {
 
@@ -47,7 +50,15 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
         )
 
         mDirectionType = AudioManager.GET_DEVICES_OUTPUTS
-        setupAudioDeviceCallback()
+
+        GlobalScope.launch (Dispatchers.IO){
+
+            setupAudioDeviceCallback()
+
+        }
+
+
+
 
     }
 
@@ -66,7 +77,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
             override fun onAudioDevicesAdded(addedDevices: Array<AudioDeviceInfo>) {
 
-                script.command( StateCommandScript.STOP )
+                //script.command( StateCommandScript.STOP )
 
                 val deviceList = AudioDeviceListEntry.createListFrom(addedDevices, mDirectionType)
 
@@ -87,7 +98,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
             override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) {
 
-                script.command(StateCommandScript.STOP)
+                //script.command(StateCommandScript.STOP)
 
                 val deviceList = AudioDeviceListEntry.createListFrom(removedDevices, mDirectionType)
                 for (entry in deviceList) {
