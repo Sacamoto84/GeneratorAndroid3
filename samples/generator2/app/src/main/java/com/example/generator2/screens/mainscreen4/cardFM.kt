@@ -7,6 +7,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,27 +26,27 @@ fun CardFM(str: String = "CH0", global: Global) {
 
 
     val fmEN: State<Boolean?> = if (str == "CH0") {
-        global.liveData.ch1_FM_EN.observeAsState()
+        global.liveData.ch1_FM_EN.collectAsState()
     } else {
-        global.liveData.ch2_FM_EN.observeAsState()
+        global.liveData.ch2_FM_EN.collectAsState()
     }
 
     val fmFr: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Fr.observeAsState()
+        global.liveData.ch1_FM_Fr.collectAsState()
     } else {
-        global.liveData.ch2_FM_Fr.observeAsState()
+        global.liveData.ch2_FM_Fr.collectAsState()
     }
 
     val fmBase: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Base.observeAsState()
+        global.liveData.ch1_FM_Base.collectAsState()
     } else {
-        global.liveData.ch2_FM_Base.observeAsState()
+        global.liveData.ch2_FM_Base.collectAsState()
     }
 
     val fmDev: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Dev.observeAsState()
+        global.liveData.ch1_FM_Dev.collectAsState()
     } else {
-        global.liveData.ch2_FM_Dev.observeAsState()
+        global.liveData.ch2_FM_Dev.collectAsState()
     }
 
     Column()

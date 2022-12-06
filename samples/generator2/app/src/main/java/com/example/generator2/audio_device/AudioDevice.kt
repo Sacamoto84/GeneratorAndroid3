@@ -66,7 +66,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
             override fun onAudioDevicesAdded(addedDevices: Array<AudioDeviceInfo>) {
 
-                //script.command( StateCommandScript.STOP )
+                script.command( StateCommandScript.STOP )
 
                 val deviceList = AudioDeviceListEntry.createListFrom(addedDevices, mDirectionType)
 
@@ -87,7 +87,7 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
 
             override fun onAudioDevicesRemoved(removedDevices: Array<AudioDeviceInfo>) {
 
-                //script.command(StateCommandScript.STOP)
+                script.command(StateCommandScript.STOP)
 
                 val deviceList = AudioDeviceListEntry.createListFrom(removedDevices, mDirectionType)
                 for (entry in deviceList) {

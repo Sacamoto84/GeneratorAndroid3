@@ -36,27 +36,18 @@ import com.example.generator2.screens.scripting.ScreenScriptInfo
 import com.example.generator2.ui.theme.Generator2Theme
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
 import com.example.generator2.vm.Global
-import com.example.generator2.vm.Observe
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val global: Global by viewModels()
-
-    @Inject
-    lateinit var observe: Observe
-
-    //@Inject
-    //lateinit var playbackEngine: PlaybackEngine
-
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,8 +57,6 @@ class MainActivity : ComponentActivity() {
         global.contextActivity = applicationContext
 
         global.init()
-
-        observe.observe()
 
         //global.observe()
 

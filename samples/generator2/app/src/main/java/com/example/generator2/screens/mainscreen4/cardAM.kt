@@ -8,6 +8,7 @@ import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,9 +29,9 @@ import com.example.generator2.ui.wiget.UIspinner
 fun CardAM(str: String = "CH0", global: Global) {
 
     val amEN: State<Boolean?> = if (str == "CH0") {
-        global.liveData.ch1_AM_EN.observeAsState()
+        global.liveData.ch1_AM_EN.collectAsState()
     } else {
-        global.liveData.ch2_AM_EN.observeAsState()
+        global.liveData.ch2_AM_EN.collectAsState()
     }
 
 
@@ -80,9 +81,9 @@ fun CardAM(str: String = "CH0", global: Global) {
             //                })
             //
             val amFr: State<Float?> = if (str == "CH0") {
-                global.liveData.ch1_AM_Fr.observeAsState()
+                global.liveData.ch1_AM_Fr.collectAsState()
             } else {
-                global.liveData.ch2_AM_Fr.observeAsState()
+                global.liveData.ch2_AM_Fr.collectAsState()
             }
 
                         Box(modifier = Modifier.padding(start = 4.dp).height(24.dp).width(ms4SwitchWidth)

@@ -6,6 +6,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,15 +23,15 @@ import com.example.generator2.vm.Global
 fun CardCarrier(str: String = "CH0", global: Global) {
 
     val chEN: State<Boolean?> = if (str == "CH0") {
-        global.liveData.ch1_EN.observeAsState()
+        global.liveData.ch1_EN.collectAsState()
     } else {
-        global.liveData.ch2_EN.observeAsState()
+        global.liveData.ch2_EN.collectAsState()
     }
 
     val carrierFr: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_Carrier_Fr.observeAsState()
+        global.liveData.ch1_Carrier_Fr.collectAsState()
     } else {
-        global.liveData.ch2_Carrier_Fr.observeAsState()
+        global.liveData.ch2_Carrier_Fr.collectAsState()
     }
 
     Card(

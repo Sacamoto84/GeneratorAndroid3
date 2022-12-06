@@ -110,6 +110,9 @@ Java_com_example_generator2_PlaybackEngine_native_1getAudioDeviceId(
         return -1;
     }
 
+    while (engine->mStream == nullptr)
+    {}
+
     return static_cast<jint>(engine->mStream->getDeviceId());
 }
 
@@ -238,7 +241,6 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1EN(
 
     LOGI("JNI:setCH_1EN: CH:%d EN:%d", CH, EN);
 
-    //if (engine->mAudioSource->mGenerator)
     {
         if (CH)
             CH2.CH_EN = EN;

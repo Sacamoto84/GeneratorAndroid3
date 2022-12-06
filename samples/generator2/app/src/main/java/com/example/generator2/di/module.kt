@@ -1,12 +1,11 @@
 package com.example.generator2.di
 
 import android.content.Context
-import com.example.generator2.vm.Observe
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.UtilsKT
 import com.example.generator2.audio_device.AudioDevice
-import com.example.generator2.vm.Script
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
+import com.example.generator2.vm.Script
 import com.example.generator2.vm.vmLiveData
 import dagger.Module
 import dagger.Provides
@@ -40,21 +39,10 @@ object HomeActivityModule {
         return Script(liveData)
     }
 
-
     @Provides
     @Singleton
     fun provideKeyboard(script: Script): ScriptKeyboard {
         return ScriptKeyboard(script)
-    }
-
-    @Provides
-    @Singleton
-    fun provideObserver(
-        liveData: vmLiveData,
-        playbackEngine: PlaybackEngine,
-        utils: UtilsKT
-    ): Observe {
-        return Observe(liveData, playbackEngine, utils)
     }
 
     @Provides

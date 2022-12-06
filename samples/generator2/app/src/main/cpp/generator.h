@@ -28,9 +28,6 @@ typedef struct {
     float FM_mod_fr;        //Часта модуляции
 
     //Буфферы
-
-
-
     uint16_t buffer_carrier[1024];
     uint16_t buffer_am[1024];
     uint16_t buffer_fm[1024];
@@ -51,7 +48,6 @@ typedef struct {
     uint32_t phase_accumulator_carrier;
     uint32_t phase_accumulator_mod;
     uint32_t phase_accumulator_fm;
-
 
     float mBuffer[4096];
 

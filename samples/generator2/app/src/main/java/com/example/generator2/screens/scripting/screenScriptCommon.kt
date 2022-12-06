@@ -47,10 +47,7 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
                 Icon(painter = painterResource(R.drawable.back4), contentDescription = null)
             }
 
-
-
             Spacer(modifier = Modifier.weight(1f))
-
 
             if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
 

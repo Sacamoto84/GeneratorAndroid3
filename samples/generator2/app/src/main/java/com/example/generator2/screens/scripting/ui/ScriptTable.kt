@@ -77,12 +77,12 @@ fun ScriptTable(global: Global) {
                     contentAlignment = Alignment.BottomEnd
                 ) {
 
-                    if (global.script.pc.value > global.script.list.lastIndex) global.script.pc.value =
+                    if (global.script.pc > global.script.list.lastIndex) global.script.pc =
                         global.script.list.lastIndex
 
-                    ScriptConsole(global.script.list, global.script.pc.value, global = global)
+                    ScriptConsole(global.script.list, global.script.pc, global = global)
 
-                    Text(text = "PC:${global.script.pc.value}", color = Color.Red)
+                    Text(text = "PC:${global.script.pc}", color = Color.Red)
                 }
 
                 Box(
@@ -226,7 +226,7 @@ fun ScriptTable(global: Global) {
                                 modifier = Modifier.height(50.dp),
                                 str = "Add",
                                 onClick = {
-                                    global.script.list.add(global.script.pc.value + 1, "?")
+                                    global.script.list.add(global.script.pc + 1, "?")
                                 })
 
                             TemplateButtonBottomBarAndLottie(
@@ -235,7 +235,7 @@ fun ScriptTable(global: Global) {
 
                                 str = "Add END",
                                 onClick = {
-                                    global.script.list.add(global.script.pc.value + 1, "END")
+                                    global.script.list.add(global.script.pc + 1, "END")
                                 },
 
                                 resId = R.raw.add2,
@@ -253,10 +253,10 @@ fun ScriptTable(global: Global) {
 
                                     if (global.script.list.size > 1) {
 
-                                        global.script.list.removeAt(global.script.pc.value)
+                                        global.script.list.removeAt(global.script.pc)
 
-                                        if (global.script.pc.value > global.script.list.lastIndex) {
-                                            global.script.pc.value = global.script.list.lastIndex
+                                        if (global.script.pc > global.script.list.lastIndex) {
+                                            global.script.pc = global.script.list.lastIndex
                                         }
                                     }
 
@@ -267,13 +267,13 @@ fun ScriptTable(global: Global) {
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Up",
                                 onClick = {
-                                    if (global.script.pc.value > 1) {
+                                    if (global.script.pc > 1) {
                                         Collections.swap(
                                             global.script.list,
-                                            global.script.pc.value - 1,
-                                            global.script.pc.value
+                                            global.script.pc - 1,
+                                            global.script.pc
                                         )
-                                        global.script.pc.value--
+                                        global.script.pc--
                                     }
                                 },
 
@@ -285,13 +285,13 @@ fun ScriptTable(global: Global) {
                             TemplateButtonBottomBarAndLottie(
                                 modifier = Modifier.height(50.dp), str = "Down",
                                 onClick = {
-                                    if ((global.script.pc.value > 0) && (global.script.pc.value < global.script.list.lastIndex)) {
+                                    if ((global.script.pc > 0) && (global.script.pc < global.script.list.lastIndex)) {
                                         Collections.swap(
                                             global.script.list,
-                                            global.script.pc.value + 1,
-                                            global.script.pc.value
+                                            global.script.pc + 1,
+                                            global.script.pc
                                         )
-                                        global.script.pc.value++
+                                        global.script.pc++
                                     }
                                 },
                                 resId = R.raw.down,

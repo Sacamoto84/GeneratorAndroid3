@@ -34,7 +34,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
 
     if (indexSelect.value == 0) {
         indexSelect.value = 1
-        global.script.pc.value = 1
+        global.script.pc = 1 //////////////////////////////////////////////
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
@@ -54,7 +54,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                     Box(
                         modifier = Modifier.selectable(
                             selected = indexSelect.value == index,
-                            onClick = { global.script.pc.value = index })
+                            onClick = { global.script.pc = index })
                     ) {
                         val select = indexSelect.value == index
                         ScriptItem().Draw( str = item, index = index, select )

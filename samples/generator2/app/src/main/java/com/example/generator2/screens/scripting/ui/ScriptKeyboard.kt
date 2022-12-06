@@ -47,7 +47,7 @@ data class RouteKeyboard(
 //Клавиатурка
 class ScriptKeyboard(private val s: Script) {
 
-    private var selectIndex = s.pc.value
+    private var selectIndex = s.pc
     private val list = s.list
 
 
@@ -129,16 +129,16 @@ class ScriptKeyboard(private val s: Script) {
 
     @Composable
     fun Core(global : Global) {
-        println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc.value} list.lastIndex:${list.lastIndex}" )
+        println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc} list.lastIndex:${list.lastIndex}" )
         if (selectIndex <  0 ) selectIndex = 0
-        if (s.pc.value < 0 ) s.pc.value = 0
+        if (s.pc < 0 ) s.pc = 0
 
         if (selectIndex >  list.lastIndex ) selectIndex = list.lastIndex
-        if (s.pc.value > list.lastIndex) s.pc.value = list.lastIndex
+        if (s.pc > list.lastIndex) s.pc = list.lastIndex
 
         textToListCommand(list[selectIndex])
-        selectIndex = s.pc.value
-        Log.i("script", "Keyboard Core() PC:${s.pc.value}")
+        selectIndex = s.pc
+        Log.i("script", "Keyboard Core() PC:${s.pc}")
 
         when (route.value.route) {
             RouteKeyboardEnum.HOME       -> ScreenHOME()
