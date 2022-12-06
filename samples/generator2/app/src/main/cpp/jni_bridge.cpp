@@ -23,8 +23,6 @@
 extern "C" {
 
 
-
-
 JNIEXPORT jlong JNICALL
 Java_com_example_generator2_PlaybackEngine_native_1createEngine(JNIEnv *env, jclass /*unused*/) {
     // We use std::nothrow so `new` returns a nullptr if the engine creation fails
@@ -104,8 +102,7 @@ Java_com_example_generator2_PlaybackEngine_native_1getAudioDeviceId(
         JNIEnv *env,
         jclass,
         jlong engineHandle
-)
-{
+) {
 
     HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
     if (engine == nullptr) {
@@ -122,8 +119,7 @@ Java_com_example_generator2_PlaybackEngine_native_1getAllData(
         JNIEnv *env,
         jclass,
         jlong engineHandle
-)
-{
+) {
 
     HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
     if (engine == nullptr) {
@@ -382,7 +378,9 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FM_1fr(
 
 extern "C"
 JNIEXPORT void JNICALL
-Java_com_example_generator2_PlaybackEngine_native_1setCH_1Send_1Buffer(JNIEnv *env, jclass clazz, jlong engineHandle, jint CH, jint mod, jbyteArray buf) {
+Java_com_example_generator2_PlaybackEngine_native_1setCH_1Send_1Buffer(JNIEnv *env, jclass clazz,
+                                                                       jlong engineHandle, jint CH,
+                                                                       jint mod, jbyteArray buf) {
 
     HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
     if (engine == nullptr) {
@@ -392,76 +390,59 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1Send_1Buffer(JNIEnv *e
 
     LOGI("JNI:setCH_Send_Buffer: CH:%d mod%d", CH, mod);
 
-    //if (engine->mAudioSource->mGenerator)
-    {
+    jbyte *arrayBody = env->GetByteArrayElements(buf, 0);
+    jsize theArrayLengthJ = env->GetArrayLength(buf);
 
-        jbyte *arrayBody = env->GetByteArrayElements(buf, 0);
-        jsize theArrayLengthJ = env->GetArrayLength(buf);
+    auto *starter16 = (uint16_t *) arrayBody;
 
-        auto *starter16 = (uint16_t *) arrayBody;
+    int i = (int) theArrayLengthJ;
+    if (i != 2048) {
+        LOGI("!ERROR JNI:Send: buf != 2048");
+        return;
+    }
 
-        //starter++;
+    if (CH == 0) {
 
-        int i = (int) theArrayLengthJ;
-        if (i != 2048) {
-            LOGI("!ERROR JNI:Send: buf != 2048");
-            return;
+        if (mod == 0) {
+            for (i = 0; i < 1024; i++) {
+                CH1.buffer_carrier[i] = starter16[i];
+            }
         }
-        uint8_t inBuf[2048];
 
-        for (i = 0; i < 2048; i++)
-            inBuf[i] = arrayBody[i]; //*starter++;
+        if (mod == 1)  //AM
+        {
+            for (i = 0; i < 1024; i++)
+                CH1.buffer_am[i] = starter16[i];
+        }
 
-        uint16_t inBuf16[1024];
+        if (mod == 2) //FM
+        {
+            for (i = 0; i < 1024; i++)
+                CH1.source_buffer_fm[i] = starter16[i];
 
-        for (i = 0; i < 1024; i++)
-            inBuf16[i] = (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
+            engine->mAudioSource->CreateFM_CH1();
 
-        if (CH == 0) {
-            if (mod == 0) {
+        }
+    } else {
+        if (mod == 0) {
+            for (i = 0; i < 1024; i++)
+                CH2.buffer_carrier[i] = starter16[i];
+        }
 
-                for (i = 0; i < 1024; i++) {
-                    CH1.buffer_carrier[i] = starter16[i];//inBuf16[i];
-                }
+        if (mod == 1) {
+            for (i = 0; i < 1024; i++)
+                CH2.buffer_am[i] = starter16[i];
+        }
 
-            }
+        if (mod == 2) //FM
+        {
+            for (i = 0; i < 1024; i++)
+                CH2.source_buffer_fm[i] = starter16[i];
 
-            if (mod == 1)  //AM
-            {
-                for (i = 0; i < 1024; i++)
-                    CH1.buffer_am[i] = inBuf16[i];
-            }
-
-            if (mod == 2) //FM
-            {
-                //Помещаем в буффер исходника FM модуляции
-                for (i = 0; i < 1024; i++)
-                    CH1.source_buffer_fm[i] = inBuf16[i];
-
-                engine->mAudioSource->CreateFM_CH1();
-
-            }
-        } else {
-            if (mod == 0) {
-                for (i = 0; i < 1024; i++)
-                    CH2.buffer_carrier[i] = (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
-            }
-
-            if (mod == 1) {
-                for (i = 0; i < 1024; i++)
-                    CH2.buffer_am[i] = (inBuf[(i * 2)] << 8) | inBuf[i * 2 + 1];
-            }
-
-            if (mod == 2) //FM
-            {
-                //Помещаем в буффер исходника FM модуляции
-                for (i = 0; i < 1024; i++)
-                    CH2.source_buffer_fm[i] = inBuf16[i];
-
-                engine->mAudioSource->CreateFM_CH2();
-            }
+            engine->mAudioSource->CreateFM_CH2();
         }
     }
+
 }
 
 

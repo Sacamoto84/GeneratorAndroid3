@@ -74,8 +74,9 @@ public:
 
                 if (CH->FM_EN) {
                     CH->phase_accumulator_fm = CH->phase_accumulator_fm + CH->rFM;
-                    CH->phase_accumulator_carrier = CH->phase_accumulator_carrier + (uint32_t) (
-                            (CH->buffer_fm[CH->phase_accumulator_fm >> 22]) * 16384.0F * 1000.0F / 731.0F);
+                    CH->phase_accumulator_carrier = CH->phase_accumulator_carrier + (uint32_t) convertHzToR(CH->buffer_fm[CH->phase_accumulator_fm >> 22]);
+                    //+ (uint32_t) (
+                            //(CH->buffer_fm[CH->phase_accumulator_fm >> 22]) * 1000.0F * 3000.0F/33.21F );
                 }
                 else
                     CH->phase_accumulator_carrier += CH->rC;
@@ -127,26 +128,9 @@ public:
     }
 
     //std::unique_ptr<uint16_t[]> buffer_carrier1 = std::make_unique<uint16_t[]>(1024);
-    //std::unique_ptr<uint16_t[]> buffer_carrier2 = std::make_unique<uint16_t[]>(1024);
-
-    //std::unique_ptr<uint16_t[]> buffer_am1 = std::make_unique<uint16_t[]>(1024);
-    //std::unique_ptr<uint16_t[]> buffer_am2 = std::make_unique<uint16_t[]>(1024);
-
-    //std::unique_ptr<uint16_t[]> buffer_fm1 = std::make_unique<uint16_t[]>(1024);
-    //std::unique_ptr<uint16_t[]> buffer_fm2 = std::make_unique<uint16_t[]>(1024);
 
     float convertHzToR(float hz) {
         hz = hz * 16384.0F / 3.798F * 2.0F * 1000.0 / 48.8 / 2.0 * 1000.0 / 988.0;
-        return hz;
-    }
-
-    float convertHzToR_FM(float hz) {
-        hz = hz * 16384.0F;
-        return hz;
-    }
-
-    float convertRToHz(float hz) {
-        hz = hz / 16384.0F * 3.798F / 2.0F;
         return hz;
     }
 

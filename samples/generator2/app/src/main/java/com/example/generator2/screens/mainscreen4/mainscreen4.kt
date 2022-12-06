@@ -25,6 +25,7 @@ import colorDarkBackground
 import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.vm.Global
+import com.example.generator2.vm.StateCommandScript
 import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetError
 import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetSuccess
 import kotlinx.coroutines.*
@@ -221,6 +222,54 @@ private fun BottomAppBarComponent(
             Icon(imageVector, contentDescription = null, modifier = Modifier.size(32.dp))
         }
 
+
+        if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
+
+            //Пауза
+            IconButton(onClick = {
+
+                if (global.script.state != StateCommandScript.ISPAUSE) global.script.command(
+                    StateCommandScript.PAUSE
+                )
+                else {
+                    global.script.state = StateCommandScript.ISRUNNING
+                    global.script.end = false
+                }
+
+            }) {
+
+                if (global.script.state != StateCommandScript.ISPAUSE)
+                    Icon(
+                        painter = painterResource(
+                            R.drawable.pause
+                        ), contentDescription = null
+                    )
+                else
+                    Icon(
+                        painter = painterResource(
+                            R.drawable.play
+                        ), contentDescription = null
+                    )
+
+            }
+        } else {
+            //Старт
+            IconButton(onClick = {
+                global.script.command(StateCommandScript.START)
+            }) {
+                Icon(painter = painterResource(R.drawable.play), contentDescription = null)
+            }
+        }
+
+        //Стоп
+        IconButton(onClick = {
+            global.script.command(StateCommandScript.STOP)
+        }) {
+            Icon(painter = painterResource(R.drawable.stop), contentDescription = null)
+        }
+
+
+
         //Text(text = global.audioDevice.mDeviceId.toString())
 
         Spacer(modifier = Modifier.weight(1f))
@@ -228,8 +277,7 @@ private fun BottomAppBarComponent(
         IconButton(onClick = { navController.navigate("script") }) {
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
-
-        Spacer(modifier = Modifier.weight(0.1f))
+        
 
         IconButton(onClick = { navController.navigate("editor") }) {
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
