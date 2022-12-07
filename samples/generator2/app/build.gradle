@@ -84,7 +84,9 @@ android {
     }
     buildFeatures {
         compose true
+        prefab true
     }
+
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }

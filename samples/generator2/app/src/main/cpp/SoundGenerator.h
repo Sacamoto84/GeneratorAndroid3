@@ -43,6 +43,8 @@ public:
     //Рендер звука
     void renderAudio(float *audioData, int32_t numFrames) override {
 
+        //LOGI("numFrames:%d",numFrames);
+
         CH1.Volume = 0.65F;
         CH2.Volume = 0.55F;
 

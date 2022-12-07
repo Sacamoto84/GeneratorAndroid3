@@ -43,4 +43,4 @@ target_link_libraries(app android log oboe)
 # Enable optimization flags: if having problems with source level debugging,
 # disable -Ofast ( and debug ), re-enable after done debugging.
 
-target_compile_options(app PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Fast>")
+target_compile_options(app PRIVATE -Wall -Werror "$<$<CONFIG:RELEASE>:-Ofast>")

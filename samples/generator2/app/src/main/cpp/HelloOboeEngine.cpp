@@ -60,26 +60,26 @@ double HelloOboeEngine::getCurrentOutputLatencyMillis() {
 
 //Установка буффера
 void HelloOboeEngine::setBufferSizeInBursts(int32_t numBursts) {
-
-    LOGI("Функция изменения размера буффера > setBufferSizeInBursts");
-    std::lock_guard<std::mutex> lock(mLock);
+    LOGI("┌-----------------------------------------------------------┐");
+    LOGI("│ Функция изменения размера буффера > setBufferSizeInBursts │");
+    //std::lock_guard<std::mutex> lock(mLock);
     if (!mStream) return;
 
     //mStream->getFramesPerBurst() минимально возможный размер буффера
-    LOGI("Минимально возможный размер буффера getFramesPerBurst %d", mStream->getFramesPerBurst());
-    LOGI( "numBursts %d", numBursts);
+    LOGI( "│ Минимально возможный размер буффера      %5d            │", mStream->getFramesPerBurst());
+    LOGI( "│ numBursts                                %5d            │", numBursts);
 
     //mLatencyCallback->setBufferTuneEnabled(numBursts == kBufferSizeAutomatic);
 
     //Установка размера буффера
-    //auto result = mStream->setBufferSizeInFrames( numBursts * mStream->getFramesPerBurst());
+    auto result = mStream->setBufferSizeInFrames( numBursts * mStream->getFramesPerBurst());
 
-    //if (result) {
-    //    LOGI("Buffer размер буффера успещно изменен на %d", result.value());
-    //} else {
-    //    LOGW("Buffer размер буффера не может быть изменен, %d", result.error());
-    //}
-
+    if (result) {
+        LOGI("│ Buffer размер буффера успещно изменен на %5d            │ ", result.value());
+    } else {
+        LOGW("│ Buffer размер буффера не может быть изменен, %5d        │", result.error());
+    }
+    LOGI("└-----------------------------------------------------------┘");
 }
 
 void HelloOboeEngine::setAudioApi(oboe::AudioApi audioApi) {
@@ -115,14 +115,9 @@ void HelloOboeEngine::setDeviceId(int32_t deviceId) {
     }
 }
 
-
-
-
 bool HelloOboeEngine::isLatencyDetectionSupported() {
     return mIsLatencyDetectionSupported;
 }
-
-
 
 //Постсроитель аудиопотока
 oboe::Result HelloOboeEngine::openPlaybackStream() {
@@ -138,9 +133,9 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
     oboe::Result result =
          builder.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
          //.setSharingMode(oboe::SharingMode::Exclusive) //Эксклюзивный доступ
-        ->setPerformanceMode(oboe::PerformanceMode::LowLatency)
+        ->setPerformanceMode(oboe::PerformanceMode::PowerSaving)
         ->setFormat(oboe::AudioFormat::Float) //16 бит или float
-        ->setFormatConversionAllowed(true)
+        //->setFormatConversionAllowed(true)
         ->setDataCallback(mLatencyCallback.get())
         ->setErrorCallback(mErrorCallback.get())
         ->setAudioApi(mAudioApi)
@@ -153,6 +148,9 @@ oboe::Result HelloOboeEngine::openPlaybackStream() {
         mChannelCount = mStream->getChannelCount();
         mStream->setBufferSizeInFrames(mStream->getFramesPerBurst() ); //Размер буффера
     }
+
+    setBufferSizeInBursts(6);
+
     return result;
 }
 

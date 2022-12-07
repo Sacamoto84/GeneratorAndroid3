@@ -102,7 +102,7 @@ private:
 
     bool mIsLatencyDetectionSupported = false;
 
-    int32_t        mChannelCount = oboe::Unspecified;
+    int32_t        mChannelCount = oboe::Stereo;
     oboe::AudioApi mAudioApi = oboe::AudioApi::Unspecified;
     std::mutex     mLock;
 };

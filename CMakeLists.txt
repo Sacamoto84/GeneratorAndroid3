@@ -85,8 +85,7 @@ target_compile_options(oboe
         -Wextra-semi
         -Wshadow
         -Wshadow-field
-        -Fast
-        -Werror
+        -Ofast
         "$<$<CONFIG:DEBUG>:-Werror>")
 
 # Enable logging of D,V for debug builds

@@ -24,15 +24,17 @@ class PlaybackEngine(val context: Context) {
     }
 
     private fun setDefaultStreamValues(context: Context) {
-
-        Log.d("!!!", "---PlaybackEngine.setDefaultStreamValues()---")
         val myAudioMgr = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val sampleRateStr = myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_SAMPLE_RATE)
         val defaultSampleRate = sampleRateStr.toInt()
         val framesPerBurstStr =
             myAudioMgr.getProperty(AudioManager.PROPERTY_OUTPUT_FRAMES_PER_BUFFER)
-        val defaultFramesPerBurst = framesPerBurstStr.toInt()
+        var defaultFramesPerBurst = framesPerBurstStr.toInt()
+
+        if (defaultFramesPerBurst < 1152) defaultFramesPerBurst = 1152
         native_setDefaultStreamValues(defaultSampleRate, defaultFramesPerBurst)
+
+        Log.i("!!!", "---PlaybackEngine.setDefaultStreamValues()>>>defaultSampleRate:$defaultSampleRate>>>defaultFramesPerBurst:$defaultFramesPerBurst")
 
     }
 
