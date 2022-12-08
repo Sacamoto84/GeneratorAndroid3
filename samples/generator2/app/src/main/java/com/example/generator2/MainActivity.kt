@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
+import com.example.generator2.backup.Backup
+import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
@@ -71,6 +73,11 @@ class MainActivity : ComponentActivity() {
         println("...........................................................................")
         println("..................................onCreate.................................")
         println("...........................................................................")
+
+        
+        //global.backup.createBackupZipFileToCache()
+        //global.backup.unZipFileFromCache()
+
 
         //global.componentActivity = this
         //global.contextActivity = applicationContext
@@ -157,7 +164,6 @@ class MainActivity : ComponentActivity() {
                             fadeOut(animationSpec = tween(0))
                         }) { mainsreen4(navController, global) }
 
-
                     composable("script",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
@@ -168,31 +174,19 @@ class MainActivity : ComponentActivity() {
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
                     ) { ScreenEditor(navController, global) }
 
-
                     composable("scriptinfo",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
                     ) { ScreenScriptInfo(navController) }
 
+                    composable("config",
+                        enterTransition = { fadeIn(animationSpec = tween(0))  },
+                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
+                    ) { ScreenConfig(navController, global) }
 
                 }
 
 
-                //ScriptActivity()
-
-
-                //                // A surface container using the 'background' color from the theme
-                //                Surface(
-                //                    modifier = Modifier.fillMaxSize(),
-                //                    //color = Color(0xff2E3138) //MaterialTheme.colors.background
-                //                    color = Color(0xFF897F7F) //MaterialTheme.colors.background
-                //                ) {
-                //
-                //
-                //
-                //
-                //
-                //
                 //                    Image(
                 //                        painterResource(id = R.drawable.spire),
                 //                        contentDescription = "",

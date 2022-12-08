@@ -13,6 +13,7 @@ val colorOrange = Color(0xFFD8BD12)
 
 val colorDarkBackground = Color(0xFF13161B)
 val colorLightBackground = Color(0xFF2A2D36)
+val colorLightBackground2 = Color(0xFF32383D)
 
 //Ширина переключателей
 val ms4SwitchWidth = 72.dp

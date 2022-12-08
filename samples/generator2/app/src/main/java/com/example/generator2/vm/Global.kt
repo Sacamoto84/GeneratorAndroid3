@@ -11,8 +11,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.audio_device.AudioDevice
 import com.example.generator2.PlaybackEngine
+import com.example.generator2.backup.Backup
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
+import com.example.generator2.storage.AppFileManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
@@ -36,7 +38,8 @@ class Global @Inject constructor(
      var  script: Script,
      var keyboard: ScriptKeyboard,
      var playbackEngine: PlaybackEngine,
-     var audioDevice: AudioDevice
+     var audioDevice: AudioDevice,
+     var backup: Backup
 
 ) : ViewModel() {
 

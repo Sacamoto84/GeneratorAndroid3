@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.UtilsKT
 import com.example.generator2.audio_device.AudioDevice
+import com.example.generator2.backup.Backup
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import com.example.generator2.vm.Script
 import com.example.generator2.vm.vmLiveData
@@ -55,6 +56,12 @@ object HomeActivityModule {
     @Singleton
     fun provideAudioDevice( @ApplicationContext context: Context, playbackEngine: PlaybackEngine, script : Script): AudioDevice {
         return AudioDevice(context, playbackEngine, script)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBackup( @ApplicationContext context: Context): Backup {
+        return Backup(context)
     }
 
 }
