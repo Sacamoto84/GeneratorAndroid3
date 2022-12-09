@@ -7,8 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class vmLiveData {
 
         var ch1_EN          = MutableStateFlow<Boolean>(false)
-        //var ch1_Carrier_Filename = MutableLiveData<String>("14_Square")
-        var ch1_Carrier_Filename = MutableStateFlow<String>("09_Ramp")
+        var ch1_Carrier_Filename = MutableStateFlow<String>("Sine")
         var ch1_Carrier_Fr  = MutableStateFlow<Float>(400.0f)     //Частота несущей
         var ch1_AM_EN       = MutableStateFlow<Boolean>(false)
         var ch1_AM_Filename = MutableStateFlow<String>("09_Ramp")
@@ -20,7 +19,7 @@ class vmLiveData {
         var ch1_FM_Fr       = MutableStateFlow<Float>(5.1f)
 
         var ch2_EN          = MutableStateFlow<Boolean>(false)
-        var ch2_Carrier_Filename = MutableStateFlow<String>("03_HWave2")
+        var ch2_Carrier_Filename = MutableStateFlow<String>("Sine")
         var ch2_Carrier_Fr  = MutableStateFlow<Float>(2000.0f) //Частота несущей
         var ch2_AM_EN       = MutableStateFlow<Boolean>(false)
         var ch2_AM_Filename = MutableStateFlow<String>("09_Ramp")

@@ -1,10 +1,6 @@
 package com.example.generator2
 
-import android.content.Intent
-import android.content.IntentSender
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -35,7 +31,7 @@ import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
-import com.example.generator2.screens.firebase.ScreenFirebase
+import com.example.generator2.screens.firebase.readSizeBackupFromFirebase
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
@@ -46,12 +42,6 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
-import com.google.android.gms.auth.api.identity.BeginSignInRequest
-import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -105,36 +95,40 @@ class MainActivity : ComponentActivity() {
         global.firebase.auth = Firebase.auth
         global.firebase.componentActivity = this
 
-        //global.firebase.createAccount("sex@sex.ru", "12345678")
 
 
+        global.storage = Firebase.storage
 
-
-
-
-
-
-
-
-        //val user = auth.currentUser
-
-        val storage = Firebase.storage
 
         //gs://test-e538d.appspot.com/
-        val storageRef = storage.reference //Конрневая папка
+        val storageRef = global.storage.reference //Коjрневая папка
 
-        val imagesRef: StorageReference = storageRef.child("q1.jpg")
+        val imagesRef: StorageReference = storageRef.child("/shared/")
         val localFile = File.createTempFile("images", ".jpg")
 
-
-        imagesRef.getFile(localFile)
+        imagesRef.listAll()
             .addOnSuccessListener {
-            // Local temp file has been created
-            println()
-        }.addOnFailureListener {
-            // Handle any errors
-            println()
-        }
+               println( "listAll addOnSuccessListener" +it.items.joinToString(","))
+        }.addOnFailureListener{
+                println("listAll addOnFailureListener:$it")
+            }
+
+
+        readSizeBackupFromFirebase(global)
+
+
+
+        //saveBackupToFirebase(global)
+
+
+//        imagesRef.getFile(localFile)
+//            .addOnSuccessListener {
+//                // Local temp file has been created
+//                Toast.makeText( applicationContext, "imagesRef: success", Toast.LENGTH_LONG ).show()
+//            }.addOnFailureListener {
+//                // Handle any errors
+//                Toast.makeText( applicationContext, "imagesRef: Error", Toast.LENGTH_LONG ).show()
+//            }
 
 
 
@@ -205,8 +199,6 @@ class MainActivity : ComponentActivity() {
 
             //initialState - С какого экрана переход
             //targetState   -переходит на
-
-
             //enterTransition - управляет тем, что EnterTransition выполняется, когда targetState  NavBackStackEntry на экране появляется значок .
             //exitTransition  - управляет тем, что ExitTransition  запускается, когда initialState NavBackStackEntry исчезает с экрана.
 
@@ -214,6 +206,8 @@ class MainActivity : ComponentActivity() {
 
 
                 val navController = rememberAnimatedNavController()
+
+
 
                 AnimatedNavHost(
                     navController = navController,
@@ -251,12 +245,12 @@ class MainActivity : ComponentActivity() {
                     ) { ScreenConfig(navController, global) }
 
 
-                    composable("firebase",
-                        enterTransition = { fadeIn(animationSpec = tween(0))  },
-                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenFirebase(navController, global) }
+
 
                 }
+
+
+
 
 
                 //                    Image(

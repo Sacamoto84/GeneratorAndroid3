@@ -16,6 +16,7 @@ import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
@@ -32,8 +33,7 @@ import javax.inject.Inject
 @HiltViewModel
 class Global @Inject constructor(
 
-
-    @ApplicationContext contextActivity: Context,
+     @ApplicationContext contextActivity: Context,
 
      var utils: UtilsKT,
      var liveData: vmLiveData,
@@ -48,6 +48,8 @@ class Global @Inject constructor(
 ) : ViewModel() {
 
 
+///////////////////////////////////////////////////////////////////////////////////////////////////
+    //Firebase
     val loadingState = MutableStateFlow(LoadingState.IDLE)
 
     fun signInWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
@@ -74,8 +76,8 @@ class Global @Inject constructor(
         }
     }
 
-
-
+    lateinit var storage : FirebaseStorage
+///////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

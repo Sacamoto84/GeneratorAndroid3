@@ -10,6 +10,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MailOutline
@@ -17,11 +19,19 @@ import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ExitToApp
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -43,13 +53,16 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetError
 import com.talhafaki.composablesweettoast.util.SweetToastUtil.SweetSuccess
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import java.awt.font.TextAttribute
 
 
-data class LoadingState private constructor(val status: Status, val msg: String? = null) {
+data class LoadingState private constructor(var status: Status, var msg: String? = null) {
+
     companion object {
-        val LOADED = LoadingState(Status.SUCCESS)
-        val IDLE = LoadingState(Status.IDLE)
+        val LOADED  = LoadingState(Status.SUCCESS)
+        val IDLE    = LoadingState(Status.IDLE)
         val LOADING = LoadingState(Status.RUNNING)
         fun error(msg: String?) = LoadingState(Status.FAILED, msg)
     }
@@ -65,18 +78,15 @@ class Firebas(val context: Context) {
     lateinit var auth: FirebaseAuth
 
     //UI
-
-    var status by mutableStateOf("")
-    var detail by mutableStateOf("")
-
-    var email by mutableStateOf("")
-    var password by mutableStateOf("")
+    private var email by mutableStateOf("")
+    private var password by mutableStateOf("")
 
     var componentActivity: ComponentActivity? = null
 
-
     var uid by mutableStateOf("")
 
+
+    @OptIn(ExperimentalComposeUiApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun LoginScreen(viewModel: Global) {
@@ -93,7 +103,6 @@ class Firebas(val context: Context) {
                     viewModel.signWithCredential(credential)
                 } catch (e: ApiException) {
                     Log.w("TAG", "Google sign in failed", e)
-
                 }
             }
 
@@ -105,6 +114,33 @@ class Firebas(val context: Context) {
             if (state.status == LoadingState.Status.RUNNING) {
                 LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
             } else Spacer(modifier = Modifier.height(4.dp))
+
+            when (state.status) {
+                LoadingState.Status.SUCCESS -> {
+                    SweetSuccess(
+                        message = "Success",
+                        duration = Toast.LENGTH_LONG, //padding = PaddingValues(top = 16.dp),
+                        contentAlignment = Alignment.BottomCenter
+                    )
+                    state.msg = ""
+                }
+                LoadingState.Status.FAILED  -> {
+                    var s = state.msg ?: "Error"
+                    s = if (s.indexOf("Error 403") != -1) "Error 403 Forbidden, please use VPN"
+                    else s
+
+                    Text(
+                        text = s,
+                        maxLines = 7,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    state.msg = ""
+                }
+                else                        -> {}
+            }
 
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
@@ -124,14 +160,13 @@ class Firebas(val context: Context) {
 
             if (((uid != "") && (uid != "null"))) {
 
-                //Text(text = "SignOut")
+                Box(modifier = Modifier.fillMaxWidth().padding(8.dp), contentAlignment = Alignment.Center) {
 
-                Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                     Button(
-                        modifier = Modifier.width(200.dp).height(50.dp).padding(8.dp),
+                        modifier = Modifier.width(200.dp).height(40.dp),
                         enabled = ((uid != "") && (uid != "null")),
                         content = {
-                            Text(text = "SignOut")
+                            Text(text = "Sign Out")
                         },
 
                         onClick = { //AuthUI.getInstance().signOut(componentActivity!!)
@@ -149,23 +184,19 @@ class Firebas(val context: Context) {
 
 
             } else {
-
                 //Регистрация и вход
                 Column() {
 
                     //логин и пароль
                     Row() {
-                        OutlinedTextField(colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = Color.White,
-                            focusedBorderColor = Color.LightGray,
-                            focusedLabelColor = Color.White
-                        ),
-                            modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
-                            value = email,
-                            label = {
-                                Text(text = "Email")
-                            },
-                            onValueChange = { email = it })
+
+                        val focusManager = LocalFocusManager.current
+
+
+                        val focus = remember { mutableStateOf(false) }
+                        val inputService = LocalTextInputService.current
+
+                        val keyboardController = LocalSoftwareKeyboardController.current
 
                         OutlinedTextField(
                             colors = TextFieldDefaults.outlinedTextFieldColors(
@@ -173,53 +204,79 @@ class Firebas(val context: Context) {
                                 focusedBorderColor = Color.LightGray,
                                 focusedLabelColor = Color.White
                             ),
+                            modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
+                            value = email,
+                            label = {
+                                Text(text = "Email")
+                            },
+                            onValueChange = { email = it },
+                            keyboardOptions = KeyboardOptions(
+                                imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Right)
+                            })
+
+                        )
+
+                        OutlinedTextField(colors = TextFieldDefaults.outlinedTextFieldColors(
+                            textColor = Color.White,
+                            focusedBorderColor = Color.LightGray,
+                            focusedLabelColor = Color.White
+                        ),
 
                             modifier = Modifier.fillMaxWidth().weight(1f)
-                            .padding(8.dp), //visualTransformation = PasswordVisualTransformation(),
+                                .padding(8.dp), //visualTransformation = PasswordVisualTransformation(),
                             value = password,
                             label = { Text(text = "Password") },
-                            onValueChange = { password = it })
+                            onValueChange = { password = it },
+
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
+                        )
+
                     }
 
                     //Кнопки входа и регистрации
                     Row(verticalAlignment = Alignment.CenterVertically) {
 
-                        Button(
-                            modifier = Modifier.padding(8.dp).fillMaxWidth().height(50.dp)
-                                .weight(1f),
+                        Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
+                            .weight(1f),
 
-                            enabled = email.isNotEmpty() && password.isNotEmpty(), content = {
-                                Text(text = "SignIn")
+                            content = {
+                                Text(
+                                    text = "Sign In",
+                                    color = Color.White,
+                                    fontSize = 18.sp
+                                )
                             },
-
                             onClick = {
                                 viewModel.signInWithEmailAndPassword(
-                                    email.trim(), password.trim()
+                                    email.trim(),
+                                    password.trim()
                                 )
-                            }, colors = ButtonDefaults.buttonColors(
+                            },
+                            colors = ButtonDefaults.buttonColors(
                                 backgroundColor = Color(0xFF4CAF50),
                                 disabledBackgroundColor = Color(0xFF262726)
                             )
                         )
 
-                        //Text("or", color= Color.White, fontSize = 20.sp)
-
                         Button(
-                            modifier = Modifier.padding(8.dp).fillMaxWidth().height(50.dp)
+                            modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
                                 .weight(1f),
-
-                            enabled = email.isNotEmpty() && password.isNotEmpty(),
-
                             content = {
-                                Text(text = "Register")
+                                Text(
+                                    text = "Register",
+                                    color = Color.LightGray,
+                                    fontSize = 18.sp
+                                )
                             },
-
                             onClick = {
-                                createAccount(email.trim(), password.trim())
+                                state.msg = ""
+                                createAccount(email.trim(), password.trim(), viewModel, state)
                             },
-
                             colors = ButtonDefaults.buttonColors(
-                                backgroundColor = Color(0xFF4CAF50),
+                                backgroundColor = Color(0xFF388E3C),
                                 disabledBackgroundColor = Color(0xFF262726)
                             )
                         )
@@ -229,7 +286,7 @@ class Firebas(val context: Context) {
                         modifier = Modifier.fillMaxWidth(),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.caption,
-                        text = "or Login with",
+                        text = "or sign in with",
                         color = Color.White
                     )
 
@@ -245,7 +302,7 @@ class Firebas(val context: Context) {
 
                         border = ButtonDefaults.outlinedBorder.copy(width = 1.dp),
 
-                        modifier = Modifier.padding(8.dp).fillMaxWidth().height(50.dp), onClick = {
+                        modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp), onClick = {
                             val gso =
                                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                                     .requestIdToken(token).requestEmail().build()
@@ -273,135 +330,11 @@ class Firebas(val context: Context) {
                                     )
                                 })
                         })
-
                 }
             }
 
-
-            //Spacer(modifier = Modifier.height(18.dp))
-
-            when (state.status) {
-                LoadingState.Status.SUCCESS -> {
-
-                    //                    Text(text = "Success",
-                    //                        color = Color.White,
-                    //                        modifier = Modifier.fillMaxWidth(),
-                    //                        textAlign = TextAlign.Center
-                    //                    )
-                    SweetSuccess(
-                        message = "Success",
-                        duration = Toast.LENGTH_LONG,
-                        //padding = PaddingValues(top = 16.dp),
-                        contentAlignment = Alignment.BottomCenter
-                    )
-
-
-
-
-                }
-                LoadingState.Status.FAILED  -> {
-
-                    var s = state.msg ?: "Error"
-
-                    s = if (s.indexOf("Error 403") != -1) "Error 403 Forbidden, please use VPN"
-                    else "Error: $s"
-
-                        Text(
-                        text = s,
-                        maxLines = 7,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-
-
-
-                }
-                else                        -> {}
-            }
-
-
-        }
-
-
-    }
-
-
-    // Build FirebaseUI sign in intent. For documentation on this operation and all
-    // possible customization see: https://github.com/firebase/firebaseui-android
-    //    val signInLauncher =
-    //        rememberLauncherForActivityResult(
-    //        FirebaseAuthUIActivityResultContract()
-    //    )
-    //        {
-    //                result -> this.onSignInResult(result)
-    //        }
-
-
-    private fun onSignInResult(result: FirebaseAuthUIAuthenticationResult) {
-        if (result.resultCode == Activity.RESULT_OK) { // Sign in succeeded
-            updateUI(auth.currentUser)
-        } else { // Sign in failed
-            Toast.makeText(context, "Sign In Failed", Toast.LENGTH_SHORT).show()
-            updateUI(null)
         }
     }
-
-    @Composable
-    fun startSignIn() {
-
-        val intent = AuthUI.getInstance().createSignInIntentBuilder()
-            .setIsSmartLockEnabled(!BuildConfig.DEBUG).setAvailableProviders(
-                listOf(
-                    AuthUI.IdpConfig.EmailBuilder().build(),
-                    AuthUI.IdpConfig.GoogleBuilder().build()
-                )
-            ).setLogo(R.mipmap.ic_launcher).build()
-
-
-        val signInLauncher = rememberLauncherForActivityResult(
-            FirebaseAuthUIActivityResultContract()
-        ) { result ->
-            this.onSignInResult(result)
-        }
-
-        //signInLauncher.launch(intent)
-    }
-
-
-    //    fun signOut() {
-    //        AuthUI.getInstance().signOut(componentActivity!!)
-    //        updateUI(null)
-    //    }
-
-
-    //    fun updateUI(user: FirebaseUser?) {
-    //
-    //        showProgressBar = false
-    //
-    //        if (user != null) {
-    //            status = "Email User: ${user.email} (verified: %{user.isEmailVerified})"
-    //            detail = "Firebase UID: ${user.uid}"
-    //
-    //            emailPasswordButtons_visibility = false
-    //            emailPasswordFields_visibility = false
-    //            signedInButtons_visibility = true
-    //
-    //            //Если пользователь верифицирован, то не показываем кнопку верификации
-    //            verifyEmailButton_visibility = !user.isEmailVerified
-    //        }
-    //        else
-    //        {
-    //            status = "Signed Out"
-    //            detail = ""
-    //
-    //            emailPasswordButtons_visibility = true
-    //            emailPasswordFields_visibility = true
-    //            signedInButtons_visibility = false
-    //        }
-    //    }
-
 
     fun reload() {
         auth.currentUser!!.reload().addOnCompleteListener { task ->
@@ -415,174 +348,57 @@ class Firebas(val context: Context) {
         }
     }
 
-    //    fun signOut() {
-    //        auth.signOut()
-    //        updateUI(null)
-    //    }
-
     fun updateUI(user: FirebaseUser?) {
-        if (user != null) { // Signed in
-            status = "Email User: ${user.email} (verified: %{user.isEmailVerified})"
-            detail = "Firebase UID: ${user.uid}"
-            uid = auth.currentUser?.uid.toString()
-
-            //binding.signInButton.visibility = View.GONE
-            //binding.signOutButton.visibility = View.VISIBLE
-        } else { // Signed out
-            status = "Signed Out"
-            detail = ""
-            uid = auth.currentUser?.uid.toString()
-
-            //binding.signInButton.visibility = View.VISIBLE
-            //binding.signOutButton.visibility = View.GONE
-        }
+        uid = auth.currentUser?.uid.toString()
     }
 
-
-    //var showProgressBar by mutableStateOf(false)
-    //var verifyEmailButtonisEnabled by mutableStateOf(false)
-
-    //Visible
-    //    var emailPasswordButtons_visibility by mutableStateOf(false)
-    //    var emailPasswordFields_visibility by mutableStateOf(false)
-    //    var signedInButtons_visibility  by mutableStateOf(false)
-    //    var verifyEmailButton_visibility by mutableStateOf(false)
-
-    //    fun reload() {
-    //        auth.currentUser!!.reload().addOnCompleteListener { task ->
-    //            if (task.isSuccessful) {
-    //                updateUI(auth.currentUser)
-    //                Toast.makeText(context, "Reload successful!", Toast.LENGTH_SHORT).show()
-    //            } else {
-    //                Log.e("Firebase", "reload", task.exception)
-    //                Toast.makeText(context, "Failed to reload user.", Toast.LENGTH_SHORT).show()
-    //            }
-    //        }
-    //    }
-    //
-    fun createAccount(email: String, password: String) {
+    private fun createAccount(email: String, password: String, viewModel: Global, state: LoadingState) {
         Log.d("Firebase", "createAccount:$email")
 
+        if (!validateForm()) {
+            return
+        }
 
-        //            if (!validateForm()) {
-        //                return
-        //            }
-
-        //            showProgressBar = true
+        GlobalScope.launch {
+            viewModel.loadingState.emit(LoadingState.LOADING)
+        }
 
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(componentActivity!!) { task ->
+
                 if (task.isSuccessful) { // Sign in success, update UI with the signed-in user's information
-                    Log.d("Firebase", "createUserWithEmail:success")
-                    Toast.makeText(
-                        context, "createUserWithEmail:success", Toast.LENGTH_LONG
-                    ).show()
+                    Log.d(
+                        "Firebase", "createUserWithEmail:success"
+                    ) //Toast.makeText( context, "createUserWithEmail:success", Toast.LENGTH_LONG ).show()
                     val user = auth.currentUser
                     updateUI(user)
+                    GlobalScope.launch {
+                        viewModel.loadingState.emit(LoadingState.LOADED)
+                    }
                 } else { // If sign in fails, display a message to the user.
-                    Log.w("Firebase", "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(
-                        context, "Authentication failed. ${task.exception}", Toast.LENGTH_LONG
-                    ).show() //updateUI(null)
+                    Log.w(
+                        "Firebase", "createUserWithEmail:failure", task.exception
+                    ) //Toast.makeText( context, "Authentication failed. ${task.exception}", Toast.LENGTH_LONG ).show() //updateUI(null)
+
+
+                    GlobalScope.launch {
+                        viewModel.loadingState.emit(LoadingState.IDLE)
+                        state.status = LoadingState.Status.FAILED
+                        state.msg = task.exception.toString()
+                    }
+
                 }
 
-                //                    showProgressBar = false
+
             }
-    } // //    fun signIn(email: String, password: String) { // //        Log.d("Firebase", "signIn:$email")
-    //
-    //        if (!validateForm()) {
-    //            return
-    //        }
-    //
-    //        showProgressBar = true
-    //
-    //        auth.signInWithEmailAndPassword(email, password)
-    //            .addOnCompleteListener(componentActivity!!) { task ->
-    //                if (task.isSuccessful) {
-    //                    // Sign in success, update UI with the signed-in user's information
-    //                    Log.d("Firebase", "signInWithEmail:success")
-    //                    val user = auth.currentUser
-    //                    updateUI(user)
-    //                } else {
-    //                    // If sign in fails, display a message to the user.
-    //                    Log.w("Firebase", "signInWithEmail:failure", task.exception)
-    //                    Toast.makeText(context, "Authentication failed.",
-    //                        Toast.LENGTH_SHORT).show()
-    //                    updateUI(null)
-    //                    checkForMultiFactorFailure(task.exception!!)
-    //                }
-    //
-    //                if (!task.isSuccessful) {
-    //                    binding.status.setText(R.string.auth_failed)
-    //                }
-    //                showProgressBar = false
-    //            }
-    //    }
+    }
 
 
-    //    fun updateUI(user: FirebaseUser?) {
-    //
-    //        showProgressBar = false
-    //
-    //        if (user != null) {
-    //            status = "Email User: ${user.email} (verified: %{user.isEmailVerified})"
-    //            detail = "Firebase UID: ${user.uid}"
-    //
-    //            emailPasswordButtons_visibility = false
-    //            emailPasswordFields_visibility = false
-    //            signedInButtons_visibility = true
-    //
-    //            //Если пользователь верифицирован, то не показываем кнопку верификации
-    //            verifyEmailButton_visibility = !user.isEmailVerified
-    //        }
-    //        else
-    //        {
-    //            status = "Signed Out"
-    //            detail = ""
-    //
-    //            emailPasswordButtons_visibility = true
-    //            emailPasswordFields_visibility = true
-    //            signedInButtons_visibility = false
-    //        }
-    //    }
-
-
-    //    fun signOut() {
-    //        auth.signOut()
-    //        updateUI(null)
-    //    }
-
-    //    fun sendEmailVerification() {
-    //
-    //        // Disable button
-    //        verifyEmailButtonisEnabled = false
-    //
-    //        // Send verification email
-    //        val user = auth.currentUser!!
-    //        user.sendEmailVerification()
-    //            .addOnCompleteListener(componentActivity!!) { task ->
-    //                // Re-enable button
-    //                verifyEmailButtonisEnabled = true
-    //
-    //                if (task.isSuccessful) {
-    //                    Toast.makeText(context,
-    //                        "Verification email sent to ${user.email} ",
-    //                        Toast.LENGTH_SHORT).show()
-    //                } else {
-    //                    Log.e("Firebase", "sendEmailVerification", task.exception)
-    //                    Toast.makeText(context,
-    //                        "Failed to send verification email.",
-    //                        Toast.LENGTH_SHORT).show()
-    //                }
-    //            }
-    //    }
-
-
-    //    fun validateForm(): Boolean {
-    //        var valid = true
-    //        if (email.isEmpty()) valid = false
-    //        if (password.isEmpty()) valid = false
-    //        return valid
-    //    }
+    private fun validateForm(): Boolean {
+        var valid = true
+        if (email.isEmpty()) valid = false
+        if (password.isEmpty()) valid = false
+        return valid
+    }
 
 }
