@@ -3,17 +3,21 @@ package com.example.generator2.screens.config
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import colorLightBackground
 import colorLightBackground2
 import com.example.generator2.vm.Global
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
@@ -25,9 +29,14 @@ fun ScreenConfig(
     var LVolume by remember { mutableStateOf(0.55F) }
     var RVolume by remember { mutableStateOf(0.65F) }
 
+
+
     Scaffold(backgroundColor = colorLightBackground) {
 
-        Column(Modifier.fillMaxSize().background( colorLightBackground2)) {
+        Column(
+            Modifier.fillMaxSize().background(colorLightBackground2)
+                .verticalScroll(rememberScrollState())
+        ) {
 
             Divider()
             Text(
@@ -82,18 +91,15 @@ fun ScreenConfig(
 
 
             Divider()
-            Row(
-                Modifier.fillMaxWidth(),Arrangement.SpaceBetween,Alignment.CenterVertically
-            ) {
-                Text(
-                    text = "Auto Backup to GoogleDisk",
-                    color = Color(0xFFFFC300),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                )
 
-                Switch(checked = true, onCheckedChange = {})
-            }
+            Text(
+                text = "Authorization",
+                color = Color(0xFFFFC300),
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth(),
+            )
+
+            global.firebase.LoginScreen(viewModel = global)
 
             Divider()
             Text(

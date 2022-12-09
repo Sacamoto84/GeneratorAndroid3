@@ -1,6 +1,10 @@
 package com.example.generator2
 
+import android.content.Intent
+import android.content.IntentSender
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -29,9 +33,9 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
-import com.example.generator2.backup.Backup
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.firebase.ScreenFirebase
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
@@ -42,14 +46,37 @@ import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
+import java.io.File
 import javax.inject.Singleton
+
 
 @Singleton
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+
+
+    override fun onStart() {
+        super.onStart()
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = global.firebase.auth.currentUser
+        if(currentUser != null){
+            global.firebase.reload();
+        }
+
+    }
 
     override fun onStop() {
         super.onStop()
@@ -74,7 +101,46 @@ class MainActivity : ComponentActivity() {
         println("..................................onCreate.................................")
         println("...........................................................................")
 
-        
+        // Initialize Firebase Auth
+        global.firebase.auth = Firebase.auth
+        global.firebase.componentActivity = this
+
+        //global.firebase.createAccount("sex@sex.ru", "12345678")
+
+
+
+
+
+
+
+
+
+
+        //val user = auth.currentUser
+
+        val storage = Firebase.storage
+
+        //gs://test-e538d.appspot.com/
+        val storageRef = storage.reference //Конрневая папка
+
+        val imagesRef: StorageReference = storageRef.child("q1.jpg")
+        val localFile = File.createTempFile("images", ".jpg")
+
+
+        imagesRef.getFile(localFile)
+            .addOnSuccessListener {
+            // Local temp file has been created
+            println()
+        }.addOnFailureListener {
+            // Handle any errors
+            println()
+        }
+
+
+
+
+
+        //
         //global.backup.createBackupZipFileToCache()
         //global.backup.unZipFileFromCache()
 
@@ -151,7 +217,7 @@ class MainActivity : ComponentActivity() {
 
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "home",
+                    startDestination = "config",
                     modifier = Modifier.background(Color.Black)
                 ) {
 
@@ -183,6 +249,12 @@ class MainActivity : ComponentActivity() {
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
                     ) { ScreenConfig(navController, global) }
+
+
+                    composable("firebase",
+                        enterTransition = { fadeIn(animationSpec = tween(0))  },
+                        exitTransition  = { fadeOut(animationSpec = tween(0)) }
+                    ) { ScreenFirebase(navController, global) }
 
                 }
 

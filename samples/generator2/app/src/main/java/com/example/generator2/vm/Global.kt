@@ -3,25 +3,27 @@ package com.example.generator2.vm
 import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.activity.ComponentActivity
 import androidx.compose.runtime.*
-import androidx.core.math.MathUtils
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.audio_device.AudioDevice
-import com.example.generator2.PlaybackEngine
 import com.example.generator2.backup.Backup
 import com.example.generator2.console.Console2
+import com.example.generator2.screens.firebase.Firebas
+import com.example.generator2.screens.firebase.LoadingState
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
-import com.example.generator2.storage.AppFileManager
+import com.google.firebase.auth.AuthCredential
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
@@ -39,15 +41,60 @@ class Global @Inject constructor(
      var keyboard: ScriptKeyboard,
      var playbackEngine: PlaybackEngine,
      var audioDevice: AudioDevice,
-     var backup: Backup
+     var backup: Backup,
+     var firebase : Firebas
+
 
 ) : ViewModel() {
+
+
+    val loadingState = MutableStateFlow(LoadingState.IDLE)
+
+    fun signInWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
+        try {
+            loadingState.emit(LoadingState.LOADING)
+            Firebase.auth.signInWithEmailAndPassword(email, password).await()
+            loadingState.emit(LoadingState.LOADED)
+
+            firebase.uid = firebase.auth.currentUser?.uid.toString()
+
+        } catch (e: Exception) {
+            loadingState.emit(LoadingState.error(e.localizedMessage))
+        }
+    }
+
+    fun signWithCredential(credential: AuthCredential) = viewModelScope.launch {
+        try {
+            loadingState.emit(LoadingState.LOADING)
+            Firebase.auth.signInWithCredential(credential).await()
+            loadingState.emit(LoadingState.LOADED)
+            firebase.uid = firebase.auth.currentUser?.uid.toString()
+        } catch (e: Exception) {
+            loadingState.emit(LoadingState.error(e.localizedMessage))
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //    @Inject
 //    lateinit var utils: UtilsKT
 
     //var contextActivity: Context? = null
-    //var componentActivity: ComponentActivity? = null
+
 
     var patchDocument = ""
     var patchCarrier = "$patchDocument/Carrier/"
