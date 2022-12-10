@@ -12,6 +12,7 @@ import com.example.generator2.backup.Backup
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.firebase.Firebas
 import com.example.generator2.screens.firebase.LoadingState
+import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.ktx.auth
@@ -57,9 +58,8 @@ class Global @Inject constructor(
             loadingState.emit(LoadingState.LOADING)
             Firebase.auth.signInWithEmailAndPassword(email, password).await()
             loadingState.emit(LoadingState.LOADED)
-
             firebase.uid = firebase.auth.currentUser?.uid.toString()
-
+            readMetaBackupFromFirebase(this@Global)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))
         }
@@ -71,12 +71,19 @@ class Global @Inject constructor(
             Firebase.auth.signInWithCredential(credential).await()
             loadingState.emit(LoadingState.LOADED)
             firebase.uid = firebase.auth.currentUser?.uid.toString()
+            readMetaBackupFromFirebase(this@Global)
         } catch (e: Exception) {
             loadingState.emit(LoadingState.error(e.localizedMessage))
         }
     }
 
     lateinit var storage : FirebaseStorage
+
+
+    //Сообщения по поводу метаданных бекапа
+    val strMetadataError = MutableStateFlow("") //Текст ошибок для мета данных
+    val strMetadata      = MutableStateFlow("")     //Текст сообщения для мета данных
+    val progressMetadata      = MutableStateFlow(false)     //Текст сообщения для мета данных
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 
 

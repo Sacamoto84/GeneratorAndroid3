@@ -31,7 +31,7 @@ import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
-import com.example.generator2.screens.firebase.readSizeBackupFromFirebase
+import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
@@ -68,19 +68,6 @@ class MainActivity : ComponentActivity() {
 
     }
 
-    override fun onStop() {
-        super.onStop()
-        println("...........................................................................")
-        println("..................................onStop..................................")
-        println("...........................................................................")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        println("...........................................................................")
-        println("..................................onPause..................................")
-        println("...........................................................................")
-    }
     private val global: Global by viewModels()
 
     @OptIn(ExperimentalAnimationApi::class)
@@ -113,10 +100,7 @@ class MainActivity : ComponentActivity() {
                 println("listAll addOnFailureListener:$it")
             }
 
-
-        readSizeBackupFromFirebase(global)
-
-
+        //readMetaBackupFromFirebase(global)
 
         //saveBackupToFirebase(global)
 

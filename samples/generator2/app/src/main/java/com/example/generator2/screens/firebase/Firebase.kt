@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import colorLightBackground2
 import com.example.generator2.R
+import com.example.generator2.screens.config.caption
 import com.example.generator2.vm.Global
 import com.firebase.ui.auth.AuthUI
 import com.firebase.ui.auth.BuildConfig
@@ -58,17 +59,18 @@ import kotlinx.coroutines.launch
 import java.awt.font.TextAttribute
 
 
-data class LoadingState private constructor(var status: Status, var msg: String? = null) {
+data class LoadingState private constructor(var status: Status, var msg: String? = null, var msginfo: String = " ") {
 
     companion object {
         val LOADED  = LoadingState(Status.SUCCESS)
         val IDLE    = LoadingState(Status.IDLE)
         val LOADING = LoadingState(Status.RUNNING)
         fun error(msg: String?) = LoadingState(Status.FAILED, msg)
+        fun info(msg: String) = LoadingState(Status.INFO, null , msg)
     }
 
     enum class Status {
-        RUNNING, SUCCESS, FAILED, IDLE,
+        RUNNING, SUCCESS, FAILED, IDLE, INFO,
     }
 }
 
@@ -86,10 +88,14 @@ class Firebas(val context: Context) {
     var uid by mutableStateOf("")
 
 
+
+
     @OptIn(ExperimentalComposeUiApi::class)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     @Composable
     fun LoginScreen(viewModel: Global) {
+
+        uid = auth.currentUser?.uid.toString()
 
         val state by viewModel.loadingState.collectAsState()
 
@@ -134,7 +140,8 @@ class Firebas(val context: Context) {
                         maxLines = 7,
                         color = Color.Red,
                         modifier = Modifier.fillMaxWidth(),
-                        textAlign = TextAlign.Center
+                        textAlign = TextAlign.Center,
+                        style = caption
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     state.msg = ""
@@ -145,17 +152,17 @@ class Firebas(val context: Context) {
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                 textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.caption,
-                text = "uid: $uid",
-                color = Color.LightGray
+                text = "uid:   $uid",
+                color = Color.LightGray,
+                style = caption
             )
 
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                 textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.caption,
                 text = "email: ${auth.currentUser?.email}",
-                color = Color.LightGray
+                color = Color.LightGray,
+                style = caption
             )
 
             if (((uid != "") && (uid != "null"))) {
@@ -337,6 +344,7 @@ class Firebas(val context: Context) {
     }
 
     fun reload() {
+
         auth.currentUser!!.reload().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 updateUI(auth.currentUser)
@@ -346,6 +354,7 @@ class Firebas(val context: Context) {
                 Toast.makeText(context, "Failed to reload user.", Toast.LENGTH_SHORT).show()
             }
         }
+
     }
 
     fun updateUI(user: FirebaseUser?) {

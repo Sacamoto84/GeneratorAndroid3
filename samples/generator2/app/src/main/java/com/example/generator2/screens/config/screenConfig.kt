@@ -9,15 +9,33 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import colorLightBackground
 import colorLightBackground2
+import com.example.generator2.R
+import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
+import com.example.generator2.screens.firebase.saveBackupToFirebase
 import com.example.generator2.vm.Global
 import kotlinx.coroutines.delay
-import java.util.*
+
+
+//Стиль для строчек с информацийе
+val caption: TextStyle = TextStyle(
+    fontWeight = FontWeight.Normal,
+    fontSize = 14.sp,
+    letterSpacing = 0.4.sp,
+    fontFamily = FontFamily(Font(R.font.jetbrains))
+)
+
+val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
@@ -25,32 +43,36 @@ fun ScreenConfig(
     navController: NavHostController, global: Global
 ) {
 
+    readMetaBackupFromFirebase(global)
+
     var LVolume by remember { mutableStateOf(0.55F) }
     var RVolume by remember { mutableStateOf(0.65F) }
 
     //Выводится информация по бекап файлу
     var backupMessage by mutableStateOf("1")
 
+    val strMetadata by global.strMetadata.collectAsState()
+    val strMetadataError by global.strMetadataError.collectAsState()
+    val progressMetadata by global.progressMetadata.collectAsState()
     LaunchedEffect(key1 = true, block = {
 
-       while (true){
+        while (true) {
 
-           val f = global.backup.getMetadataBackup()
-           backupMessage = if (f.size == -1L) "backup.zip not found"
-           else "backup.zip  size: ${f.size/1024}kb  Time: ${f.str}"
+            val f = global.backup.getMetadataBackup()
+            backupMessage = if (f.size == -1L) "backup.zip not found"
+            else {
+                "Time file creation : ${f.str}\nsize: ${f.size} byte"
+            }
 
-           delay(2000)
+            delay(2000)
 
-       }
+        }
 
     })
 
 
 
     Scaffold(backgroundColor = colorLightBackground) {
-
-
-
 
 
         Column(
@@ -108,7 +130,7 @@ fun ScreenConfig(
             )
             Slider(value = LVolume, onValueChange = { LVolume = it })
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Divider()
             Text(
                 text = "BackUp",
@@ -120,98 +142,101 @@ fun ScreenConfig(
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
                 textAlign = TextAlign.Left,
-                style = MaterialTheme.typography.caption,
+                style = caption,
                 text = backupMessage,
                 color = Color.LightGray
             )
 
             Row(Modifier.fillMaxWidth()) {
-                Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
 
-                    content = {
-                        Text(
-                            text = "Create Local Backup",
-                            color = Color.White,
-                            //fontSize = 18.sp
-                        )
-                    },
-                    onClick = {
+                Green_button(
+                    modifierGreenButton.weight(1f), onClick = {
                         global.backup.createBackupZipFileToCache()
                         val f = global.backup.getMetadataBackup()
                         backupMessage = if (f.size == -1L) "backup.zip not found"
-                        else "backup.zip  size: ${f.size/1024}kb  Time: ${f.str}"
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
-                        disabledBackgroundColor = Color(0xFF262726)
-                    )
+                        else "Time file creation : ${f.str}\nsize: ${f.size} byte"
+                    }, label = "Create Local Backup"
                 )
 
-                Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
-
-                    content = {
-                        Text(
-                            text = "UnZip Local Backup",
-                            color = Color.White,
-                            //fontSize = 18.sp
-                        )
-                    },
-                    onClick = {
-                        global.backup.unZipFileFromCache()
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
-                        disabledBackgroundColor = Color(0xFF262726)
-                    )
+                Green_button(
+                    modifierGreenButton.weight(1f),
+                    onClick = { global.backup.unZipFileFromCache() },
+                    label = "UnZip Local Backup"
                 )
 
             }
 
-            if ((global.firebase.uid != "") && (global.firebase.uid != "null"))
-            {
-            Row() {
 
-                Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
+            //При авторизации, есть токен
+            if ((global.firebase.uid != "") && (global.firebase.uid != "null")) {
 
-                    content = {
-                        Text(
-                            text = "UnZip Local Backup",
-                            color = Color.White, //fontSize = 18.sp
-                        )
-                    }, onClick = {
+                //Индикатор работы
+                if (progressMetadata) {
+                    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
+                } else Spacer(modifier = Modifier.height(4.dp))
 
+                if (strMetadataError.isNotEmpty())
+                //Вывод информации об ошибках
+                Text(
+                    text = strMetadataError,
+                    maxLines = 7,
+                    color = Color.Red,
+                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                    textAlign = TextAlign.Left,
+                    style = caption,
+                ) //Информация о файле в облаках
 
-                    }, colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
-                        disabledBackgroundColor = Color(0xFF262726)
+                if (strMetadata.isNotEmpty()){
+                Text(
+                    text = strMetadata,
+                    maxLines = 7,
+                    color = Color.LightGray,
+                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                    textAlign = TextAlign.Left,
+                    style = caption,
+                )}
+                else
+                {
+                    Text(
+                        text = " \n \n ",
+                        maxLines = 7,
+                        color = Color.LightGray,
+                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        textAlign = TextAlign.Left,
+                        style = caption,
                     )
-                )
 
-                Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
 
-                    content = {
-                        Text(
-                            text = "UnZip Local Backup",
-                            color = Color.White, //fontSize = 18.sp
+                }
+
+
+                Row() {
+
+
+                    Column(Modifier.fillMaxWidth().weight(1f)) {
+
+                        Green_button(
+                            modifierGreenButton,
+                            onClick = { saveBackupToFirebase(global) },
+                            label = "Save to Cloud"
                         )
-                    }, onClick = {
 
+                        Green_button(
+                            modifierGreenButton,
+                            onClick = {  },
+                            label = "Read from Cloud"
+                        )
 
-                    }, colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
-                        disabledBackgroundColor = Color(0xFF262726)
-                    )
-                )
+                    }
 
-            }
+                    Green_button_refresh(modifierGreenButton.weight(1f), onClick = { readMetaBackupFromFirebase(global) })
+
+                }
 
             }
 
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
 
 
             Divider()
@@ -221,8 +246,7 @@ fun ScreenConfig(
                 color = Color(0xFFFFC300),
                 textAlign = TextAlign.Center,
                 modifier = Modifier.fillMaxWidth(),
-            )
-            //Авторизация
+            ) //Авторизация
             global.firebase.LoginScreen(viewModel = global)
 
             Divider()
@@ -242,3 +266,49 @@ fun ScreenConfig(
 
 
 }
+
+
+@Composable
+private fun Green_button_refresh(
+    modifier: Modifier, onClick: () -> Unit
+) {
+
+    Button(
+        modifier = modifier,
+        content = {
+
+            Icon(
+                tint = Color.White,
+                painter = painterResource(id = R.drawable.refresh),
+                contentDescription = null,
+            )
+
+        }, onClick = onClick, colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
+        )
+    )
+
+}
+
+@Composable
+private fun Green_button(
+    modifier: Modifier, onClick: () -> Unit, label: String = ""
+) {
+
+    Button(
+        modifier = modifier,
+        content = {
+
+            Text(
+                text = label,
+                color = Color.White, //fontSize = 18.sp
+            )
+
+        }, onClick = onClick, colors = ButtonDefaults.buttonColors(
+            backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
+        )
+    )
+
+}
+
+

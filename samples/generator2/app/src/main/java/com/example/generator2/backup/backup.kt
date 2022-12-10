@@ -29,16 +29,13 @@ class Backup( val context: Context) {
     fun getMetadataBackup():metadataBackup
     {
         val r = metadataBackup(-1, Date(0), "")
-
         val f = File(getPathToBackup())
         if (f.exists())
         {
             r.size = f.length() //Размер файла
             r.datetime = Date(f.lastModified()) //Время последней модификации
-            r.str = (1900+r.datetime.year).toString() +"/" +r.datetime.month.toString() +"/" +r.datetime.date.toString() +"  " +r.datetime.hours.toString() +":" +r.datetime.minutes.toString() +":" +r.datetime.seconds.toString()
-
+            r.str = (1900+r.datetime.year-2000).toString() +"/" +r.datetime.month.toString() +"/" +r.datetime.date.toString() +" " +r.datetime.hours.toString() +":" +r.datetime.minutes.toString() +":" +r.datetime.seconds.toString()
         }
-
         return r
     }
 
