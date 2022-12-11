@@ -31,7 +31,6 @@ import androidx.core.graphics.drawable.toBitmap
 import colorDarkBackground
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
-import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
@@ -57,7 +56,6 @@ import javax.inject.Singleton
 class MainActivity : ComponentActivity() {
 
 
-
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -77,6 +75,8 @@ class MainActivity : ComponentActivity() {
         println("...........................................................................")
         println("..................................onCreate.................................")
         println("...........................................................................")
+
+        //setSplashy()
 
         // Initialize Firebase Auth
         global.firebase.auth = Firebase.auth

@@ -7,7 +7,9 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -21,6 +23,7 @@ import androidx.navigation.NavHostController
 import colorLightBackground
 import colorLightBackground2
 import com.example.generator2.R
+import com.example.generator2.TwoRangeSlider
 import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
 import com.example.generator2.screens.firebase.saveBackupToFirebase
 import com.example.generator2.vm.Global
@@ -37,6 +40,7 @@ val caption: TextStyle = TextStyle(
 
 val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun ScreenConfig(
@@ -205,8 +209,6 @@ fun ScreenConfig(
                         textAlign = TextAlign.Left,
                         style = caption,
                     )
-
-
                 }
 
 
@@ -257,7 +259,41 @@ fun ScreenConfig(
                 modifier = Modifier.fillMaxWidth()
             )
             Divider()
+
+
+
+
+            Row {
+                Text(text = "Test1")
+                var range by remember { mutableStateOf(-20f..20f) }
+                Row(
+                    modifier= Modifier.weight(1f),
+                ){
+                    RangeSlider(
+                        value = range,
+                        onValueChange = {
+                            range = it
+                        },
+                        valueRange = -50f..50f,
+                        steps = 10
+                    )
+                }
+                Text(text = "Test2")
+            }
+
+
+
             Spacer(modifier = Modifier.height(400.dp))
+
+
+
+
+
+
+
+
+
+
 
         }
 
