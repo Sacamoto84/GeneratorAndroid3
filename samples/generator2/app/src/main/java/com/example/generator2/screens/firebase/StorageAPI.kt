@@ -1,59 +1,66 @@
-package com.example.generator2.screens.firebase
+package com.example.generator2.screens.config
 
 import android.util.Log
-import com.example.generator2.vm.Global
+import com.example.generator2.backup.Backup
+import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.File
-import java.util.Date
+import java.util.*
 
 //Section saveBackupToFirebase
 //Сохранить бекап по пути /user/UID/backup.zip
-fun saveBackupToFirebase(global: Global) {
-    global.progressMetadata.value = true
-    global.strMetadataError.value = ""
-    global.strMetadata.value = ""
-    val storageRef = global.storage.reference //Корневая папка gs://test-e538d.appspot.com/
-    val uid = global.firebase.auth.uid
-    if ((uid == "") || (uid == null)) return
 
-    val fil = File(global.backup.getPathToBackup())
+fun saveBackupToFirebase(uid : String, backup: Backup) {
+    progressMetadata.value = true
+    strMetadataError.value = ""
+    strMetadata.value = ""
+    val storage : FirebaseStorage = FirebaseStorage.getInstance()
+    val storageRef = storage.reference //Корневая папка gs://test-e538d.appspot.com/
+    //val uid = global.firebase.auth.uid
+    if ((uid == "") || (uid == null)) return
+    val fil = File(backup.getPathToBackup())
     if (!fil.exists()) {
-        global.progressMetadata.value = false
-        global.strMetadataError.value = "local backup.zip not found"
+        progressMetadata.value = false
+        strMetadataError.value = "local backup.zip not found"
         return
     }
     val lastModified = fil.lastModified()  //Время последнего изменения
-
     val s = storageRef.child("/user/${uid}/backup.zip")
-        .putFile(global.backup.getURIBackup(), storageMetadata {
+        .putFile(backup.getURIBackup(), storageMetadata {
             contentType = "application/zip"
             setCustomMetadata("time_create", lastModified.toString())
         }).addOnCompleteListener {
             if (it.isSuccessful) {
                 println("backup addOnCompleteListener..ok")
-                readMetaBackupFromFirebase(global)
+                readMetaBackupFromFirebase(uid)
             } else {
                 Log.e("saveBackupToFirebase", "${it.exception?.message}")
-                global.strMetadataError.value =
+                strMetadataError.value =
                     it.exception?.message.toString() //Вывод сообщения об ошибке
             }
-            global.progressMetadata.value = false
+            progressMetadata.value = false
         }.addOnFailureListener {
             println("backup addOnFailureListener:$it")
-            global.strMetadataError.value = it.toString() //Вывод сообщения об ошибке
-            global.progressMetadata.value = false
+            strMetadataError.value = it.toString() //Вывод сообщения об ошибке
+            progressMetadata.value = false
         }
 }
 
 //Section readMetaBackupFromFirebase
 //Сохранить бекап по пути /user/UID/backup.zip
-fun readMetaBackupFromFirebase(global: Global) {
-    global.strMetadata.value = ""
-    global.strMetadataError.value = ""
-    global.progressMetadata.value = true
+fun readMetaBackupFromFirebase(uid : String?) {
+
+    strMetadata.value = ""
+    strMetadataError.value = ""
+    progressMetadata.value = true
+
     println("metadata")
-    val storageRef = global.storage.reference //Корневая папка
-    val uid = global.firebase.auth.uid
+
+    val storage : FirebaseStorage = FirebaseStorage.getInstance()
+    val storageRef = storage.reference //Корневая папка
+
+    //val uid = global.firebase.auth.uid
+
     if ((uid != "") && (uid != null)) {
         println("metadata 3 uid:${uid}")
         val s = storageRef.child("/user/${uid}/backup.zip").metadata.addOnCompleteListener {
@@ -66,7 +73,6 @@ fun readMetaBackupFromFirebase(global: Global) {
                 val time_create = it.result.getCustomMetadata("time_create")?.toLong()
                 println("metadata time_create $time_create")
 
-
                 var str =
                     "Time file creation : " + time_create?.let { it1 -> Date(it1) }?.let { it2 ->
                             DateToString(it2)
@@ -74,20 +80,20 @@ fun readMetaBackupFromFirebase(global: Global) {
                 str += "Time saved in cloud: " + DateToString(Date(it.result.creationTimeMillis)) + "\n"
                 str += "size: ${it.result.sizeBytes} byte"
 
-                global.strMetadata.value = str
+                strMetadata.value = str
                 Log.i("Firebase", "metadata..ok")
 
             } else {
                 Log.e("Firebase", "metadata error> ${it.exception?.message}")
-                global.strMetadataError.value = it.exception?.message.toString()
+                strMetadataError.value = it.exception?.message.toString()
             }
 
-            global.progressMetadata.value = false
+            progressMetadata.value = false
 
         }.addOnFailureListener {
             println("metadata addOnFailureListener:$it")
-            global.strMetadataError.value = it.toString()
-            global.progressMetadata.value = false
+            strMetadataError.value = it.toString()
+            progressMetadata.value = false
         }
     }
 
