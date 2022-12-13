@@ -12,10 +12,12 @@ import com.example.generator2.PlaybackEngine
 import com.example.generator2.R
 import com.example.generator2.vm.Script
 import com.example.generator2.vm.StateCommandScript
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
+@OptIn(DelicateCoroutinesApi::class)
 class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine, var script : Script) {
 
     private var mDirectionType = 0
@@ -30,9 +32,6 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
     var mScoStarted = false
 
     var mDeviceId by mutableStateOf(0)
-
-
-
 
     init {
 
@@ -52,13 +51,8 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
         mDirectionType = AudioManager.GET_DEVICES_OUTPUTS
 
         GlobalScope.launch (Dispatchers.IO){
-
             setupAudioDeviceCallback()
-
         }
-
-
-
 
     }
 

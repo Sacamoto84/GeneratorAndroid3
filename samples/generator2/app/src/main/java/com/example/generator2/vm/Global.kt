@@ -1,36 +1,32 @@
 package com.example.generator2.vm
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
-import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
 import com.example.generator2.audio_device.AudioDevice
 import com.example.generator2.backup.Backup
+import com.example.generator2.backup.metadataBackup
 import com.example.generator2.console.Console2
 import com.example.generator2.screens.firebase.Firebas
-import com.example.generator2.screens.firebase.LoadingState
-import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
-import com.google.firebase.auth.AuthCredential
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
-@SuppressLint("StaticFieldLeak")
+
+
+
+
+//@SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class Global @Inject constructor(
 
@@ -42,62 +38,13 @@ class Global @Inject constructor(
      var keyboard: ScriptKeyboard,
      var playbackEngine: PlaybackEngine,
      var audioDevice: AudioDevice,
-     var backup: Backup,
-     var firebase : Firebas
+     var firebase : Firebas,
+     var backup: Backup
 
-
-) : ViewModel() {
+) : ViewModel(){
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-    //Firebase
-    val loadingState = MutableStateFlow(LoadingState.IDLE)
-
-    fun signInWithEmailAndPassword(email: String, password: String) = viewModelScope.launch {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            Firebase.auth.signInWithEmailAndPassword(email, password).await()
-            loadingState.emit(LoadingState.LOADED)
-            firebase.uid = firebase.auth.currentUser?.uid.toString()
-            readMetaBackupFromFirebase(this@Global)
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
-        }
-    }
-
-    fun signWithCredential(credential: AuthCredential) = viewModelScope.launch {
-        try {
-            loadingState.emit(LoadingState.LOADING)
-            Firebase.auth.signInWithCredential(credential).await()
-            loadingState.emit(LoadingState.LOADED)
-            firebase.uid = firebase.auth.currentUser?.uid.toString()
-            readMetaBackupFromFirebase(this@Global)
-        } catch (e: Exception) {
-            loadingState.emit(LoadingState.error(e.localizedMessage))
-        }
-    }
-
-    lateinit var storage : FirebaseStorage
-
-
-    //Сообщения по поводу метаданных бекапа
-    val strMetadataError = MutableStateFlow("") //Текст ошибок для мета данных
-    val strMetadata      = MutableStateFlow("")     //Текст сообщения для мета данных
-    val progressMetadata      = MutableStateFlow(false)     //Текст сообщения для мета данных
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //    @Inject
 //    lateinit var utils: UtilsKT
@@ -179,78 +126,35 @@ class Global @Inject constructor(
     }
 
     fun sendAlltoGen() {
-
         println("global sendAlltoGen()")
-
-        audioDevice.playbackEngine.CH_EN(0, liveData.ch1_EN.value)
-        audioDevice.playbackEngine.CH_EN(1, liveData.ch2_EN.value)
-        audioDevice.playbackEngine.CH_AM_EN(
-            0, liveData.ch1_AM_EN.value
-        )
-        audioDevice.playbackEngine.CH_AM_EN(
-            1, liveData.ch2_AM_EN.value
-        )
-        audioDevice.playbackEngine.CH_FM_EN(
-            0, liveData.ch1_FM_EN.value
-        )
-        audioDevice.playbackEngine.CH_FM_EN(
-            1, liveData.ch2_FM_EN.value
-        )
-        audioDevice.playbackEngine.CH_Carrier_fr(
-            0, liveData.ch1_Carrier_Fr.value
-        )
-        audioDevice.playbackEngine.CH_Carrier_fr(
-            1, liveData.ch2_Carrier_Fr.value
-        )
-        audioDevice.playbackEngine.CH_AM_fr(
-            0, liveData.ch1_AM_Fr.value
-        )
-        audioDevice.playbackEngine.CH_AM_fr(
-            1, liveData.ch2_AM_Fr.value
-        )
-        audioDevice.playbackEngine.CH_FM_Base(
-            0, liveData.ch1_FM_Base.value
-        )
-        audioDevice.playbackEngine.CH_FM_Base(
-            1, liveData.ch2_FM_Base.value
-        )
-        audioDevice.playbackEngine.CH_FM_Dev(
-            0, liveData.ch1_FM_Dev.value
-        )
-        audioDevice.playbackEngine.CH_FM_Dev(
-            1, liveData.ch2_FM_Dev.value
-        )
-        audioDevice.playbackEngine.CH_FM_fr(
-            0, liveData.ch1_FM_Fr.value
-        )
-        audioDevice.playbackEngine.CH_FM_fr(
-            1, liveData.ch2_FM_Fr.value
-        )
-
-        utils.Spinner_Send_Buffer(
-            "CH0", "CR", liveData.ch1_Carrier_Filename.value
-        )
-        utils.Spinner_Send_Buffer(
-            "CH0", "AM", liveData.ch1_AM_Filename.value
-        )
-        utils.Spinner_Send_Buffer(
-            "CH0", "FM", liveData.ch1_FM_Filename.value
-        )
-
-        utils.Spinner_Send_Buffer(
-            "CH1", "CR", liveData.ch2_Carrier_Filename.value
-        )
-        utils.Spinner_Send_Buffer(
-            "CH1", "AM", liveData.ch2_AM_Filename.value
-        )
-        utils.Spinner_Send_Buffer(
-            "CH1", "FM", liveData.ch2_FM_Filename.value
-        )
-
+        audioDevice.playbackEngine.setVolume    (0, liveData.volume0.value )
+        audioDevice.playbackEngine.setVolume    (1, liveData.volume1.value )
+        audioDevice.playbackEngine.setEN        (0, liveData.ch1_EN.value )
+        audioDevice.playbackEngine.setEN        (1, liveData.ch2_EN.value )
+        audioDevice.playbackEngine.setAM_EN     (0, liveData.ch1_AM_EN.value )
+        audioDevice.playbackEngine.setAM_EN     (1, liveData.ch2_AM_EN.value )
+        audioDevice.playbackEngine.setFM_EN     (0, liveData.ch1_FM_EN.value )
+        audioDevice.playbackEngine.setFM_EN     (1, liveData.ch2_FM_EN.value )
+        audioDevice.playbackEngine.setCarrier_fr(0, liveData.ch1_Carrier_Fr.value )
+        audioDevice.playbackEngine.setCarrier_fr(1, liveData.ch2_Carrier_Fr.value )
+        audioDevice.playbackEngine.setAM_fr     (0, liveData.ch1_AM_Fr.value )
+        audioDevice.playbackEngine.setAM_fr     (1, liveData.ch2_AM_Fr.value )
+        audioDevice.playbackEngine.setFM_Base   (0, liveData.ch1_FM_Base.value )
+        audioDevice.playbackEngine.setFM_Base   (1, liveData.ch2_FM_Base.value )
+        audioDevice.playbackEngine.setFM_Dev    (0, liveData.ch1_FM_Dev.value )
+        audioDevice.playbackEngine.setFM_Dev    (1, liveData.ch2_FM_Dev.value )
+        audioDevice.playbackEngine.setFM_fr     (0, liveData.ch1_FM_Fr.value )
+        audioDevice.playbackEngine.setFM_fr     (1, liveData.ch2_FM_Fr.value )
+        utils.Spinner_Send_Buffer("CH0", "CR", liveData.ch1_Carrier_Filename.value )
+        utils.Spinner_Send_Buffer("CH0", "AM", liveData.ch1_AM_Filename.value )
+        utils.Spinner_Send_Buffer("CH0", "FM", liveData.ch1_FM_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "CR", liveData.ch2_Carrier_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "AM", liveData.ch2_AM_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "FM", liveData.ch2_FM_Filename.value )
     }
 
     ////////////////////////////////////////////////////////
-    fun launchScriptScope() {
+    private fun launchScriptScope() {
 
         println("global launchScriptScope()")
 
@@ -287,171 +191,38 @@ class Global @Inject constructor(
         println("global saveListToScript()")
         utils.saveListToScriptFile(script.list, name)
     }
-
-
+    
     //    viewModelScope . launch (Dispatchers.Default) {
     //        _viewState.update { it.copy(title = "Новый заголовок") }
     //    }
 
-
     private fun observe() {
-
         println("observe()--------------------------------------------------------------")
-
         val dispatchers = Dispatchers.IO
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_EN.collect { ch1_EN ->
-                println("collect")
-                playbackEngine.CH_EN(0, ch1_EN)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-
-            liveData.ch2_EN.collect { ch2_EN ->
-                playbackEngine.CH_EN(1, ch2_EN)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_AM_EN.collect { ch1_AM_EN ->
-                playbackEngine.CH_AM_EN(0, ch1_AM_EN)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_AM_EN.collect { ch2_AM_EN ->
-                playbackEngine.CH_AM_EN(1, ch2_AM_EN)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_FM_EN.collect { ch1_FM_EN -> //Log.d("observeForever", "onClick")
-                playbackEngine.CH_FM_EN(0, ch1_FM_EN)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_FM_EN.collect { ch2_FM_EN -> //Log.d("observeForever", "onClick")
-                playbackEngine.CH_FM_EN(1, ch2_FM_EN!!)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_Carrier_Fr.collect { ch1_Carrier_Fr ->
-                val fr = ch1_Carrier_Fr.toInt().toFloat()
-                playbackEngine.CH_Carrier_fr(0, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_Carrier_Fr.collect { ch2_Carrier_Fr -> //Log.d("observeForever", "onClick")
-                val fr = ch2_Carrier_Fr.toInt().toFloat()
-                playbackEngine.CH_Carrier_fr(1, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_AM_Fr.collect { ch1_AM_Fr -> //Log.d("observeForever", "onClick")
-                playbackEngine.CH_AM_fr(0, ch1_AM_Fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_AM_Fr.collect { ch2_AM_Fr -> //Log.d("observeForever", "onClick")
-                playbackEngine.CH_AM_fr(1, ch2_AM_Fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_FM_Base.collect { ch1_FM_Base ->
-                val fr = ch1_FM_Base.toInt().toFloat()
-                playbackEngine.CH_FM_Base(0, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_FM_Base.collect { ch2_FM_Base ->
-                val fr = ch2_FM_Base.toInt().toFloat()
-                playbackEngine.CH_FM_Base(1, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_FM_Dev.collect { ch1_FM_Dev ->
-                val fr = ch1_FM_Dev.toInt().toFloat()
-                playbackEngine.CH_FM_Dev(0, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_FM_Dev.collect { ch2_FM_Dev ->
-                val fr = ch2_FM_Dev.toInt().toFloat()
-                playbackEngine.CH_FM_Dev(1, fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_FM_Fr.collect { ch1_FM_Fr ->
-                playbackEngine.CH_FM_fr(0, ch1_FM_Fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_FM_Fr.collect { ch2_FM_Fr ->
-                playbackEngine.CH_FM_fr(1, ch2_FM_Fr)
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_Carrier_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH0", "CR", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_Carrier_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH1", "CR", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_AM_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH0", "AM", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_AM_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH1", "AM", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch1_FM_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH0", "FM", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
-        viewModelScope.launch(dispatchers) {
-            liveData.ch2_FM_Filename.collect { name ->
-                utils.Spinner_Send_Buffer(
-                    "CH1", "FM", name
-                ) //Читае м отсылаем массив
-            }
-        }
-
+        viewModelScope.launch(dispatchers) { liveData.volume0.collect { playbackEngine.setVolume(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.volume1.collect { playbackEngine.setVolume(1, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_EN.collect { playbackEngine.setEN(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_EN.collect { playbackEngine.setEN(1, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_AM_EN.collect { playbackEngine.setAM_EN(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_AM_EN.collect { playbackEngine.setAM_EN(1, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_FM_EN.collect { playbackEngine.setFM_EN(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_FM_EN.collect { playbackEngine.setFM_EN(1, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_Carrier_Fr.collect { playbackEngine.setCarrier_fr(0, it.toInt().toFloat()) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_Carrier_Fr.collect { playbackEngine.setCarrier_fr(1, it.toInt().toFloat()) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_AM_Fr.collect { playbackEngine.setAM_fr(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_AM_Fr.collect { playbackEngine.setAM_fr(1, it)         }    }
+        viewModelScope.launch(dispatchers) { liveData.ch1_FM_Base.collect { playbackEngine.setFM_Base(0, it.toInt().toFloat()) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_FM_Base.collect {playbackEngine.setFM_Base(1, it.toInt().toFloat()  ) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_FM_Dev.collect {playbackEngine.setFM_Dev(0, it.toInt().toFloat()) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_FM_Dev.collect { playbackEngine.setFM_Dev(1, it.toInt().toFloat()) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_FM_Fr.collect { playbackEngine.setFM_fr(0, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_FM_Fr.collect { playbackEngine.setFM_fr(1, it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_Carrier_Filename.collect { utils.Spinner_Send_Buffer("CH0", "CR", it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_Carrier_Filename.collect { utils.Spinner_Send_Buffer("CH1", "CR", it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_AM_Filename.collect {utils.Spinner_Send_Buffer("CH0", "AM", it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_AM_Filename.collect { utils.Spinner_Send_Buffer("CH1", "AM", it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch1_FM_Filename.collect { utils.Spinner_Send_Buffer("CH0", "FM", it) } }
+        viewModelScope.launch(dispatchers) { liveData.ch2_FM_Filename.collect {utils.Spinner_Send_Buffer("CH1", "FM", it) } }
     }
 
 }

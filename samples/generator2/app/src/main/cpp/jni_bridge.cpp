@@ -299,6 +299,32 @@ Java_com_example_generator2_PlaybackEngine_native_1setCH_1FMEN(
     }
 }
 
+
+//Установить громкость
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setVolume(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jint CH,
+        jfloat value
+) {
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setVolume: CH:%d fr%f", CH, value);
+
+    if (CH == 0)
+        CH1.Volume = value;
+    else
+        CH2.Volume = value;
+
+}
+
+
 //Изменить частоту несущей
 JNIEXPORT void JNICALL
 Java_com_example_generator2_PlaybackEngine_native_1setCH_1Carrier_1fr(

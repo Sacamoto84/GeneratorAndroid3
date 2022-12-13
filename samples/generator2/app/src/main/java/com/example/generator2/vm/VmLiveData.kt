@@ -32,6 +32,8 @@ class vmLiveData {
 
 
 
+        var volume0 = MutableStateFlow<Float>(0.1f)
+        var volume1 = MutableStateFlow<Float>(0.1f)
 
 
     }

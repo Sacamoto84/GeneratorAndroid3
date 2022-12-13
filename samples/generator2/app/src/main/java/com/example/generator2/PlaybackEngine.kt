@@ -120,9 +120,21 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
+
+    //Установка частоты
+    fun setVolume(CH: Int, value: Float) {
+        if (mEngineHandle != 0L)
+            native_setCH_Carrier_fr(
+            mEngineHandle,
+            CH,
+            value
+        )
+    }
+
+
     //Внешняя функция
     //Включалки
-    fun CH_EN(CH: Int, EN: Boolean) {
+    fun setEN(CH: Int, EN: Boolean) {
         if (mEngineHandle != 0L) native_setCH_EN(
             mEngineHandle,
             CH,
@@ -130,7 +142,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_AM_EN(CH: Int, EN: Boolean) {
+    fun setAM_EN(CH: Int, EN: Boolean) {
         if (mEngineHandle != 0L) native_setCH_AMEN(
             mEngineHandle,
             CH,
@@ -138,7 +150,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_FM_EN(CH: Int, EN: Boolean) {
+    fun setFM_EN(CH: Int, EN: Boolean) {
         if (mEngineHandle != 0L) native_setCH_FMEN(
             mEngineHandle,
             CH,
@@ -147,7 +159,7 @@ class PlaybackEngine(val context: Context) {
     }
 
     //Установка частоты
-    fun CH_Carrier_fr(CH: Int, fr: Float) {
+    fun setCarrier_fr(CH: Int, fr: Float) {
         if (mEngineHandle != 0L) native_setCH_Carrier_fr(
             mEngineHandle,
             CH,
@@ -155,7 +167,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_AM_fr(CH: Int, fr: Float) {
+    fun setAM_fr(CH: Int, fr: Float) {
         if (mEngineHandle != 0L) native_setCH_AM_fr(
             mEngineHandle,
             CH,
@@ -163,7 +175,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_FM_fr(CH: Int, fr: Float) {
+    fun setFM_fr(CH: Int, fr: Float) {
         if (mEngineHandle != 0L) native_setCH_FM_fr(
             mEngineHandle,
             CH,
@@ -181,7 +193,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_FM_Base(CH: Int, fr: Float) {
+    fun setFM_Base(CH: Int, fr: Float) {
         if (mEngineHandle != 0L) native_setCH_FM_Base(
             mEngineHandle,
             CH,
@@ -189,7 +201,7 @@ class PlaybackEngine(val context: Context) {
         )
     }
 
-    fun CH_FM_Dev(CH: Int, fr: Float) {
+    fun setFM_Dev(CH: Int, fr: Float) {
         if (mEngineHandle != 0L) native_setCH_FM_Dev(
             mEngineHandle,
             CH,
@@ -236,6 +248,11 @@ class PlaybackEngine(val context: Context) {
     private external fun native_setCH_AMEN(engineHandle: Long, CH: Int, EN: Boolean)
 
     private external fun native_setCH_FMEN(engineHandle: Long, CH: Int, EN: Boolean)
+
+    private external fun native_setVolume(
+        engineHandle: Long, CH: Int, value: Float
+    ) //Изменить частоту несущей
+
 
     private external fun native_setCH_Carrier_fr(
         engineHandle: Long, CH: Int, fr: Float

@@ -7,11 +7,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -19,14 +16,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import colorLightBackground
 import colorLightBackground2
 import com.example.generator2.R
-import com.example.generator2.TwoRangeSlider
-import com.example.generator2.screens.firebase.readMetaBackupFromFirebase
-import com.example.generator2.screens.firebase.saveBackupToFirebase
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.firebase.ConfigLoginScreen
 import kotlinx.coroutines.delay
 
 
@@ -44,40 +39,31 @@ val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
 @Composable
 fun ScreenConfig(
-    navController: NavHostController, global: Global
+    navController: NavHostController, vm: VMConfig = hiltViewModel()
 ) {
 
-    readMetaBackupFromFirebase(global)
-
-    var LVolume by remember { mutableStateOf(0.55F) }
-    var RVolume by remember { mutableStateOf(0.65F) }
+    vm.firebase.auth.uid?.let { readMetaBackupFromFirebase(it) }
 
     //Выводится информация по бекап файлу
-    var backupMessage by mutableStateOf("1")
+    var backupMessage by remember { mutableStateOf("1") }
 
-    val strMetadata by global.strMetadata.collectAsState()
-    val strMetadataError by global.strMetadataError.collectAsState()
-    val progressMetadata by global.progressMetadata.collectAsState()
+    val strMetadata by strMetadata.collectAsState()
+    val strMetadataError by strMetadataError.collectAsState()
+    val progressMetadata by progressMetadata.collectAsState()
+
     LaunchedEffect(key1 = true, block = {
-
         while (true) {
-
-            val f = global.backup.getMetadataBackup()
+            val f = vm.backup.getMetadataBackup()
             backupMessage = if (f.size == -1L) "backup.zip not found"
             else {
                 "Time file creation : ${f.str}\nsize: ${f.size} byte"
             }
-
+            println(backupMessage)
             delay(2000)
-
         }
-
     })
 
-
-
     Scaffold(backgroundColor = colorLightBackground) {
-
 
         Column(
             Modifier.fillMaxSize().background(colorLightBackground2)
@@ -85,63 +71,20 @@ fun ScreenConfig(
         ) {
 
             Divider()
-            Text(
-                text = "Volume",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Config_header("Volume")
 
-            Slider(value = LVolume, onValueChange = { LVolume = it })
-            Slider(value = RVolume, onValueChange = { RVolume = it })
+            Slider(value = vm.LVolume, onValueChange = { vm.LVolume = it })
+            Slider(value = vm.RVolume, onValueChange = { vm.RVolume = it })
 
-            Button(onClick = { /*TODO*/ }) {
-                Text("Save")
-            }
+
+
 
             Divider()
-
-            Text(
-                text = "Sensetive",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                fontSize = 24.sp,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Text(
-                text = "Carrier Frequency",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Slider(value = LVolume, onValueChange = { LVolume = it })
-
-            Text(
-                text = "AM Frequency",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Slider(value = LVolume, onValueChange = { LVolume = it })
-
-            Text(
-                text = "FM Frequency",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Slider(value = LVolume, onValueChange = { LVolume = it })
-
+            Config_header("Sensitive")
+            Slider(value = vm.LVolume, onValueChange = { vm.LVolume = it })
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Divider()
-            Text(
-                text = "BackUp",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            )
+            Config_header("BackUp")
 
             Text(
                 modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
@@ -152,55 +95,64 @@ fun ScreenConfig(
             )
 
             Row(Modifier.fillMaxWidth()) {
-
-                Green_button(
+                Config_Green_button(
                     modifierGreenButton.weight(1f), onClick = {
-                        global.backup.createBackupZipFileToCache()
-                        val f = global.backup.getMetadataBackup()
+                        vm.backup.createBackupZipFileToCache()
+                        val f = vm.backup.getMetadataBackup()
                         backupMessage = if (f.size == -1L) "backup.zip not found"
                         else "Time file creation : ${f.str}\nsize: ${f.size} byte"
                     }, label = "Create Local Backup"
                 )
-
-                Green_button(
+                Config_Green_button(
                     modifierGreenButton.weight(1f),
-                    onClick = { global.backup.unZipFileFromCache() },
+                    onClick = { vm.backup.unZipFileFromCache() },
                     label = "UnZip Local Backup"
                 )
-
             }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             //При авторизации, есть токен
-            if ((global.firebase.uid != "") && (global.firebase.uid != "null")) {
+            if ((vm.firebase.uid != "") && (vm.firebase.uid != "null")) {
 
                 //Индикатор работы
                 if (progressMetadata) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 } else Spacer(modifier = Modifier.height(4.dp))
 
-                if (strMetadataError.isNotEmpty())
-                //Вывод информации об ошибках
-                Text(
-                    text = strMetadataError,
-                    maxLines = 7,
-                    color = Color.Red,
-                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
-                    textAlign = TextAlign.Left,
-                    style = caption,
-                ) //Информация о файле в облаках
+                if (strMetadataError.isNotEmpty()) //Вывод информации об ошибках
+                    Text(
+                        text = strMetadataError,
+                        maxLines = 7,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        textAlign = TextAlign.Left,
+                        style = caption,
+                    ) //Информация о файле в облаках
 
-                if (strMetadata.isNotEmpty()){
-                Text(
-                    text = strMetadata,
-                    maxLines = 7,
-                    color = Color.LightGray,
-                    modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
-                    textAlign = TextAlign.Left,
-                    style = caption,
-                )}
-                else
-                {
+                if (strMetadata.isNotEmpty()) {
+                    Text(
+                        text = strMetadata,
+                        maxLines = 7,
+                        color = Color.LightGray,
+                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        textAlign = TextAlign.Left,
+                        style = caption,
+                    )
+                } else {
                     Text(
                         text = " \n \n ",
                         maxLines = 7,
@@ -211,88 +163,31 @@ fun ScreenConfig(
                     )
                 }
 
-
                 Row() {
-
-
                     Column(Modifier.fillMaxWidth().weight(1f)) {
-
-                        Green_button(
-                            modifierGreenButton,
-                            onClick = { saveBackupToFirebase(global) },
-                            label = "Save to Cloud"
+                        Config_Green_button(
+                            modifierGreenButton, onClick = {
+                                vm.firebase.auth.uid?.let { saveBackupToFirebase(it, vm.backup) }
+                            }, label = "Save to Cloud"
                         )
-
-                        Green_button(
-                            modifierGreenButton,
-                            onClick = {  },
-                            label = "Read from Cloud"
+                        Config_Green_button(
+                            modifierGreenButton, onClick = { }, label = "Read from Cloud"
                         )
-
                     }
-
-                    Green_button_refresh(modifierGreenButton.weight(1f), onClick = { readMetaBackupFromFirebase(global) })
-
+                    Config_Green_button_refresh(modifierGreenButton.weight(1f), onClick = {
+                        vm.firebase.auth.uid?.let { readMetaBackupFromFirebase(it) }
+                    })
                 }
-
             }
-
-
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
             Divider()
-
-            Text(
-                text = "Authorization",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth(),
-            ) //Авторизация
-            global.firebase.LoginScreen(viewModel = global)
-
+            Config_header("Authorization")
+            //Авторизация
+            ConfigLoginScreen(viewModel = vm)
             Divider()
-            Text(
-                text = "Version 2.0.3",
-                color = Color(0xFFFFC300),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
+            Config_header("Version 2.0.3")
             Divider()
-
-
-
-
-            Row {
-                Text(text = "Test1")
-                var range by remember { mutableStateOf(-20f..20f) }
-                Row(
-                    modifier= Modifier.weight(1f),
-                ){
-                    RangeSlider(
-                        value = range,
-                        onValueChange = {
-                            range = it
-                        },
-                        valueRange = -50f..50f,
-                        steps = 10
-                    )
-                }
-                Text(text = "Test2")
-            }
-
-
-
             Spacer(modifier = Modifier.height(400.dp))
-
-
-
-
-
-
-
-
-
 
 
         }
@@ -303,48 +198,15 @@ fun ScreenConfig(
 
 }
 
-
 @Composable
-private fun Green_button_refresh(
-    modifier: Modifier, onClick: () -> Unit
-) {
-
-    Button(
-        modifier = modifier,
-        content = {
-
-            Icon(
-                tint = Color.White,
-                painter = painterResource(id = R.drawable.refresh),
-                contentDescription = null,
-            )
-
-        }, onClick = onClick, colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
-        )
+fun Config_header(str: String)
+{
+    Text(
+        text = str,
+        color = Color(0xFFFFC300),
+        textAlign = TextAlign.Center,
+        modifier = Modifier.fillMaxWidth()
     )
 
 }
-
-@Composable
-private fun Green_button(
-    modifier: Modifier, onClick: () -> Unit, label: String = ""
-) {
-
-    Button(
-        modifier = modifier,
-        content = {
-
-            Text(
-                text = label,
-                color = Color.White, //fontSize = 18.sp
-            )
-
-        }, onClick = onClick, colors = ButtonDefaults.buttonColors(
-            backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
-        )
-    )
-
-}
-
 

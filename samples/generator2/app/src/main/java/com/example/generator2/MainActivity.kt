@@ -43,11 +43,9 @@ import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
 import dagger.hilt.android.AndroidEntryPoint
 import libs.KeepScreenOn
-import java.io.File
 import javax.inject.Singleton
 
 
@@ -76,29 +74,27 @@ class MainActivity : ComponentActivity() {
         println("..................................onCreate.................................")
         println("...........................................................................")
 
-        //setSplashy()
-
         // Initialize Firebase Auth
         global.firebase.auth = Firebase.auth
         global.firebase.componentActivity = this
+        val storage = Firebase.storage
+
+        global.backup.saveINIConfig()
+        global.backup.readINIConfig()
 
 
-
-        global.storage = Firebase.storage
-
-
-        //gs://test-e538d.appspot.com/
-        val storageRef = global.storage.reference //Коjрневая папка
-
-        val imagesRef: StorageReference = storageRef.child("/shared/")
-        val localFile = File.createTempFile("images", ".jpg")
-
-        imagesRef.listAll()
-            .addOnSuccessListener {
-               println( "listAll addOnSuccessListener" +it.items.joinToString(","))
-        }.addOnFailureListener{
-                println("listAll addOnFailureListener:$it")
-            }
+        //        //gs://test-e538d.appspot.com/
+//        val storageRef = global.storage.reference //Коjрневая папка
+//
+//        val imagesRef: StorageReference = storageRef.child("/shared/")
+//        val localFile = File.createTempFile("images", ".jpg")
+//
+//        imagesRef.listAll()
+//            .addOnSuccessListener {
+//               println( "listAll addOnSuccessListener" +it.items.joinToString(","))
+//        }.addOnFailureListener{
+//                println("listAll addOnFailureListener:$it")
+//            }
 
         //readMetaBackupFromFirebase(global)
 
@@ -195,7 +191,7 @@ class MainActivity : ComponentActivity() {
 
                 AnimatedNavHost(
                     navController = navController,
-                    startDestination = "config",
+                    startDestination = "home",
                     modifier = Modifier.background(Color.Black)
                 ) {
 
@@ -223,10 +219,11 @@ class MainActivity : ComponentActivity() {
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
                     ) { ScreenScriptInfo(navController) }
 
+                    //Экран настройки программы
                     composable("config",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenConfig(navController, global) }
+                    ) { ScreenConfig(navController) }
 
 
 

@@ -45,8 +45,8 @@ public:
 
         //LOGI("numFrames:%d",numFrames);
 
-        CH1.Volume = 0.65F;
-        CH2.Volume = 0.55F;
+        //CH1.Volume = 0.65F;
+        //CH2.Volume = 0.55F;
 
         renderChanel(&CH1, numFrames);
         renderChanel(&CH2, numFrames);
@@ -126,6 +126,9 @@ public:
             CH1.buffer_fm[i] = 2500;
             CH2.buffer_fm[i] = 2500;
         }
+
+        CH1.Volume = 0.65F;
+        CH2.Volume = 0.55F;
 
     }
 

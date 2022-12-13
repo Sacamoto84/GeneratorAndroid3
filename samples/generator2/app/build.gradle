@@ -249,6 +249,9 @@ dependencies {
     //splashscreen
     implementation("androidx.core:core-splashscreen:1.0.0")
 
+    //https://github.com/vincentrussell/java-ini-parser
+    implementation "com.github.vincentrussell:java-ini-parser:1.3"
+
 }
 
 
