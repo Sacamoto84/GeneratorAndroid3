@@ -3,20 +3,15 @@ package com.example.generator2.backup
 import android.content.Context
 import android.net.Uri
 import com.example.generator2.BuildConfig
-import com.example.generator2.storage.AppFileManager
-import com.github.vincentrussell.ini.Ini
+import com.example.generator2.backup.storage.AppFileManager
+import com.example.generator2.vm.LiveData
+import kotlinx.coroutines.flow.update
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
-import java.text.SimpleDateFormat
-import java.time.format.DateTimeFormatter
 import java.util.*
 
-data class metadataBackup(var size: Long, var datetime: Date, var str: String) {
-
-
-}
-
+data class metadataBackup(var size: Long, var datetime: Date, var str: String)
 
 class Backup(val context: Context) {
 
@@ -25,7 +20,6 @@ class Backup(val context: Context) {
 
     //Получить Uri файла бекап
     fun getURIBackup(): Uri = Uri.fromFile(File(getPathToBackup()))
-
 
     fun getMetadataBackup(): metadataBackup {
         val r = metadataBackup(-1, Date(0), "")
@@ -71,28 +65,189 @@ class Backup(val context: Context) {
         return dir.delete()
     }
 
+///////////////////////
     //Адресс файла текущей конфигурации
     val iniCurrentConfig = context.getExternalFilesDir("/Config").toString() + "/CurrentConfig.ini"
-
+    val iniCurrentVolume = context.getExternalFilesDir("/Config").toString() + "/Volume.ini"
+///////////////////////
+    val iniVolume = Ini()
+    fun readINIVolume() {
+        if (!File(iniCurrentVolume).exists())
+        {
+            saveINIVolume()
+            return
+        }
+        iniVolume.load(FileInputStream(iniCurrentVolume))
+        val volume0 = iniVolume.getValue("current", "volume0")?.toString()
+        if (volume0 != null) { LiveData.volume0.update { volume0.toFloat() } }
+        val volume1 = iniVolume.getValue("current", "volume1")?.toString()
+        if (volume1 != null) { LiveData.volume1.update { volume1.toFloat() } }
+    }
+    fun saveINIVolume() {
+        iniVolume.putValue("current", "volume0", LiveData.volume0.value.toString())
+        iniVolume.putValue("current", "volume1", LiveData.volume1.value.toString())
+        iniVolume.store(FileOutputStream(iniCurrentVolume),"some comments at the top of the file");
+    }
+/////////////////////////////
+    val iniConfig = Ini()
     fun readINIConfig() {
-        if (!File(iniCurrentConfig).exists()) return
-        val ini = Ini()
-        ini.load(FileInputStream(iniCurrentConfig))
+        if (!File(iniCurrentConfig).exists())
+        {
+            saveINIConfig()
+            return
+        }
 
-        val volumeL = ini.getValue("volume", "left")
-        val volumeR = ini.getValue("volume", "right")
+        iniConfig.load(FileInputStream(iniCurrentConfig))
+
+        val ch1EN = iniConfig.getValue("current", "ch1_EN")?.toString()
+        if (ch1EN != null) {
+            LiveData.ch1_EN.update { ch1EN.toBoolean() }
+        }
+
+        val ch2EN = iniConfig.getValue("current", "ch2_EN")?.toString()
+        if (ch2EN != null) {
+            LiveData.ch2_EN.update { ch2EN.toBoolean() }
+        }
+
+        val ch1CarrierFilename = iniConfig.getValue("current", "ch1_Carrier_Filename")?.toString()
+        if (ch1CarrierFilename != null) {
+            LiveData.ch1_Carrier_Filename.update { ch1CarrierFilename }
+        }
+
+        val ch2CarrierFilename = iniConfig.getValue("current", "ch2_Carrier_Filename")?.toString()
+        if (ch2CarrierFilename != null) {
+            LiveData.ch2_Carrier_Filename.update { ch2CarrierFilename }
+        }
+
+        val ch1CarrierFr = iniConfig.getValue("current", "ch1_Carrier_Fr")?.toString()
+        if (ch1CarrierFr != null) {
+            LiveData.ch1_Carrier_Fr.update { ch1CarrierFr.toFloat() }
+        }
+
+        val ch2CarrierFr = iniConfig.getValue("current", "ch2_Carrier_Fr")?.toString()
+        if (ch2CarrierFr != null) {
+            LiveData.ch2_Carrier_Fr.update { ch2CarrierFr.toFloat() }
+        }
+
+        val ch1AMEN = iniConfig.getValue("current", "ch1_AM_EN")?.toString()
+        if (ch1AMEN != null) {
+            LiveData.ch1_AM_EN.update { ch1AMEN.toBoolean() }
+        }
+
+        val ch2AMEN = iniConfig.getValue("current", "ch2_AM_EN")?.toString()
+        if (ch2AMEN != null) {
+            LiveData.ch2_AM_EN.update { ch2AMEN.toBoolean() }
+        }
+
+        val ch1AMFilename = iniConfig.getValue("current", "ch1_AM_Filename")?.toString()
+        if (ch1AMFilename != null) {
+            LiveData.ch1_AM_Filename.update { ch1AMFilename }
+        }
+
+        val ch2AMFilename = iniConfig.getValue("current", "ch2_AM_Filename")?.toString()
+        if (ch2AMFilename != null) {
+            LiveData.ch2_AM_Filename.update { ch2AMFilename }
+        }
+
+        val ch1AMFr = iniConfig.getValue("current", "ch1_AM_Fr")?.toString()
+        if (ch1AMFr != null) {
+            LiveData.ch1_AM_Fr.update { ch1AMFr.toFloat() }
+        }
+
+        val ch2AMFr = iniConfig.getValue("current", "ch2_AM_Fr")?.toString()
+        if (ch2AMFr != null) {
+            LiveData.ch2_AM_Fr.update { ch2AMFr.toFloat() }
+        }
+
+        val ch1FMEN = iniConfig.getValue("current", "ch1_FM_EN")?.toString()
+        if (ch1FMEN != null) {
+            LiveData.ch1_FM_EN.update { ch1FMEN.toBoolean() }
+        }
+
+        val ch2FMEN = iniConfig.getValue("current", "ch2_FM_EN")?.toString()
+        if (ch2FMEN != null) {
+            LiveData.ch2_FM_EN.update { ch2FMEN.toBoolean() }
+        }
+
+        val ch1FMFilename = iniConfig.getValue("current", "ch1_FM_Filename")?.toString()
+        if (ch1FMFilename != null) {
+            LiveData.ch1_AM_Filename.update { ch1FMFilename }
+        }
+
+        val ch2FMFilename = iniConfig.getValue("current", "ch2_FM_Filename")?.toString()
+        if (ch2FMFilename != null) {
+            LiveData.ch2_AM_Filename.update { ch2FMFilename }
+        }
+
+        val ch1FMBase = iniConfig.getValue("current", "ch1_FM_Base")?.toString()
+        if (ch1FMBase != null) {
+            LiveData.ch1_FM_Base.update { ch1FMBase.toFloat() }
+        }
+
+        val ch2FMBase = iniConfig.getValue("current", "ch2_FM_Base")?.toString()
+        if (ch2FMBase != null) {
+            LiveData.ch2_FM_Base.update { ch2FMBase.toFloat() }
+        }
+
+        val ch1FMDev = iniConfig.getValue("current", "ch1_FM_Dev")?.toString()
+        if (ch1FMDev != null) {
+            LiveData.ch1_FM_Dev.update { ch1FMDev.toFloat() }
+        }
+
+        val ch2FMDev = iniConfig.getValue("current", "ch2_FM_Dev")?.toString()
+        if (ch2FMDev != null) {
+            LiveData.ch2_FM_Dev.update { ch2FMDev.toFloat() }
+        }
+
+        val ch1FMFr = iniConfig.getValue("current", "ch1_FM_Fr")?.toString()
+        if (ch1FMFr != null) {
+            LiveData.ch1_FM_Fr.update { ch1FMFr.toFloat() }
+        }
+
+        val ch2FMFr = iniConfig.getValue("current", "ch2_FM_Fr")?.toString()
+        if (ch2FMFr != null) {
+            LiveData.ch2_FM_Fr.update { ch2FMFr.toFloat() }
+        }
 
     }
-
     fun saveINIConfig() {
-        val ini = Ini()
-        ini.putValue("volume", "left", "0.2")
-        ini.putValue("volume", "right", "0.3")
-        ini.store(FileOutputStream(iniCurrentConfig),"some comments at the top of the file");
+
+        iniConfig.putValue("current", "ch1_EN", LiveData.ch1_EN.value.toString())
+        iniConfig.putValue("current", "ch2_EN", LiveData.ch2_EN.value.toString())
+
+        iniConfig.putValue("current", "ch1_Carrier_Filename", LiveData.ch1_Carrier_Filename.value)
+        iniConfig.putValue("current", "ch2_Carrier_Filename", LiveData.ch2_Carrier_Filename.value)
+
+        iniConfig.putValue("current", "ch1_Carrier_Fr", LiveData.ch1_Carrier_Fr.value.toString())
+        iniConfig.putValue("current", "ch2_Carrier_Fr", LiveData.ch2_Carrier_Fr.value.toString())
+
+        iniConfig.putValue("current", "ch1_AM_EN", LiveData.ch1_AM_EN.value.toString())
+        iniConfig.putValue("current", "ch2_AM_EN", LiveData.ch2_AM_EN.value.toString())
+
+        iniConfig.putValue("current", "ch1_AM_Filename", LiveData.ch1_AM_Filename.value)
+        iniConfig.putValue("current", "ch2_AM_Filename", LiveData.ch2_AM_Filename.value)
+
+        iniConfig.putValue("current", "ch1_AM_Fr", LiveData.ch1_AM_Fr.value.toString())
+        iniConfig.putValue("current", "ch2_AM_Fr", LiveData.ch2_AM_Fr.value.toString())
+
+        iniConfig.putValue("current", "ch1_FM_EN", LiveData.ch1_FM_EN.value.toString())
+        iniConfig.putValue("current", "ch2_FM_EN", LiveData.ch2_FM_EN.value.toString())
+
+        iniConfig.putValue("current", "ch1_FM_Filename", LiveData.ch1_FM_Filename.value)
+        iniConfig.putValue("current", "ch2_FM_Filename", LiveData.ch2_FM_Filename.value)
+
+        iniConfig.putValue("current", "ch1_FM_Base", LiveData.ch1_FM_Base.value.toString())
+        iniConfig.putValue("current", "ch2_FM_Base", LiveData.ch2_FM_Base.value.toString())
+
+        iniConfig.putValue("current", "ch1_FM_Dev", LiveData.ch1_FM_Dev.value.toString())
+        iniConfig.putValue("current", "ch2_FM_Dev", LiveData.ch2_FM_Dev.value.toString())
+
+        iniConfig.putValue("current", "ch1_FM_Fr", LiveData.ch1_FM_Fr.value.toString())
+        iniConfig.putValue("current", "ch2_FM_Fr", LiveData.ch2_FM_Fr.value.toString())
+
+        iniConfig.store(FileOutputStream(iniCurrentConfig),"some comments at the top of the file");
     }
-
-
-
+/////////////////////////////
 
 
 }

@@ -28,15 +28,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import colorDarkBackground
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
-import com.example.generator2.ui.theme.Generator2Theme
+import com.example.generator2.theme.Generator2Theme
+import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.ui.wiget.UImodifier.coloredShadow2
-import com.example.generator2.vm.Global
+import com.example.generator2.util.Utils
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.composable
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
@@ -53,18 +54,17 @@ import javax.inject.Singleton
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
+    private val global: VMMain4 by viewModels()
 
     override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = global.firebase.auth.currentUser
+        val currentUser = global.hub.firebase.auth.currentUser
         if(currentUser != null){
-            global.firebase.reload();
+            global.hub.firebase.reload();
         }
 
     }
-
-    private val global: Global by viewModels()
 
     @OptIn(ExperimentalAnimationApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,14 +75,16 @@ class MainActivity : ComponentActivity() {
         println("...........................................................................")
 
         // Initialize Firebase Auth
-        global.firebase.auth = Firebase.auth
-        global.firebase.componentActivity = this
+        global.hub.firebase.auth = Firebase.auth
+        global.hub.firebase.componentActivity = this
         val storage = Firebase.storage
 
-        global.backup.saveINIConfig()
-        global.backup.readINIConfig()
+        //global.backup.saveINIVolume()
+        //global.backup.saveINIConfig()
+        global.hub.backup.readINIConfig()
+        global.hub.backup.readINIVolume()
 
-
+    
         //        //gs://test-e538d.appspot.com/
 //        val storageRef = global.storage.reference //Коjрневая папка
 //
@@ -184,10 +186,7 @@ class MainActivity : ComponentActivity() {
 
             Generator2Theme(darkTheme = true) {
 
-
                 val navController = rememberAnimatedNavController()
-
-
 
                 AnimatedNavHost(
                     navController = navController,
@@ -196,23 +195,19 @@ class MainActivity : ComponentActivity() {
                 ) {
 
                     composable("home",
-                        enterTransition = { // Let's make for a really long fade in
-                            fadeIn(animationSpec = tween(0))
-                        },
-
-                        exitTransition = {
-                            fadeOut(animationSpec = tween(0))
-                        }) { mainsreen4(navController, global) }
+                        enterTransition = {fadeIn(animationSpec = tween(0)) },
+                        exitTransition = {fadeOut(animationSpec = tween(0)) })
+                    { mainsreen4(navController, global) }
 
                     composable("script",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenScriptCommon(navController, global) }
+                    ) { ScreenScriptCommon(navController) }
 
                     composable("editor",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenEditor(navController, global) }
+                    ) { ScreenEditor(navController) }
 
                     composable("scriptinfo",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },

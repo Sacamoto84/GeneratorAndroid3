@@ -17,17 +17,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
-import colorDarkBackground
-import colorLightBackground
-import com.example.generator2.vm.Global
 import com.example.generator2.R
+import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.screens.ui.refresh
+import com.example.generator2.theme.colorDarkBackground
+import com.example.generator2.theme.colorLightBackground
 import libs.MToast
 
 
 @Composable
-fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: Global ) {
+fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: VMMain4) {
 
     val context = LocalContext.current
 
@@ -49,7 +48,7 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global
 
                 Button(
                     onClick = {
-                        global.utils.deleteScriptFile(name)
+                        global.hub.utils.deleteScriptFile(name)
                         openDialog.value = false
                         refresh.value++
                     },
@@ -88,7 +87,7 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
 
-                        global.utils.renameScriptFile(name, value)
+                        global.hub.utils.renameScriptFile(name, value)
 
                         openDialog.value = false
                         MToast(context, "Переименовали")

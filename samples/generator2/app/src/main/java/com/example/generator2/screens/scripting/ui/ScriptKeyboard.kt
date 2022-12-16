@@ -27,11 +27,12 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import colorDarkBackground
-import com.example.generator2.vm.Global
 import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
+import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.Script
-import com.example.generator2.ui.theme.NoRippleTheme
+import com.example.generator2.theme.NoRippleTheme
+import com.example.generator2.theme.colorDarkBackground
+import com.example.generator2.vm.LiveData
 import java.util.*
 
 //Экраны для нижнего меню
@@ -128,7 +129,7 @@ class ScriptKeyboard(private val s: Script) {
     }
 
     @Composable
-    fun Core(global : Global) {
+    fun Core(global : VMMain4) {
         println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc} list.lastIndex:${list.lastIndex}" )
         if (selectIndex <  0 ) selectIndex = 0
         if (s.pc < 0 ) s.pc = 0
@@ -181,7 +182,7 @@ class ScriptKeyboard(private val s: Script) {
 
 
     @Composable
-    fun ScreenMod(arg: Int, type: String = "CR", global : Global) {
+    fun ScreenMod(arg: Int, type: String = "CR", global : VMMain4) {
 
         //val global : Global = viewModel()
 
@@ -195,9 +196,9 @@ class ScriptKeyboard(private val s: Script) {
             ) {
                 itemsIndexed(
                     when (type) {
-                        "CR" -> global.itemlistCarrier.toList()
-                        "AM" -> global.itemlistAM.toList()
-                        else -> global.itemlistFM.toList()
+                        "CR" -> LiveData.itemlistCarrier.toList()
+                        "AM" -> LiveData.itemlistAM.toList()
+                        else -> LiveData.itemlistFM.toList()
                     }
                 ) { index, item ->
                     Row(

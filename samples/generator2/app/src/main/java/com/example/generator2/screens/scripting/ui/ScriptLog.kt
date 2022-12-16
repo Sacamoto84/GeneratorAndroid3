@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.console.Console2
-import com.example.generator2.vm.Global
 
 var consoleLog = Console2()
 

@@ -5,28 +5,24 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CutCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import colorDarkBackground
-import colorLightBackground2
 import com.example.generator2.screens.mainscreen4.ui.DrawerContentBottom
 import com.example.generator2.screens.mainscreen4.ui.M4BottomAppBarComponent
-import com.example.generator2.vm.Global
+import com.example.generator2.theme.colorDarkBackground
 import kotlinx.coroutines.*
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun mainsreen4(
-    navController: NavHostController, global: Global
+    navController: NavHostController, global: VMMain4
 ) {
 
     val coroutineScope = rememberCoroutineScope()
@@ -54,7 +50,9 @@ fun mainsreen4(
             drawerContent = {
 
                 Box(
-                    modifier = Modifier.padding(bottom = it.calculateBottomPadding()).background(Color(0xFF242323))
+                    modifier = Modifier
+                        .padding(bottom = it.calculateBottomPadding())
+                        .background(Color(0xFF242323))
                 )
                 {
                     DrawerContentBottom(global) //Список устройств
@@ -64,7 +62,11 @@ fun mainsreen4(
             content = {
 
                 Column(
-                    Modifier.fillMaxSize().padding(bottom = it.calculateBottomPadding()).background(colorDarkBackground).verticalScroll(rememberScrollState()),
+                    Modifier
+                        .fillMaxSize()
+                        .padding(bottom = it.calculateBottomPadding())
+                        .background(colorDarkBackground)
+                        .verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.SpaceEvenly
                 ) {
                     CardCarrier("CH0", global)

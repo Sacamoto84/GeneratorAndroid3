@@ -5,10 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Switch
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -16,38 +14,40 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.vm.Global
+import com.example.generator2.theme.colorDarkBackground
+import com.example.generator2.theme.colorLightBackground2
 import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
+import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.vm.LiveData
 
 @Composable
-fun CardFM(str: String = "CH0", global: Global) {
+fun CardFM(str: String = "CH0", global: VMMain4) {
 
 
     val fmEN: State<Boolean?> = if (str == "CH0") {
-        global.liveData.ch1_FM_EN.collectAsState()
+        LiveData.ch1_FM_EN.collectAsState()
     } else {
-        global.liveData.ch2_FM_EN.collectAsState()
+        LiveData.ch2_FM_EN.collectAsState()
     }
 
     val fmFr: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Fr.collectAsState()
+        LiveData.ch1_FM_Fr.collectAsState()
     } else {
-        global.liveData.ch2_FM_Fr.collectAsState()
+        LiveData.ch2_FM_Fr.collectAsState()
     }
 
     val fmBase: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Base.collectAsState()
+        LiveData.ch1_FM_Base.collectAsState()
     } else {
-        global.liveData.ch2_FM_Base.collectAsState()
+        LiveData.ch2_FM_Base.collectAsState()
     }
 
     val fmDev: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_FM_Dev.collectAsState()
+        LiveData.ch1_FM_Dev.collectAsState()
     } else {
-        global.liveData.ch2_FM_Dev.collectAsState()
+        LiveData.ch2_FM_Dev.collectAsState()
     }
 
     Column()
@@ -87,9 +87,9 @@ fun CardFM(str: String = "CH0", global: Global) {
                 .background(
                     color = if (fmEN.value!!) Color(0xFF01AE0F) else colorDarkBackground
                 ).noRippleClickable(onClick = {
-                    if (str == "CH0") global.liveData.ch1_FM_EN.value =
-                        !global.liveData.ch1_FM_EN.value
-                    else global.liveData.ch2_FM_EN.value = !global.liveData.ch2_FM_EN.value
+                    if (str == "CH0") LiveData.ch1_FM_EN.value =
+                        !LiveData.ch1_FM_EN.value
+                    else LiveData.ch2_FM_EN.value = !LiveData.ch2_FM_EN.value
                 })) {}
 
 
@@ -133,9 +133,9 @@ fun CardFM(str: String = "CH0", global: Global) {
                             expanded = false
 
                             if (str == "CH0") {
-                                global.liveData.ch1_FM_Fr.value = s.toFloat()
+                                LiveData.ch1_FM_Fr.value = s.toFloat()
                             } else {
-                                global.liveData.ch2_FM_Fr.value = s.toFloat()
+                                LiveData.ch2_FM_Fr.value = s.toFloat()
                             }
 
                         })
@@ -154,8 +154,8 @@ fun CardFM(str: String = "CH0", global: Global) {
                 sensing = if (fmFr.value!! < 10.0F) sensetingSliderAmFm else sensetingSliderAmFm * 10f,
                 range = rangeSliderAmFm,
                 onValueChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_Fr.value =
-                        it else global.liveData.ch2_FM_Fr.value = it
+                    if (str == "CH0") LiveData.ch1_FM_Fr.value =
+                        it else LiveData.ch2_FM_Fr.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -223,8 +223,8 @@ fun CardFM(str: String = "CH0", global: Global) {
                 sensing = sensetingSliderFmBase * 8,
                 range = rangeSliderFmBase,
                 onValueChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_Base.value =
-                        it else global.liveData.ch2_FM_Base.value = it
+                    if (str == "CH0") LiveData.ch1_FM_Base.value =
+                        it else LiveData.ch2_FM_Base.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -238,8 +238,8 @@ fun CardFM(str: String = "CH0", global: Global) {
                 sensing = sensetingSliderFmBase,
                 range = rangeSliderFmBase,
                 onValueChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_Base.value =
-                        it else global.liveData.ch2_FM_Base.value = it
+                    if (str == "CH0") LiveData.ch1_FM_Base.value =
+                        it else LiveData.ch2_FM_Base.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -288,8 +288,8 @@ fun CardFM(str: String = "CH0", global: Global) {
                 sensing = sensetingSliderFmDev * 8,
                 range = rangeSliderFmDev,
                 onValueChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_Dev.value =
-                        it else global.liveData.ch2_FM_Dev.value = it
+                    if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                        it else LiveData.ch2_FM_Dev.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,
@@ -302,8 +302,8 @@ fun CardFM(str: String = "CH0", global: Global) {
                 sensing = sensetingSliderFmDev,
                 range = rangeSliderFmDev,
                 onValueChange = {
-                    if (str == "CH0") global.liveData.ch1_FM_Dev.value =
-                        it else global.liveData.ch2_FM_Dev.value = it
+                    if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                        it else LiveData.ch2_FM_Dev.value = it
                 },
                 modifier = modifierInfinitySlider,
                 vertical = true,

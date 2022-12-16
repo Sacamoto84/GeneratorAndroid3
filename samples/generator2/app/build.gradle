@@ -109,7 +109,6 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
 
-
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
     implementation 'androidx.activity:activity-compose:1.6.1'
 
@@ -118,55 +117,56 @@ dependencies {
     //androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     //androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
-
-
     implementation 'com.snatik:storage:2.1.0'
     implementation 'com.github.flipagram:android-assetcopier:0.1.1'
     implementation "com.orhanobut:hawk:2.0.1"
 
-
-
-
-
     implementation "androidx.appcompat:appcompat:1.5.1"
     implementation "androidx.appcompat:appcompat-resources:1.5.1"
 
-    implementation("io.coil-kt:coil-compose:2.1.0")
-    implementation("io.coil-kt:coil-gif:2.0.0-rc03")
+    //implementation("io.coil-kt:coil-compose:2.2.2")
+    //implementation("io.coil-kt:coil-gif:2.2.2")
 
-    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    //implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
 
-    implementation 'com.github.SmartToolFactory:Compose-Colorful-Sliders:1.0.1'
+    //Кастомные слайдеры
+    //https://github.com/SmartToolFactory/Compose-Colorful-Sliders
+    //implementation 'com.github.SmartToolFactory:Compose-Colorful-Sliders:1.0.1'
 
-    implementation "com.github.krottv:compose-sliders:0.1.14"
+    //Кастомные слайдеры
+    //https://github.com/krottv/compose-sliders
+    //implementation "com.github.krottv:compose-sliders:0.1.14"
 
+    //Обработчик нажатий
+    //https://github.com/SmartToolFactory/Compose-Extended-Gestures
     implementation 'com.github.SmartToolFactory:Compose-Extended-Gestures:1.0.0'
 
-    implementation 'com.siddroid:holi:1.0.1' //Цвета
+    //implementation 'com.github.seniorjoinu:reliable-udp:0.3.1' //Udp
+    //implementation 'com.google.code.gson:gson:2.9.0'
 
-    implementation 'com.github.seniorjoinu:reliable-udp:0.3.1' //Udp
+    //Цвета
+    //https://materialui.co/colors/
+    //https://github.com/PatilSiddhesh/Holi
+    implementation 'com.siddroid:holi:1.0.1'
 
-    implementation 'com.google.code.gson:gson:2.9.0'
-
-
-
+    //Разрешения
+    //https://github.com/alexstyl/warden
     implementation 'com.alexstyl:warden:1.0.0-alpha2'
 
 ///////////////////
     //Compose
-    implementation "androidx.compose.ui:ui:$compose_version"
-    implementation "androidx.compose.material:material:$compose_version"
+    implementation "androidx.compose.ui:ui:1.3.2"
+    implementation "androidx.compose.material:material:1.3.1"
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 
+    debugImplementation "androidx.compose.ui:ui-tooling:1.3.2"
+    implementation "androidx.compose.ui:ui-tooling-preview:1.3.2"
+    implementation "androidx.compose.ui:ui-util:1.3.2"
+    implementation "androidx.compose.runtime:runtime-livedata:1.3.2"
 
-    debugImplementation "androidx.compose.ui:ui-tooling:$compose_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
-    implementation "androidx.compose.ui:ui-util:$compose_version"
-    implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
-
-    implementation "androidx.compose.animation:animation:$compose_version"
-    implementation "androidx.compose.animation:animation-core:$compose_version"
-    implementation "androidx.compose.animation:animation-graphics:$compose_version"
+    implementation "androidx.compose.animation:animation:1.3.2"
+    implementation "androidx.compose.animation:animation-core:1.3.2"
+    implementation "androidx.compose.animation:animation-graphics:1.3.2"
 ///////////////////
     //accompanist
     implementation "com.google.accompanist:accompanist-navigation-animation:0.28.0"
@@ -174,7 +174,6 @@ dependencies {
     implementation "com.google.accompanist:accompanist-webview:0.28.0"
     implementation "com.google.accompanist:accompanist-pager:0.28.0"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
-
 ///////////////////
     //lottie анимация
     implementation 'com.airbnb.android:lottie:5.2.0'
@@ -182,51 +181,27 @@ dependencies {
 ///////////////////
     //Hilt
     implementation "com.google.dagger:hilt-android:2.44"
-
-
-    
     implementation "androidx.hilt:hilt-navigation-compose:1.0.0"
-
-
     kapt "com.google.dagger:hilt-compiler:2.44"
-
-
     //implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03'
     kapt "androidx.hilt:hilt-compiler:1.0.0"
-
-
-
 ///////////////////
 
-
     implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:2.5.1'
-
 
     //Навигация
     implementation "androidx.navigation:navigation-compose:2.5.3"
 
-
-
-
-
     //https://github.com/tfaki/ComposableSweetToast?ref=androidexample365.com
     implementation 'com.github.tfaki:ComposableSweetToast:1.0.1'
-
-
-
 
     //ZIP https://github.com/arnab-kundu/Storage
     //mplementation 'com.github.arnab-kundu:Storage:1.0.2'
 
 
-
-
-    implementation 'com.google.android.gms:play-services-location:21.0.1'
-
     //Google Sign-In for Android
     implementation 'com.google.android.gms:play-services-auth:20.4.0'
-
-
+    implementation 'com.google.android.gms:play-services-location:21.0.1'
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:31.1.0')
@@ -241,16 +216,17 @@ dependencies {
     implementation 'com.google.firebase:firebase-firestore-ktx:24.4.1' //Облако Firestore
     implementation 'com.google.firebase:firebase-storage-ktx:20.1.0'  //Облачное хранилище
     implementation 'com.google.firebase:firebase-auth:21.1.0'
-
-
     implementation 'com.firebaseui:firebase-ui-auth:8.0.2'
 
-
     //splashscreen
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    //implementation("androidx.core:core-splashscreen:1.0.0")
 
     //https://github.com/vincentrussell/java-ini-parser
-    implementation "com.github.vincentrussell:java-ini-parser:1.3"
+    //implementation "com.github.vincentrussell:java-ini-parser:1.3"
+    implementation "commons-io:commons-io:2.11.0"
+    implementation "org.apache.commons:commons-lang3:3.12.0"
+
+    implementation 'com.github.yagmurerdogan:Toastic:1.0.1'
 
 }
 

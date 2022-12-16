@@ -1,6 +1,5 @@
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
@@ -8,33 +7,33 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.generator2.theme.*
 import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
-import com.example.generator2.vm.Global
-import kotlinx.coroutines.flow.update
+import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.vm.LiveData
 
 
 @Composable
-fun CardCarrier(str: String = "CH0", global: Global) {
+fun CardCarrier(str: String = "CH0", global: VMMain4) {
 
     val chEN: State<Boolean> = if (str == "CH0") {
-        global.liveData.ch1_EN.collectAsState()
+        LiveData.ch1_EN.collectAsState()
     } else {
-        global.liveData.ch2_EN.collectAsState()
+        LiveData.ch2_EN.collectAsState()
     }
 
     val carrierFr: State<Float?> = if (str == "CH0") {
-        global.liveData.ch1_Carrier_Fr.collectAsState()
+        LiveData.ch1_Carrier_Fr.collectAsState()
     } else {
-        global.liveData.ch2_Carrier_Fr.collectAsState()
+        LiveData.ch2_Carrier_Fr.collectAsState()
     }
 
     Card(
@@ -74,9 +73,9 @@ fun CardCarrier(str: String = "CH0", global: Global) {
                     ).clip(RoundedCornerShape(8.dp)).background(
                         color = if (chEN.value) Color(0xFF4DD0E1) else colorDarkBackground
                     ).noRippleClickable(onClick = {
-                        if (str == "CH0") global.liveData.ch1_EN.value =
-                            !global.liveData.ch1_EN.value
-                        else global.liveData.ch2_EN.value = !global.liveData.ch2_EN.value
+                        if (str == "CH0") LiveData.ch1_EN.value =
+                            !LiveData.ch1_EN.value
+                        else LiveData.ch2_EN.value = !LiveData.ch2_EN.value
 
                         println("Кнопка")
 
@@ -113,9 +112,9 @@ fun CardCarrier(str: String = "CH0", global: Global) {
                                 expanded = false
 
                                 if (str == "CH0") {
-                                    global.liveData.ch1_Carrier_Fr.value = s.toFloat()
+                                    LiveData.ch1_Carrier_Fr.value = s.toFloat()
                                 } else {
-                                    global.liveData.ch2_Carrier_Fr.value = s.toFloat()
+                                    LiveData.ch2_Carrier_Fr.value = s.toFloat()
                                 }
 
                             })
@@ -136,8 +135,8 @@ fun CardCarrier(str: String = "CH0", global: Global) {
                     sensing = sensetingSliderCr,
                     range = rangeSliderCr,
                     onValueChange = {
-                        if (str == "CH0") global.liveData.ch1_Carrier_Fr.value =
-                            it else global.liveData.ch2_Carrier_Fr.value = it
+                        if (str == "CH0") LiveData.ch1_Carrier_Fr.value =
+                            it else LiveData.ch2_Carrier_Fr.value = it
                     },
                     modifier = modifierInfinitySlider,
                     vertical = true,

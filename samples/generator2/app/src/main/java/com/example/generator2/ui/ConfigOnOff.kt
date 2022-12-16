@@ -1,4 +1,4 @@
-package com.example.generator2
+package com.example.generator2.ui
 
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp

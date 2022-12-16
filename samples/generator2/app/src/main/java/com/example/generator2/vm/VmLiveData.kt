@@ -1,10 +1,12 @@
 package com.example.generator2.vm
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import com.example.generator2.itemList
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
-class vmLiveData {
+object LiveData {
 
         var ch1_EN          = MutableStateFlow<Boolean>(false)
         var ch1_Carrier_Filename = MutableStateFlow<String>("Sine")
@@ -30,11 +32,13 @@ class vmLiveData {
         var ch2_FM_Dev      = MutableStateFlow<Float>(1100f) //Частота базы
         var ch2_FM_Fr       = MutableStateFlow<Float>(5.1f)
 
+        var volume0 = MutableStateFlow<Float>(0.9f)
+        var volume1 = MutableStateFlow<Float>(0.9f)
 
 
-        var volume0 = MutableStateFlow<Float>(0.1f)
-        var volume1 = MutableStateFlow<Float>(0.1f)
-
+        var itemlistCarrier: ArrayList<itemList> = ArrayList() //Создать список
+        var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
+        var itemlistFM: ArrayList<itemList> = ArrayList() //Создать список
 
     }
 

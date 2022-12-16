@@ -15,8 +15,8 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import colorLightBackground
 import com.example.generator2.screens.editor.PaintingState
+import com.example.generator2.theme.colorLightBackground
 import java.util.concurrent.CancellationException
 
 @Composable

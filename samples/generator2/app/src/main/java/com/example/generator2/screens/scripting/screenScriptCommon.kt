@@ -7,18 +7,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import colorLightBackground
 import com.example.generator2.R
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.StateCommandScript
 import com.example.generator2.screens.scripting.ui.RegisterViewDraw
 import com.example.generator2.screens.ui.ScriptTable
+import com.example.generator2.theme.colorLightBackground
 
 
 //Основной экран для скриптов
 @Composable
-fun ScreenScriptCommon(navController: NavHostController, global: Global) {
+fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltViewModel()) {
     Column( //Modifier
         //  .recomposeHighlighter()
         //.background(Color.Cyan)
@@ -29,7 +30,7 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
         }
 
         //Блок регистров
-        if (global.script.state != StateCommandScript.ISEDITTING) {
+        if (global.hub.script.state != StateCommandScript.ISEDITTING) {
             Spacer(modifier = Modifier.height(8.dp))
 
             RegisterViewDraw(global = global)
@@ -49,22 +50,22 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
 
             Spacer(modifier = Modifier.weight(1f))
 
-            if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
+            if ((global.hub.script.state == StateCommandScript.ISRUNNING) || (global.hub.script.state == StateCommandScript.ISPAUSE)) {
 
                 //Пауза
                 IconButton(onClick = {
 
-                    if (global.script.state != StateCommandScript.ISPAUSE) global.script.command(
+                    if (global.hub.script.state != StateCommandScript.ISPAUSE) global.hub.script.command(
                         StateCommandScript.PAUSE
                     )
                     else {
-                        global.script.state = StateCommandScript.ISRUNNING
-                        global.script.end = false
+                        global.hub.script.state = StateCommandScript.ISRUNNING
+                        global.hub.script.end = false
                     }
 
                 }) {
 
-                    if (global.script.state != StateCommandScript.ISPAUSE)
+                    if (global.hub.script.state != StateCommandScript.ISPAUSE)
                         Icon(
                         painter = painterResource(
                             R.drawable.pause
@@ -81,7 +82,7 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
             } else {
                 //Старт
                 IconButton(onClick = {
-                    global.script.command(StateCommandScript.START)
+                    global.hub.script.command(StateCommandScript.START)
                 }) {
                     Icon(painter = painterResource(R.drawable.play), contentDescription = null)
                 }
@@ -92,7 +93,7 @@ fun ScreenScriptCommon(navController: NavHostController, global: Global) {
 
             //Стоп
             IconButton(onClick = {
-                global.script.command(StateCommandScript.STOP)
+                global.hub.script.command(StateCommandScript.STOP)
             }) {
                 Icon(painter = painterResource(R.drawable.stop), contentDescription = null)
             }

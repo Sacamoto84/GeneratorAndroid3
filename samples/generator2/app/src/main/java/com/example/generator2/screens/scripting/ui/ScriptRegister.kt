@@ -12,13 +12,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.mainscreen4.VMMain4
 
 
 //Блок регистров
 @Composable
-fun RegisterViewDraw(modifier: Modifier = Modifier, global: Global) {
+fun RegisterViewDraw(modifier: Modifier = Modifier, global: VMMain4) {
     Box(
         modifier = Modifier.padding(start = 6.dp, end = 6.dp)
             .fillMaxWidth() //.background(Color.Red)
@@ -46,7 +45,7 @@ fun RegisterViewDraw(modifier: Modifier = Modifier, global: Global) {
 
 //Ячейка регистра
 @Composable
-private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Global) {
+private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: VMMain4) {
 
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
@@ -74,7 +73,7 @@ private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: Gl
             }
 
             Text(
-                text = "${global.script.f[index]}",
+                text = "${global.hub.script.f[index]}",
                 color = Color.White,
                 fontSize = 14.sp,
                 modifier = Modifier.fillMaxWidth(),

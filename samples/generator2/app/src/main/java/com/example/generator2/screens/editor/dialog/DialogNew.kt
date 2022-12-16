@@ -10,29 +10,23 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import colorDarkBackground
 import com.example.generator2.R
 import com.example.generator2.screens.editor.ComboBox
 import com.example.generator2.screens.editor.ui.model
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.theme.colorDarkBackground
 
 
 val comboboxLine = ComboBox(listOf("2","4","6","16", "32", "128 ", "256", "512"))
 val comboboxRow = ComboBox(listOf("4", "8", "16", "32", "64", "128 ", "256", "512"))
 
 @Composable
-fun DialogNew(openDialog: MutableState<Boolean>, global: Global) {
-
-    val context = LocalContext.current
-    var value by remember { mutableStateOf("") }
-    val focusRequester = remember { FocusRequester() }
+fun DialogNew(openDialog: MutableState<Boolean>) {
 
     if (openDialog.value) Dialog(onDismissRequest = { openDialog.value = false }) {
 
@@ -43,7 +37,6 @@ fun DialogNew(openDialog: MutableState<Boolean>, global: Global) {
         ) {
 
             Column(Modifier.padding(16.dp).width(210.dp)) {
-
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
 

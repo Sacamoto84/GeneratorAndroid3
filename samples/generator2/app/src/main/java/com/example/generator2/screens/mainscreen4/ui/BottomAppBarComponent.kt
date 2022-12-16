@@ -12,9 +12,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import colorLightBackground
 import com.example.generator2.R
-import com.example.generator2.vm.Global
+import com.example.generator2.theme.colorLightBackground
+import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.StateCommandScript
 import kotlin.system.exitProcess
 
@@ -22,7 +22,7 @@ import kotlin.system.exitProcess
 //Нижняя панель с кнопками
 @Composable
 fun M4BottomAppBarComponent(
-    toggleDrawer: () -> Unit, navController: NavHostController, global: Global
+    toggleDrawer: () -> Unit, navController: NavHostController, global: VMMain4
 ) {
     BottomAppBar(
         backgroundColor = colorLightBackground,
@@ -31,7 +31,7 @@ fun M4BottomAppBarComponent(
         cutoutShape = CircleShape
     ) {
 
-        global.audioDevice.getDeviceId()
+        global.hub.audioDevice.getDeviceId()
 
         IconButton( onClick =  { navController.navigate("config") } ) {
             Icon(painter = painterResource(R.drawable.line3_2), contentDescription = null)
@@ -41,9 +41,9 @@ fun M4BottomAppBarComponent(
         IconButton(
             onClick = toggleDrawer
         ) {
-            val id  = global.audioDevice.mDeviceId
+            val id  = global.hub.audioDevice.mDeviceId
             var str = "Auto select"
-            global.audioDevice.mDeviceAdapter.forEach {
+            global.hub.audioDevice.mDeviceAdapter.forEach {
                 if (id == it.id)
                     str = it.name
             }
@@ -52,22 +52,22 @@ fun M4BottomAppBarComponent(
         }
 
         //Управление скриптами
-        if ((global.script.state == StateCommandScript.ISRUNNING) || (global.script.state == StateCommandScript.ISPAUSE)) {
+        if ((global.hub.script.state == StateCommandScript.ISRUNNING) || (global.hub.script.state == StateCommandScript.ISPAUSE)) {
 
             //Пауза
             IconButton(onClick = {
 
-                if (global.script.state != StateCommandScript.ISPAUSE) global.script.command(
+                if (global.hub.script.state != StateCommandScript.ISPAUSE) global.hub.script.command(
                     StateCommandScript.PAUSE
                 )
                 else {
-                    global.script.state = StateCommandScript.ISRUNNING
-                    global.script.end = false
+                    global.hub.script.state = StateCommandScript.ISRUNNING
+                    global.hub.script.end = false
                 }
 
             }) {
 
-                if (global.script.state != StateCommandScript.ISPAUSE)
+                if (global.hub.script.state != StateCommandScript.ISPAUSE)
                     Icon(
                         painter = painterResource(
                             R.drawable.pause
@@ -84,14 +84,14 @@ fun M4BottomAppBarComponent(
         } else {
             //Старт
             IconButton(onClick = {
-                global.script.command(StateCommandScript.START)
+                global.hub.script.command(StateCommandScript.START)
             }) {
                 Icon(painter = painterResource(R.drawable.play), contentDescription = null)
             }
         }
         //Стоп
         IconButton(onClick = {
-            global.script.command(StateCommandScript.STOP)
+            global.hub.script.command(StateCommandScript.STOP)
         }) {
             Icon(painter = painterResource(R.drawable.stop), contentDescription = null)
         }

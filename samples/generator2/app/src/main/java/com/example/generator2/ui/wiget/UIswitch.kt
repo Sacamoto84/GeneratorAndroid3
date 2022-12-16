@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.example.generator2.ConfigOnOff
-import com.example.generator2.R
+import com.example.generator2.ui.ConfigOnOff
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import libs.ImageAsset
 

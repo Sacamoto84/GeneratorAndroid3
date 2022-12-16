@@ -1,4 +1,4 @@
-package com.example.generator2;
+package com.example.generator2.util;
 
 import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;

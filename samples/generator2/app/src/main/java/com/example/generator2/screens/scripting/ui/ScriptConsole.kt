@@ -15,12 +15,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.generator2.screens.ui.ScriptItem
-import com.example.generator2.vm.Global
+import com.example.generator2.screens.mainscreen4.VMMain4
 
 @Composable
-fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: Global) {
+fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: VMMain4) {
 
     println("ScriptConsole selectLine:$selectLine" )
 
@@ -34,7 +33,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
 
     if (indexSelect.value == 0) {
         indexSelect.value = 1
-        global.script.pc_ex = 1 //////////////////////////////////////////////
+        global.hub.script.pc_ex = 1 //////////////////////////////////////////////
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
@@ -55,8 +54,8 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                         modifier = Modifier.selectable(
                             selected = indexSelect.value == index,
                             onClick = {
-                                global.script.pc = index
-                                global.script.pc_ex = index
+                                global.hub.script.pc = index
+                                global.hub.script.pc_ex = index
                             })
                     ) {
                         val select = indexSelect.value == index

@@ -1,6 +1,5 @@
 package com.example.generator2.screens.editor
 
-import android.view.LayoutInflater
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -16,58 +15,40 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import colorLightBackground
 import com.example.generator2.R
 import com.example.generator2.screens.editor.dialog.DialogNew
 import com.example.generator2.screens.editor.ui.*
-import com.example.generator2.vm.Global
+import com.example.generator2.theme.colorLightBackground
+import com.example.generator2.screens.mainscreen4.VMMain4
 
 private val sizeCanvaChar = 8f
 private val strokeWidth = 6f
 
 val openDialogNew = mutableStateOf(false)
 
-
-
-
 @Composable
-fun ScreenEditor(navController: NavHostController, global: Global) {
+fun ScreenEditor(navController: NavHostController, global: VMMain4 = hiltViewModel()) {
 
 
     Scaffold(bottomBar = { BottomBar(navController, global) }) {
 
         Column(
-            Modifier.padding(bottom = it.calculateBottomPadding())
+            Modifier
+                .padding(bottom = it.calculateBottomPadding())
                 .fillMaxSize() //  .recomposeHighlighter()
                 //.background(Color.White)
                 .verticalScroll(rememberScrollState())
         ) {
 
-            if (openDialogNew.value) DialogNew(openDialogNew, global)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            if (openDialogNew.value) DialogNew(openDialogNew)
 
             //Preview
             Column(
-                modifier = Modifier.padding(8.dp).fillMaxWidth() //
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth() //
                     .border(
                         1.dp, brush = Brush.verticalGradient(
                             listOf(
@@ -81,13 +62,10 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
                 EditorPreviewFM(model)
             }
 
-
-
-
-
-
             Row(
-                modifier = Modifier.height(232.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .height(232.dp)
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
@@ -96,15 +74,23 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
                     verticalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.background(Color.Transparent)
                 ) {
-                    Box(modifier = Modifier.padding(start = 8.dp, bottom = 8.dp).weight(0.5f)) {
+                    Box(modifier = Modifier
+                        .padding(start = 8.dp, bottom = 8.dp)
+                        .weight(0.5f)) {
                         ButtonPoint()
                     }
-                    Box(modifier = Modifier.padding(start = 8.dp, top = 8.dp).weight(0.5f)) {
+                    Box(modifier = Modifier
+                        .padding(start = 8.dp, top = 8.dp)
+                        .weight(0.5f)) {
                         ButtonLine()
                     }
                 }
 
-                    Row(Modifier.padding(start = 8.dp, end = 8.dp).fillMaxWidth().background(Color.Red)) {
+                    Row(
+                        Modifier
+                            .padding(start = 8.dp, end = 8.dp)
+                            .fillMaxWidth()
+                            .background(Color.Red)) {
 
                         Column(Modifier.weight(0.5f)) {
 
@@ -131,7 +117,9 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
 
 
             Box(
-                modifier = Modifier.padding(8.dp).fillMaxWidth() //
+                modifier = Modifier
+                    .padding(8.dp)
+                    .fillMaxWidth() //
                     .border(
                         1.dp, brush = Brush.verticalGradient(
                             listOf(
@@ -154,7 +142,7 @@ fun ScreenEditor(navController: NavHostController, global: Global) {
 
 
 @Composable
-private fun BottomBar(navController: NavHostController, global: Global) {
+private fun BottomBar(navController: NavHostController, global: VMMain4) {
     BottomAppBar(
         backgroundColor = colorLightBackground,
         contentColor = Color.White,
@@ -217,7 +205,10 @@ fun VerticalScaleButton() {
 
     Column() {
         Box(
-            Modifier.height(70.dp).width(30.dp).background(colorButtonBaground)
+            Modifier
+                .height(70.dp)
+                .width(30.dp)
+                .background(colorButtonBaground)
                 .clickable { model.gainYYInc() }, contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier, onDraw = {
@@ -241,7 +232,10 @@ fun VerticalScaleButton() {
         }
 
         Box(
-            Modifier.height(60.dp).width(30.dp).background(colorTextBackround),
+            Modifier
+                .height(60.dp)
+                .width(30.dp)
+                .background(colorTextBackround),
             contentAlignment = Alignment.Center
         ) {
 
@@ -256,7 +250,10 @@ fun VerticalScaleButton() {
 
         //+
         Box(
-            Modifier.height(70.dp).width(30.dp).background(colorButtonBaground)
+            Modifier
+                .height(70.dp)
+                .width(30.dp)
+                .background(colorButtonBaground)
                 .clickable { model.gainYYDec() }, contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier, onDraw = {
@@ -272,7 +269,10 @@ fun VerticalScaleButton() {
         }
 
         Box(
-            modifier = Modifier.fillMaxHeight().width(30.dp).background(Color.LightGray)
+            modifier = Modifier
+                .fillMaxHeight()
+                .width(30.dp)
+                .background(Color.LightGray)
                 .clickable { model.gainYYNormalize() }, contentAlignment = Alignment.Center
         ) {
             Text(text = "N", fontSize = 18.sp, color = colorText)
@@ -285,14 +285,21 @@ fun VerticalScaleButton() {
 //Горизонтальное усиление
 @Composable
 fun HorizontalScaleButton() {
-    Row(Modifier.fillMaxWidth().background(Color.Blue),
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .background(Color.Blue),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
 
         // -
         Box(
-            Modifier.fillMaxHeight().fillMaxWidth().weight(1f).background(colorButtonBaground)
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .weight(1f)
+                .background(colorButtonBaground)
                 .clickable { model.gainXXDec() }, contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier, onDraw = {
@@ -307,7 +314,10 @@ fun HorizontalScaleButton() {
         }
 
         Box(
-            Modifier.fillMaxHeight().width(70.dp).background(colorTextBackround),
+            Modifier
+                .fillMaxHeight()
+                .width(70.dp)
+                .background(colorTextBackround),
             contentAlignment = Alignment.Center
         ) {
 
@@ -322,7 +332,11 @@ fun HorizontalScaleButton() {
 
         // +
         Box(
-            Modifier.fillMaxHeight().fillMaxWidth().weight(1f).background(colorButtonBaground)
+            Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .weight(1f)
+                .background(colorButtonBaground)
                 .clickable { model.gainXXInc() }, contentAlignment = Alignment.Center
         ) {
             Canvas(modifier = Modifier, onDraw = {

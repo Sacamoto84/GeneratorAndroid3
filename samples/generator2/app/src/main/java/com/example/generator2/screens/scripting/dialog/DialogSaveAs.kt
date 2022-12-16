@@ -28,16 +28,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import androidx.lifecycle.viewmodel.compose.viewModel
-import colorDarkBackground
-import colorLightBackground
-import com.example.generator2.vm.Global
 import com.example.generator2.R
+import com.example.generator2.theme.colorDarkBackground
+import com.example.generator2.theme.colorLightBackground
+import com.example.generator2.screens.mainscreen4.VMMain4
 import kotlinx.coroutines.delay
 import libs.MToast
 
 @Composable
-fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global) {
+fun DialogSaveAs(openDialog : MutableState<Boolean>, global: VMMain4) {
 
     val context = LocalContext.current
     var value by remember { mutableStateOf("")}
@@ -68,7 +67,7 @@ fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global) {
                     color = Color.LightGray
                 )
 
-                val files = global.utils.filesInDirToList("/Script")
+                val files = global.hub.utils.filesInDirToList("/Script")
 
                 Column(
                     Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C))
@@ -113,7 +112,7 @@ fun DialogSaveAs(openDialog : MutableState<Boolean>, global: Global) {
                     shape = RoundedCornerShape(36.dp),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = {
-                        global.script.list[0] = value
+                        global.hub.script.list[0] = value
                         global.saveListToScript(value)
                         openDialog.value = false
                         MToast(context, "Сохранено")

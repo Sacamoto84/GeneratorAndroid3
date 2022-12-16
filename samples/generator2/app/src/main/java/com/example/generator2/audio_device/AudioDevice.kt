@@ -10,6 +10,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.R
+import com.example.generator2.util.UtilsKT
+import com.example.generator2.vm.LiveData
 import com.example.generator2.vm.Script
 import com.example.generator2.vm.StateCommandScript
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -18,7 +20,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 @OptIn(DelicateCoroutinesApi::class)
-class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine, var script : Script) {
+class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngine, var script : Script, var utils: UtilsKT) {
 
     private var mDirectionType = 0
 
@@ -162,6 +164,35 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
     private fun stopBluetoothSco() {
         val myAudioMgr = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager?
         myAudioMgr!!.stopBluetoothSco()
+    }
+
+    fun sendAlltoGen() {
+        println("global sendAlltoGen()")
+        playbackEngine.setVolume    (0, LiveData.volume0.value )
+        playbackEngine.setVolume    (1, LiveData.volume1.value )
+        playbackEngine.setEN        (0, LiveData.ch1_EN.value )
+        playbackEngine.setEN        (1, LiveData.ch2_EN.value )
+        playbackEngine.setAM_EN     (0, LiveData.ch1_AM_EN.value )
+        playbackEngine.setAM_EN     (1, LiveData.ch2_AM_EN.value )
+        playbackEngine.setFM_EN     (0, LiveData.ch1_FM_EN.value )
+        playbackEngine.setFM_EN     (1, LiveData.ch2_FM_EN.value )
+        playbackEngine.setCarrier_fr(0, LiveData.ch1_Carrier_Fr.value )
+        playbackEngine.setCarrier_fr(1, LiveData.ch2_Carrier_Fr.value )
+        playbackEngine.setAM_fr     (0, LiveData.ch1_AM_Fr.value )
+        playbackEngine.setAM_fr     (1, LiveData.ch2_AM_Fr.value )
+        playbackEngine.setFM_Base   (0, LiveData.ch1_FM_Base.value )
+        playbackEngine.setFM_Base   (1, LiveData.ch2_FM_Base.value )
+        playbackEngine.setFM_Dev    (0, LiveData.ch1_FM_Dev.value )
+        playbackEngine.setFM_Dev    (1, LiveData.ch2_FM_Dev.value )
+        playbackEngine.setFM_fr     (0, LiveData.ch1_FM_Fr.value )
+        playbackEngine.setFM_fr     (1, LiveData.ch2_FM_Fr.value )
+
+        utils.Spinner_Send_Buffer("CH0", "CR", LiveData.ch1_Carrier_Filename.value )
+        utils.Spinner_Send_Buffer("CH0", "AM", LiveData.ch1_AM_Filename.value )
+        utils.Spinner_Send_Buffer("CH0", "FM", LiveData.ch1_FM_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "CR", LiveData.ch2_Carrier_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "AM", LiveData.ch2_AM_Filename.value )
+        utils.Spinner_Send_Buffer("CH1", "FM", LiveData.ch2_FM_Filename.value )
     }
 
 }

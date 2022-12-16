@@ -4,34 +4,28 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import colorLightBackground
-import colorLightBackground2
-import com.example.generator2.R
+import com.example.generator2.screens.config.ui.Config_Green_button
+import com.example.generator2.screens.config.ui.Config_Green_button_refresh
 import com.example.generator2.screens.firebase.ConfigLoginScreen
+import com.example.generator2.theme.colorLightBackground
+import com.example.generator2.theme.colorLightBackground2
+import com.example.generator2.vm.LiveData
 import kotlinx.coroutines.delay
 
-
-//Стиль для строчек с информацийе
-val caption: TextStyle = TextStyle(
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    letterSpacing = 0.4.sp,
-    fontFamily = FontFamily(Font(R.font.jetbrains))
-)
 
 val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
 
@@ -50,6 +44,9 @@ fun ScreenConfig(
     val strMetadata by strMetadata.collectAsState()
     val strMetadataError by strMetadataError.collectAsState()
     val progressMetadata by progressMetadata.collectAsState()
+
+    val value0 by LiveData.volume0.collectAsState()
+    val value1 by LiveData.volume1.collectAsState()
 
     LaunchedEffect(key1 = true, block = {
         while (true) {
@@ -70,19 +67,77 @@ fun ScreenConfig(
                 .verticalScroll(rememberScrollState())
         ) {
 
-            Divider()
-            Config_header("Volume")
-
-            Slider(value = vm.LVolume, onValueChange = { vm.LVolume = it })
-            Slider(value = vm.RVolume, onValueChange = { vm.RVolume = it })
-
-
-
 
             Divider()
-            Config_header("Sensitive")
-            Slider(value = vm.LVolume, onValueChange = { vm.LVolume = it })
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                OutlinedTextField(
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Color.White,
+                        focusedBorderColor = Color.LightGray,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
+                    value = value0.toString(),
+                    label = {
+                        Text(text = "Volume CH0 0..1", fontSize = 16.sp)
+                    },
+                    onValueChange = {
+                        LiveData.volume0.value = it.toFloat()
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Text
+                    ),
+                    textStyle = TextStyle(fontSize = 18.sp)
+                )
+
+                OutlinedTextField(
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        textColor = Color.White,
+                        focusedBorderColor = Color.LightGray,
+                        focusedLabelColor = Color.White
+                    ),
+                    modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
+                    value = value1.toString(),
+                    label = {
+                        Text(text = "Volume CH1 0..1", fontSize = 16.sp)
+                    },
+                    onValueChange = {
+                        LiveData.volume1.value = it.toFloat()
+                    },
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Text
+                    ),
+                    textStyle = TextStyle(fontSize = 18.sp)
+                )
+
+            }
+
+            Button(modifier = Modifier.padding(start = 8.dp, bottom = 2.dp, end = 8.dp)
+                .fillMaxWidth(1f),
+
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
+                ),
+
+                onClick = {
+                    vm.toastSaveVolume() //Сохранить громкоcть
+                    vm.saveINIVolume()
+                }) {
+                Text("Save Volume", color = Color.White)
+            }
+
+
+
+
+
+
+
+
+
+
+            Divider() ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Divider()
             Config_header("BackUp")
 
@@ -109,20 +164,6 @@ fun ScreenConfig(
                     label = "UnZip Local Backup"
                 )
             }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
             //При авторизации, есть токен
@@ -178,11 +219,9 @@ fun ScreenConfig(
                         vm.firebase.auth.uid?.let { readMetaBackupFromFirebase(it) }
                     })
                 }
-            }
-            ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+            } ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Divider()
-            Config_header("Authorization")
-            //Авторизация
+            Config_header("Authorization") //Авторизация
             ConfigLoginScreen(viewModel = vm)
             Divider()
             Config_header("Version 2.0.3")
@@ -199,8 +238,7 @@ fun ScreenConfig(
 }
 
 @Composable
-fun Config_header(str: String)
-{
+fun Config_header(str: String) {
     Text(
         text = str,
         color = Color(0xFFFFC300),
