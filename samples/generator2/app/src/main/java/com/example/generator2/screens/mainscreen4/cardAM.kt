@@ -18,6 +18,7 @@ import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
 
 
@@ -57,8 +58,8 @@ fun CardAM(str: String = "CH0", global: VMMain4) {
                         color = if (amEN.value!!) Color(0xFF01AE0F) else colorDarkBackground
                     ).noRippleClickable(onClick = {
                         if (str == "CH0") LiveData.ch1_AM_EN.value =
-                            !LiveData.ch1_AM_EN.value!!
-                        else LiveData.ch2_AM_EN.value = !LiveData.ch2_AM_EN.value!!
+                            !LiveData.ch1_AM_EN.value
+                        else LiveData.ch2_AM_EN.value = !LiveData.ch2_AM_EN.value
                     }) //.shadow(1.dp, shape = RoundedCornerShape(8.dp), ambientColor = Color.Blue)
                 , contentAlignment = Alignment.Center
             ) {
@@ -113,8 +114,8 @@ fun CardAM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = amFr.value,
-                sensing = if (amFr.value!! < 10.0F) sensetingSliderAmFm else sensetingSliderAmFm * 10f,
-                range = rangeSliderAmFm,
+                sensing = if (amFr.value!! < 10.0F) LiveConstrain.sensetingSliderAmFm.value else LiveConstrain.sensetingSliderAmFm.value * 10f,
+                range = LiveConstrain.rangeSliderAmFm,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_AM_Fr.value =
                         it else LiveData.ch2_AM_Fr.value = it

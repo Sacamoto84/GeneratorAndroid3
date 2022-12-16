@@ -20,6 +20,7 @@ import com.example.generator2.ui.wiget.InfinitySlider
 import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
 import com.example.generator2.ui.wiget.UIspinner
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
 
 @Composable
@@ -151,8 +152,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = fmFr.value,
-                sensing = if (fmFr.value!! < 10.0F) sensetingSliderAmFm else sensetingSliderAmFm * 10f,
-                range = rangeSliderAmFm,
+                sensing = if (fmFr.value!! < 10.0F) LiveConstrain.sensetingSliderAmFm.value else LiveConstrain.sensetingSliderAmFm.value * 10f,
+                range = LiveConstrain.rangeSliderAmFm,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_FM_Fr.value =
                         it else LiveData.ch2_FM_Fr.value = it
@@ -203,11 +204,6 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                 Text("Save", fontSize = 12.sp, color = Color.LightGray )
             }
 
-
-
-
-
-
             MainscreenTextBoxPlus2Line(
                 String.format("%d", fmBase.value!!.toInt()),
                 String.format("%d", fmBase.value!!.toInt() + fmDev.value!!.toInt()),
@@ -220,8 +216,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = fmBase.value,
-                sensing = sensetingSliderFmBase * 8,
-                range = rangeSliderFmBase,
+                sensing = LiveConstrain.sensetingSliderFmBase.value * 8,
+                range = LiveConstrain.rangeSliderFmBase,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_FM_Base.value =
                         it else LiveData.ch2_FM_Base.value = it
@@ -235,8 +231,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = fmBase.value,
-                sensing = sensetingSliderFmBase,
-                range = rangeSliderFmBase,
+                sensing = LiveConstrain.sensetingSliderFmBase.value,
+                range = LiveConstrain.rangeSliderFmBase,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_FM_Base.value =
                         it else LiveData.ch2_FM_Base.value = it
@@ -285,8 +281,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = fmDev.value,
-                sensing = sensetingSliderFmDev * 8,
-                range = rangeSliderFmDev,
+                sensing = LiveConstrain.sensetingSliderFmDev.value * 8,
+                range = LiveConstrain.rangeSliderFmDev,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_FM_Dev.value =
                         it else LiveData.ch2_FM_Dev.value = it
@@ -299,8 +295,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 
             InfinitySlider(
                 value = fmDev.value,
-                sensing = sensetingSliderFmDev,
-                range = rangeSliderFmDev,
+                sensing = LiveConstrain.sensetingSliderFmDev.value,
+                range = LiveConstrain.rangeSliderFmDev,
                 onValueChange = {
                     if (str == "CH0") LiveData.ch1_FM_Dev.value =
                         it else LiveData.ch2_FM_Dev.value = it

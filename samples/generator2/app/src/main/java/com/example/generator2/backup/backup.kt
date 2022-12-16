@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.example.generator2.BuildConfig
 import com.example.generator2.backup.storage.AppFileManager
+import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
 import kotlinx.coroutines.flow.update
 import java.io.File
@@ -69,6 +70,7 @@ class Backup(val context: Context) {
     //Адресс файла текущей конфигурации
     val iniCurrentConfig = context.getExternalFilesDir("/Config").toString() + "/CurrentConfig.ini"
     val iniCurrentVolume = context.getExternalFilesDir("/Config").toString() + "/Volume.ini"
+    val iniCurrentConstrain = context.getExternalFilesDir("/Config").toString() + "/Constrain.ini"
 ///////////////////////
     val iniVolume = Ini()
     fun readINIVolume() {
@@ -248,6 +250,69 @@ class Backup(val context: Context) {
         iniConfig.store(FileOutputStream(iniCurrentConfig),"some comments at the top of the file");
     }
 /////////////////////////////
+    val iniConstrain = Ini()
+    fun saveINIConstrain() {
+
+        iniConstrain.putValue("current", "sensetingSliderCr", LiveConstrain.sensetingSliderCr.value.toString())
+        iniConstrain.putValue("current", "sensetingSliderFmDev", LiveConstrain.sensetingSliderFmDev.value.toString())
+        iniConstrain.putValue("current", "sensetingSliderFmBase", LiveConstrain.sensetingSliderFmBase.value.toString())
+        iniConstrain.putValue("current", "sensetingSliderAmFm", LiveConstrain.sensetingSliderAmFm.value.toString())
+        iniConstrain.putValue("current", "minCR", LiveConstrain.minCR.value.toString())
+        iniConstrain.putValue("current", "maxCR", LiveConstrain.maxCR.value.toString())
+        iniConstrain.putValue("current", "minModAmFm", LiveConstrain.minModAmFm.value.toString())
+        iniConstrain.putValue("current", "maxModAmFm", LiveConstrain.maxModAmFm.value.toString())
+        iniConstrain.putValue("current", "minFMBase", LiveConstrain.minFMBase.value.toString())
+        iniConstrain.putValue("current", "maxFMBase", LiveConstrain.maxFMBase.value.toString())
+        iniConstrain.putValue("current", "minFMDev", LiveConstrain.minFMDev.value.toString())
+        iniConstrain.putValue("current", "maxFMDev", LiveConstrain.maxFMDev.value.toString())
+        iniConstrain.store(FileOutputStream(iniCurrentConstrain),"some comments at the top of the file");
+    }
+    fun readINIConstrain() {
+        if (!File(iniCurrentConstrain).exists())
+        {
+            saveINIConstrain()
+            return
+        }
+        iniConstrain.load(FileInputStream(iniCurrentConstrain))
+
+        val sensetingSliderCr = iniConstrain.getValue("current", "sensetingSliderCr")?.toString()
+        if (sensetingSliderCr != null) { LiveConstrain.sensetingSliderCr.value = sensetingSliderCr.toFloat()}
+
+        val sensetingSliderFmDev = iniConstrain.getValue("current", "sensetingSliderFmDev")?.toString()
+        if (sensetingSliderFmDev != null) { LiveConstrain.sensetingSliderFmDev.value = sensetingSliderFmDev.toFloat()}
+
+        val sensetingSliderFmBase = iniConstrain.getValue("current", "sensetingSliderFmBase")?.toString()
+        if (sensetingSliderFmBase != null) { LiveConstrain.sensetingSliderFmBase.value = sensetingSliderFmBase.toFloat()}
+
+        val sensetingSliderAmFm = iniConstrain.getValue("current", "sensetingSliderAmFm")?.toString()
+        if (sensetingSliderAmFm != null) { LiveConstrain.sensetingSliderAmFm.value = sensetingSliderAmFm.toFloat()}
+
+        val minCR = iniConstrain.getValue("current", "minCR")?.toString()
+        if (minCR != null) { LiveConstrain.minCR.value = minCR.toFloat()}
+
+        val maxCR = iniConstrain.getValue("current", "maxCR")?.toString()
+        if (maxCR != null) { LiveConstrain.maxCR.value = maxCR.toFloat()}
+
+        val minModAmFm = iniConstrain.getValue("current", "minModAmFm")?.toString()
+        if (minModAmFm != null) { LiveConstrain.minModAmFm.value = minModAmFm.toFloat()}
+
+        val maxModAmFm = iniConstrain.getValue("current", "maxModAmFm")?.toString()
+        if (maxModAmFm != null) { LiveConstrain.maxModAmFm.value = maxModAmFm.toFloat()}
+
+        val minFMBase = iniConstrain.getValue("current", "minFMBase")?.toString()
+        if (minFMBase != null) { LiveConstrain.minFMBase.value = minFMBase.toFloat()}
+
+        val maxFMBase = iniConstrain.getValue("current", "maxFMBase")?.toString()
+        if (maxFMBase != null) { LiveConstrain.maxFMBase.value = maxFMBase.toFloat()}
+
+        val minFMDev = iniConstrain.getValue("current", "minFMDev")?.toString()
+        if (minFMDev != null) { LiveConstrain.minFMBase.value = minFMDev.toFloat()}
+
+        val maxFMDev = iniConstrain.getValue("current", "maxFMDev")?.toString()
+        if (maxFMDev != null) { LiveConstrain.maxFMDev.value = maxFMDev.toFloat()}
+
+    }
+
 
 
 }

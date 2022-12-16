@@ -117,12 +117,15 @@ dependencies {
     //androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
     //androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
 
+    implementation 'androidx.benchmark:benchmark-macro-junit4:1.1.1'
+    implementation 'androidx.profileinstaller:profileinstaller:1.2.1'
+
     implementation 'com.snatik:storage:2.1.0'
     implementation 'com.github.flipagram:android-assetcopier:0.1.1'
     implementation "com.orhanobut:hawk:2.0.1"
 
-    implementation "androidx.appcompat:appcompat:1.5.1"
-    implementation "androidx.appcompat:appcompat-resources:1.5.1"
+    implementation 'androidx.appcompat:appcompat:1.5.1'
+    implementation 'androidx.appcompat:appcompat-resources:1.5.1'
 
     //implementation("io.coil-kt:coil-compose:2.2.2")
     //implementation("io.coil-kt:coil-gif:2.2.2")

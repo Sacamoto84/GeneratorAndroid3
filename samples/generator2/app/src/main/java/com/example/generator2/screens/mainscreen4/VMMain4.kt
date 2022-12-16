@@ -38,6 +38,10 @@ class VMMain4 @Inject constructor(
 
         println("global init{}")
 
+        hub.backup.readINIConfig()
+        hub.backup.readINIVolume()
+        hub.backup.readINIConstrain()
+
         //utils.context = contextActivity!!
 
         val file = contextActivity.getExternalFilesDir("") //Создать если нет папку generator2

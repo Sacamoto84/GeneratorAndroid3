@@ -1,4 +1,4 @@
-package com.example.generator2.screens.config.ui
+package com.example.generator2.screens.config
 
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -10,7 +10,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.generator2.R
 import com.example.generator2.screens.config.DefScreenConfig
-
 
 @Composable
 fun Config_Green_button_refresh(
@@ -51,4 +50,3 @@ fun Config_Green_button(
     )
 
 }
-

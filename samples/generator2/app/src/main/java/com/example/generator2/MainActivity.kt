@@ -1,5 +1,6 @@
 package com.example.generator2
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -81,10 +82,7 @@ class MainActivity : ComponentActivity() {
 
         //global.backup.saveINIVolume()
         //global.backup.saveINIConfig()
-        global.hub.backup.readINIConfig()
-        global.hub.backup.readINIVolume()
 
-    
         //        //gs://test-e538d.appspot.com/
 //        val storageRef = global.storage.reference //Коjрневая папка
 //
@@ -102,7 +100,6 @@ class MainActivity : ComponentActivity() {
 
         //saveBackupToFirebase(global)
 
-
 //        imagesRef.getFile(localFile)
 //            .addOnSuccessListener {
 //                // Local temp file has been created
@@ -111,10 +108,6 @@ class MainActivity : ComponentActivity() {
 //                // Handle any errors
 //                Toast.makeText( applicationContext, "imagesRef: Error", Toast.LENGTH_LONG ).show()
 //            }
-
-
-
-
 
         //
         //global.backup.createBackupZipFileToCache()
@@ -167,10 +160,7 @@ class MainActivity : ComponentActivity() {
 
         //Hawk.init(this).setLogInterceptor { message -> Log.i("HAWK:", message) }.build()
 
-
-
         setContent {
-
 
             val systemUiController = rememberSystemUiController()
             SideEffect {
@@ -183,9 +173,7 @@ class MainActivity : ComponentActivity() {
             //targetState   -переходит на
             //enterTransition - управляет тем, что EnterTransition выполняется, когда targetState  NavBackStackEntry на экране появляется значок .
             //exitTransition  - управляет тем, что ExitTransition  запускается, когда initialState NavBackStackEntry исчезает с экрана.
-
             Generator2Theme(darkTheme = true) {
-
                 val navController = rememberAnimatedNavController()
 
                 AnimatedNavHost(
@@ -197,28 +185,39 @@ class MainActivity : ComponentActivity() {
                     composable("home",
                         enterTransition = {fadeIn(animationSpec = tween(0)) },
                         exitTransition = {fadeOut(animationSpec = tween(0)) })
-                    { mainsreen4(navController, global) }
+                    {
+                        mainsreen4(navController, global)
+                    }
 
                     composable("script",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenScriptCommon(navController) }
+                    ) {
+
+                        ScreenScriptCommon(navController)
+                    }
 
                     composable("editor",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenEditor(navController) }
+                    ) {
+                        ScreenEditor(navController)
+                    }
 
                     composable("scriptinfo",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenScriptInfo(navController) }
+                    ) {
+                        ScreenScriptInfo(navController)
+                    }
 
                     //Экран настройки программы
                     composable("config",
                         enterTransition = { fadeIn(animationSpec = tween(0))  },
                         exitTransition  = { fadeOut(animationSpec = tween(0)) }
-                    ) { ScreenConfig(navController) }
+                    ) {
+                        ScreenConfig(navController)
+                    }
 
 
 

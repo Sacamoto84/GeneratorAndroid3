@@ -40,6 +40,12 @@ object LiveData {
         var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
         var itemlistFM: ArrayList<itemList> = ArrayList() //Создать список
 
+
+
+
+
+
+
     }
 
 

@@ -2,6 +2,7 @@ package com.example.generator2.screens.config
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -18,13 +19,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-//Стиль для строчек с информацийе
-val caption: TextStyle = TextStyle(
-    fontWeight = FontWeight.Normal,
-    fontSize = 14.sp,
-    letterSpacing = 0.4.sp,
-    fontFamily = FontFamily(Font(R.font.jetbrains))
-)
+
 
 //Сообщения по поводу метаданных бекапа
 val strMetadataError      = MutableStateFlow("")     //Текст ошибок для мета данных
@@ -40,10 +35,12 @@ class VMConfig @Inject constructor(
     var firebase : Firebas
 ) : ViewModel(){
 
+
     //var LVolume by  mutableStateOf(0.55F)
     //var RVolume by  mutableStateOf(0.65F)
 
     fun saveINIVolume() = backup.saveINIVolume()
+    fun saveINIConstrain() = backup.saveINIConstrain()
 
     fun toastSaveVolume()
     {
@@ -54,6 +51,24 @@ class VMConfig @Inject constructor(
             type = Toastic.SUCCESS,
             //isIconAnimated = true,
             customIcon = R.drawable.info3,
+            font = R.font.jetbrains,
+            customBackground = R.drawable.toast_bg,
+            textColor = Color.WHITE,
+            //customIconAnimation = androidx.appcompat.R.anim.abc_slide_out_bottom
+        ).show()
+    }
+
+
+
+    fun toastText(str : String)
+    {
+        Toastic.toastic(
+            context = context,
+            message = str,
+            duration = Toastic.LENGTH_SHORT,
+            type = Toastic.SUCCESS,
+            //isIconAnimated = true,
+            //customIcon = R.drawable.info3,
             font = R.font.jetbrains,
             customBackground = R.drawable.toast_bg,
             textColor = Color.WHITE,

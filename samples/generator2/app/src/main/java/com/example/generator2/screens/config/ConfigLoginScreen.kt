@@ -2,7 +2,6 @@ package com.example.generator2.screens.firebase
 
 import android.annotation.SuppressLint
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -14,25 +13,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.platform.LocalTextInputService
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.generator2.R
+import com.example.generator2.screens.config.DefScreenConfig
+import com.example.generator2.screens.config.DefScreenConfig.caption
+import com.example.generator2.screens.config.DefScreenConfig.textSizeGreenButton
 import com.example.generator2.screens.config.VMConfig
-import com.example.generator2.screens.config.caption
 import com.example.generator2.screens.config.readMetaBackupFromFirebase
+import com.example.generator2.screens.config.Config_Green_button
 import com.example.generator2.theme.colorLightBackground2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -40,15 +38,13 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.talhafaki.composablesweettoast.util.SweetToastUtil
 
-@OptIn(ExperimentalComposeUiApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
-fun ConfigLoginScreen(viewModel: VMConfig) {
+fun ConfigLoginScreen(vm: VMConfig) {
 
-    val uid = viewModel.firebase.auth.currentUser?.uid.toString()
-    val state by viewModel.firebase.loadingState.collectAsState()
+    val uid = vm.firebase.auth.currentUser?.uid.toString()
+    val state by vm.firebase.loadingState.collectAsState()
 
     // Equivalent of onActivityResult
     val launcher =
@@ -57,18 +53,18 @@ fun ConfigLoginScreen(viewModel: VMConfig) {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-
-                viewModel.firebase.signWithCredential(credential, readMetaBackupFromFirebase(
-                    viewModel.firebase.auth.currentUser?.uid
+                vm.firebase.signWithCredential(credential, readMetaBackupFromFirebase(
+                    vm.firebase.auth.currentUser?.uid
                 ))
-
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)
             }
         }
 
     Column(
-        Modifier.fillMaxWidth().background(colorLightBackground2)
+        Modifier
+            .fillMaxWidth()
+            .background(colorLightBackground2)
     ) {
 
         //Индикатор работы
@@ -78,18 +74,13 @@ fun ConfigLoginScreen(viewModel: VMConfig) {
 
         when (state.status) {
             LoadingState.Status.SUCCESS -> {
-                SweetToastUtil.SweetSuccess(
-                    message = "Success",
-                    duration = Toast.LENGTH_LONG, //padding = PaddingValues(top = 16.dp),
-                    contentAlignment = Alignment.BottomCenter
-                )
+                //vm.toastSuccess()
                 state.msg = ""
             }
             LoadingState.Status.FAILED  -> {
                 var s = state.msg ?: "Error"
                 s = if (s.indexOf("Error 403") != -1) "Error 403 Forbidden, please use VPN"
                 else s
-
                 Text(
                     text = s,
                     maxLines = 7,
@@ -104,21 +95,8 @@ fun ConfigLoginScreen(viewModel: VMConfig) {
             else                        -> {}
         }
 
-        Text(
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
-            textAlign = TextAlign.Left,
-            text = "uid:   $uid",
-            color = Color.LightGray,
-            style = caption
-        )
-
-        Text(
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
-            textAlign = TextAlign.Left,
-            text = "email: ${viewModel.firebase.auth.currentUser?.email}",
-            color = Color.LightGray,
-            style = caption
-        )
+        Text( modifier = Modifier.fillMaxWidth().padding(start = 8.dp), textAlign = TextAlign.Left, text = "uid:   $uid", color = Color.LightGray, style = caption )
+        Text( modifier = Modifier.fillMaxWidth().padding(start = 8.dp), textAlign = TextAlign.Left, text = "email: ${vm.firebase.auth.currentUser?.email}", color = Color.LightGray, style = caption )
 
         if (((uid != "") && (uid != "null"))) {
 
@@ -127,23 +105,22 @@ fun ConfigLoginScreen(viewModel: VMConfig) {
                 Button(
                     modifier = Modifier.width(200.dp).height(40.dp),
                     enabled = ((uid != "") && (uid != "null")),
-                    content = {
-                        Text(text = "Sign Out")
-                    },
-
+                    content = {Text(text = "Sign Out", fontSize = textSizeGreenButton) },
                     onClick = { //AuthUI.getInstance().signOut(componentActivity!!)
                         Firebase.auth.signOut()
-                        viewModel.firebase.updateUI(null)
-
+                        vm.firebase.updateUI(null)
                     },
                     colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFF4CAF50),
-                        disabledBackgroundColor = Color(0xFF262726),
+                        backgroundColor = DefScreenConfig.backgroundColorGreenButton,
+                        disabledBackgroundColor = DefScreenConfig.disabledBackgroundColorGreenButton,
                         contentColor = Color.White
                     )
                 )
-            }
 
+
+
+
+            }
 
         } else {
             //Регистрация и вход
@@ -151,147 +128,53 @@ fun ConfigLoginScreen(viewModel: VMConfig) {
 
                 //логин и пароль
                 Row() {
-
                     val focusManager = LocalFocusManager.current
-
-
-                    val focus = remember { mutableStateOf(false) }
-                    val inputService = LocalTextInputService.current
-
-                    val keyboardController = LocalSoftwareKeyboardController.current
-
+                    //Логин
                     OutlinedTextField(
                         colors = TextFieldDefaults.outlinedTextFieldColors(
-                            textColor = Color.White,
-                            focusedBorderColor = Color.LightGray,
-                            focusedLabelColor = Color.White
-                        ),
-                        modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
-                        value = viewModel.firebase.email,
-                        label = {
-                            Text(text = "Email")
-                        },
-                        onValueChange = { viewModel.firebase.email = it },
-                        keyboardOptions = KeyboardOptions(
-                            imeAction = ImeAction.Next, keyboardType = KeyboardType.Email
-                        ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Right)
-                        })
-
+                            textColor = Color.White, focusedBorderColor = Color.LightGray, focusedLabelColor = Color.White ),
+                        modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp), value = vm.firebase.email, label = { Text(text = "Email")},
+                        onValueChange = { vm.firebase.email = it }, keyboardOptions = KeyboardOptions( imeAction = ImeAction.Next, keyboardType = KeyboardType.Email ),
+                        keyboardActions = KeyboardActions(onNext = {focusManager.moveFocus(FocusDirection.Right) })
                     )
-
-                    OutlinedTextField(colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = Color.White,
-                        focusedBorderColor = Color.LightGray,
-                        focusedLabelColor = Color.White
-                    ),
-
-                        modifier = Modifier.fillMaxWidth().weight(1f)
-                            .padding(8.dp), //visualTransformation = PasswordVisualTransformation(),
-                        value = viewModel.firebase.password,
-                        label = { Text(text = "Password") },
-                        onValueChange = { viewModel.firebase.password = it },
-
+                    //Пароль
+                    OutlinedTextField(colors = TextFieldDefaults.outlinedTextFieldColors( textColor = Color.White, focusedBorderColor = Color.LightGray, focusedLabelColor = Color.White ),
+                        modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp), //visualTransformation = PasswordVisualTransformation(),
+                        value = vm.firebase.password, label = { Text(text = "Password") }, onValueChange = { vm.firebase.password = it },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                     )
-
                 }
 
                 //Кнопки входа и регистрации
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    Config_Green_button( modifier= Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
+                        onClick = { vm.firebase.signInWithEmailAndPassword( vm.firebase.email.trim(), vm.firebase.password.trim()) }, label = "Sign In" )
 
-                    Button(modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
-                        .weight(1f),
-
-                        content = {
-                            Text(
-                                text = "Sign In",
-                                color = Color.White,
-                                fontSize = 18.sp
-                            )
-                        },
-                        onClick = {
-
-                            viewModel.firebase.signInWithEmailAndPassword(
-                                viewModel.firebase.email.trim(),
-                                viewModel.firebase.password.trim()
-                            )
-
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(0xFF4CAF50),
-                            disabledBackgroundColor = Color(0xFF262726)
-                        )
-                    )
-
-                    Button(
-                        modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
-                            .weight(1f),
-                        content = {
-                            Text(
-                                text = "Register",
-                                color = Color.LightGray,
-                                fontSize = 18.sp
-                            )
-                        },
-                        onClick = {
-                            state.msg = ""
-                            viewModel.firebase.createAccount(viewModel.firebase.email.trim(), viewModel.firebase.password.trim(), state)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            backgroundColor = Color(0xFF388E3C),
-                            disabledBackgroundColor = Color(0xFF262726)
-                        )
-                    )
+                    Config_Green_button( modifier= Modifier.padding(8.dp).fillMaxWidth().height(40.dp).weight(1f),
+                        onClick = { state.msg = ""
+                            vm.firebase.createAccount(vm.firebase.email.trim(), vm.firebase.password.trim(), state)}, label = "Register" )
                 }
 
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.caption,
-                    text = "or sign in with",
-                    color = Color.White
-                )
+                Text( modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, style = MaterialTheme.typography.caption, text = "or sign in with", color = Color.White )
 
                 val context = LocalContext.current
                 val token = stringResource(R.string.default_web_client_id)
 
                 //Кнопка гугла
-                OutlinedButton(
-
-                    colors = ButtonDefaults.buttonColors(
-                        backgroundColor = Color(0xFFFFFFFF), contentColor = Color.Black
-                    ),
-
+                OutlinedButton( colors = ButtonDefaults.buttonColors( backgroundColor = Color(0xFFFFFFFF), contentColor = Color.Black ),
                     border = ButtonDefaults.outlinedBorder.copy(width = 1.dp),
-
-                    modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp), onClick = {
-                        val gso =
-                            GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                                .requestIdToken(token).requestEmail().build()
+                    modifier = Modifier.padding(8.dp).fillMaxWidth().height(40.dp),
+                    onClick = {
+                        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestIdToken(token).requestEmail().build()
                         val googleSignInClient = GoogleSignIn.getClient(context, gso)
                         launcher.launch(googleSignInClient.signInIntent)
-                    }, content = {
-                        Row(modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
+                    },
+                    content = {
+                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically,
                             content = {
-                                Icon(
-                                    tint = Color.Unspecified,
-                                    painter = painterResource(id = R.drawable.icons8_google),
-                                    contentDescription = null,
-                                )
-                                Text(
-                                    color = Color.DarkGray,
-                                    text = "Sign in with Google",
-                                    fontSize = 18.sp
-                                )
-                                Icon(
-                                    tint = Color.Transparent,
-                                    imageVector = Icons.Default.MailOutline,
-                                    contentDescription = null,
-                                )
+                                Icon( tint = Color.Unspecified, painter = painterResource(id = R.drawable.icons8_google),contentDescription = null )
+                                Text( color = Color.DarkGray, text = "Sign in with Google", fontSize = textSizeGreenButton )
+                                Icon( tint = Color.Transparent, imageVector = Icons.Default.MailOutline, contentDescription = null )
                             })
                     })
             }

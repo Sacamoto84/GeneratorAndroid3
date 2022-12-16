@@ -1,15 +1,19 @@
 package com.example.generator2.screens.config
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.background
+import android.util.Log
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -18,16 +22,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import com.example.generator2.screens.config.ui.Config_Green_button
-import com.example.generator2.screens.config.ui.Config_Green_button_refresh
+import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.firebase.ConfigLoginScreen
 import com.example.generator2.theme.colorLightBackground
 import com.example.generator2.theme.colorLightBackground2
+import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.update
 
 
-val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
+val modifierGreenButton = Modifier
+    .padding(8.dp)
+    .fillMaxWidth()
+    .height(40.dp)
 
 @OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter", "UnrememberedMutableState")
@@ -35,6 +44,10 @@ val modifierGreenButton = Modifier.padding(8.dp).fillMaxWidth().height(40.dp)
 fun ScreenConfig(
     navController: NavHostController, vm: VMConfig = hiltViewModel()
 ) {
+
+    var ref by remember {
+        mutableStateOf(0)
+    }
 
     vm.firebase.auth.uid?.let { readMetaBackupFromFirebase(it) }
 
@@ -44,9 +57,6 @@ fun ScreenConfig(
     val strMetadata by strMetadata.collectAsState()
     val strMetadataError by strMetadataError.collectAsState()
     val progressMetadata by progressMetadata.collectAsState()
-
-    val value0 by LiveData.volume0.collectAsState()
-    val value1 by LiveData.volume1.collectAsState()
 
     LaunchedEffect(key1 = true, block = {
         while (true) {
@@ -60,78 +70,25 @@ fun ScreenConfig(
         }
     })
 
+    val focusManager = LocalFocusManager.current
+
     Scaffold(backgroundColor = colorLightBackground) {
 
         Column(
-            Modifier.fillMaxSize().background(colorLightBackground2)
+            Modifier
+                .fillMaxSize()
+                .background(colorLightBackground2)
                 .verticalScroll(rememberScrollState())
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
         ) {
 
-
             Divider()
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-
-                OutlinedTextField(
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = Color.White,
-                        focusedBorderColor = Color.LightGray,
-                        focusedLabelColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
-                    value = value0.toString(),
-                    label = {
-                        Text(text = "Volume CH0 0..1", fontSize = 16.sp)
-                    },
-                    onValueChange = {
-                        LiveData.volume0.value = it.toFloat()
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Text
-                    ),
-                    textStyle = TextStyle(fontSize = 18.sp)
-                )
-
-                OutlinedTextField(
-                    colors = TextFieldDefaults.outlinedTextFieldColors(
-                        textColor = Color.White,
-                        focusedBorderColor = Color.LightGray,
-                        focusedLabelColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth().weight(1f).padding(8.dp),
-                    value = value1.toString(),
-                    label = {
-                        Text(text = "Volume CH1 0..1", fontSize = 16.sp)
-                    },
-                    onValueChange = {
-                        LiveData.volume1.value = it.toFloat()
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done, keyboardType = KeyboardType.Text
-                    ),
-                    textStyle = TextStyle(fontSize = 18.sp)
-                )
-
-            }
-
-            Button(modifier = Modifier.padding(start = 8.dp, bottom = 2.dp, end = 8.dp)
-                .fillMaxWidth(1f),
-
-                colors = ButtonDefaults.buttonColors(
-                    backgroundColor = Color(0xFF4CAF50), disabledBackgroundColor = Color(0xFF262726)
-                ),
-
-                onClick = {
-                    vm.toastSaveVolume() //Сохранить громкоcть
-                    vm.saveINIVolume()
-                }) {
-                Text("Save Volume", color = Color.White)
-            }
-
-
-
-
-
+            Config_header("Version 2.0.3")
+            Divider()
 
 
 
@@ -142,7 +99,9 @@ fun ScreenConfig(
             Config_header("BackUp")
 
             Text(
-                modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp),
                 textAlign = TextAlign.Left,
                 style = caption,
                 text = backupMessage,
@@ -156,15 +115,14 @@ fun ScreenConfig(
                         val f = vm.backup.getMetadataBackup()
                         backupMessage = if (f.size == -1L) "backup.zip not found"
                         else "Time file creation : ${f.str}\nsize: ${f.size} byte"
-                    }, label = "Create Local Backup"
+                    }, label = "Create Local"
                 )
                 Config_Green_button(
                     modifierGreenButton.weight(1f),
                     onClick = { vm.backup.unZipFileFromCache() },
-                    label = "UnZip Local Backup"
+                    label = "UnZip Local"
                 )
             }
-
 
             //При авторизации, есть токен
             if ((vm.firebase.uid != "") && (vm.firebase.uid != "null")) {
@@ -179,7 +137,9 @@ fun ScreenConfig(
                         text = strMetadataError,
                         maxLines = 7,
                         color = Color.Red,
-                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
                         textAlign = TextAlign.Left,
                         style = caption,
                     ) //Информация о файле в облаках
@@ -189,7 +149,9 @@ fun ScreenConfig(
                         text = strMetadata,
                         maxLines = 7,
                         color = Color.LightGray,
-                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
                         textAlign = TextAlign.Left,
                         style = caption,
                     )
@@ -198,14 +160,19 @@ fun ScreenConfig(
                         text = " \n \n ",
                         maxLines = 7,
                         color = Color.LightGray,
-                        modifier = Modifier.fillMaxWidth().padding(start = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 8.dp),
                         textAlign = TextAlign.Left,
                         style = caption,
                     )
                 }
 
                 Row() {
-                    Column(Modifier.fillMaxWidth().weight(1f)) {
+                    Column(
+                        Modifier
+                            .fillMaxWidth()
+                            .weight(1f)) {
                         Config_Green_button(
                             modifierGreenButton, onClick = {
                                 vm.firebase.auth.uid?.let { saveBackupToFirebase(it, vm.backup) }
@@ -222,11 +189,57 @@ fun ScreenConfig(
             } ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
             Divider()
             Config_header("Authorization") //Авторизация
-            ConfigLoginScreen(viewModel = vm)
+            ConfigLoginScreen(vm = vm)
             Divider()
             Config_header("Version 2.0.3")
             Divider()
+
+            Divider()
+
+            //CR min max
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                val minCR = LiveConstrain.minCR
+                editConfig(Modifier.weight(1f), "min CR", value = minCR, min = 50f, max = 10000f, toInt = true,
+                    onDone = {
+                        LiveConstrain.minCR.value = it
+                        vm.toastText("min CR Saved") //Сохранить громкоcть
+                        vm.saveINIConstrain()})
+
+                val maxCR = LiveConstrain.maxCR
+                editConfig(Modifier.weight(1f), "max CR", value = maxCR, min = 50f, max = 10000f, toInt = true,
+                    onDone = {
+                        LiveConstrain.maxCR.value = it
+                        vm.toastText("max CR Saved") //Сохранить громкоcть
+                        vm.saveINIConstrain()})
+
+
+
+            }
+
+
+
+            Row(modifier = Modifier.fillMaxWidth()) {
+
+                val value0 = LiveData.volume0.collectAsState()
+                editConfig(Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
+                    onDone = {LiveData.volume0.value = it
+                        vm.toastSaveVolume() //Сохранить громкоcть
+                        vm.saveINIVolume()} )
+
+                val value1 = LiveData.volume1.collectAsState()
+                editConfig(Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
+                    onDone = {LiveData.volume1.value = it
+                        vm.toastSaveVolume() //Сохранить громкоcть
+                        vm.saveINIVolume()} )
+
+            }
+
+
+
             Spacer(modifier = Modifier.height(400.dp))
+
+
 
 
         }

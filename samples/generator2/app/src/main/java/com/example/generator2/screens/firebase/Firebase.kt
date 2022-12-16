@@ -58,10 +58,10 @@ class Firebas(val context: Context) {
         auth.currentUser!!.reload().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 updateUI(auth.currentUser)
-                Toast.makeText(context, "Reload successful!", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Reload successful!", Toast.LENGTH_SHORT).show()
             } else {
                 Log.e("Firebase", "reload", task.exception)
-                Toast.makeText(context, "Failed to reload user.", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(context, "Failed to reload user.", Toast.LENGTH_SHORT).show()
             }
         }
     }
