@@ -3,12 +3,11 @@ package com.example.generator2.screens.mainscreen4.ui
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.BottomAppBar
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -107,8 +106,15 @@ fun M4BottomAppBarComponent(
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
 
+        Button(onClick = { navController.navigate("script") }) {
 
-        IconButton(onClick = { navController.navigate("editor") }) {
+            Text("Click")
+        }
+
+        IconButton(modifier = Modifier.testTag("edit"),
+
+
+            onClick = { navController.navigate("editor") }) {
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
         }
 
