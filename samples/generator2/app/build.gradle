@@ -72,14 +72,21 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
+
         debug {
             signingConfig signingConfigs.debug
         }
+
         benchmark {
+            initWith buildTypes.release //
             signingConfig signingConfigs.debug
             matchingFallbacks = ['release']
             debuggable false
+            //proguardFiles "benckmark-rules.pro"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'benchmark-rules.pro'
+
         }
+
     }
 
     compileOptions {
@@ -181,13 +188,13 @@ dependencies {
     //accompanist
     implementation "com.google.accompanist:accompanist-navigation-animation:0.28.0"
     implementation "com.google.accompanist:accompanist-drawablepainter:0.28.0"
-    implementation "com.google.accompanist:accompanist-webview:0.28.0"
+    //implementation "com.google.accompanist:accompanist-webview:0.28.0"
     implementation "com.google.accompanist:accompanist-pager:0.28.0"
     implementation "com.google.accompanist:accompanist-systemuicontroller:0.28.0"
 ///////////////////
     //lottie анимация
-    implementation 'com.airbnb.android:lottie:5.2.0'
-    implementation 'com.airbnb.android:lottie-compose:5.2.0'
+    //implementation 'com.airbnb.android:lottie:5.2.0'
+    //implementation 'com.airbnb.android:lottie-compose:5.2.0'
 ///////////////////
     //Hilt
     implementation "com.google.dagger:hilt-android:2.44"

@@ -128,13 +128,7 @@ class VMMain4 @Inject constructor(
 
     }
 
-    /**
-     * Сохранить текущий скрипт в файл
-     */
-    fun saveListToScript(name: String) {
-        println("global saveListToScript()")
-        hub.utils.saveListToScriptFile( hub.script.list, name)
-    }
+
     
     //    viewModelScope . launch (Dispatchers.Default) {
     //        _viewState.update { it.copy(title = "Новый заголовок") }

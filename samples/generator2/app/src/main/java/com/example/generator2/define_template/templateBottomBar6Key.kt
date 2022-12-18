@@ -14,10 +14,6 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.rememberLottieAnimatable
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.generator2.R
 import com.example.generator2.theme.colorDarkBackground
 
@@ -124,26 +120,26 @@ fun TemplateButtonBottomBarAndLottie(
 
 
     var nonce by remember { mutableStateOf(0) }
-    val animatable = rememberLottieAnimatable()
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resId))
+  //  val animatable = rememberLottieAnimatable()
+  //  val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resId))
 
     if (autostart) {
         nonce = 100
     }
 
-    LaunchedEffect(composition, nonce) {
-        composition ?: return@LaunchedEffect
-
-        if (nonce > 0) animatable.animate(
-            composition,
-            continueFromPreviousAnimate = false,
-            iterations = if (iterationsInfitity) Int.MAX_VALUE else 1,
-
-
-
-        )
-
-    }
+//    LaunchedEffect(composition, nonce) {
+//        composition ?: return@LaunchedEffect
+//
+//        if (nonce > 0) animatable.animate(
+//            composition,
+//            continueFromPreviousAnimate = false,
+//            iterations = if (iterationsInfitity) Int.MAX_VALUE else 1,
+//
+//
+//
+//        )
+//
+//    }
 
     OutlinedButton(
         onClick = {
@@ -162,7 +158,7 @@ fun TemplateButtonBottomBarAndLottie(
         ) {
 
 
-            LottieAnimation(composition, { animatable.progress }, modifier = Modifier.padding(start = paddingStart).size(size))
+            //LottieAnimation(composition, { animatable.progress }, modifier = Modifier.padding(start = paddingStart).size(size))
 
             Text(
                 str,

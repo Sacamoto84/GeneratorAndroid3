@@ -102,14 +102,12 @@ fun M4BottomAppBarComponent(
 
         Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(onClick = { navController.navigate("script") }) {
+        IconButton(modifier = Modifier.testTag("buttonM4GoToScript"),
+            onClick = { navController.navigate("script") }) {
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
 
-        Button(onClick = { navController.navigate("script") }) {
 
-            Text("Click")
-        }
 
         IconButton(modifier = Modifier.testTag("edit"),
 

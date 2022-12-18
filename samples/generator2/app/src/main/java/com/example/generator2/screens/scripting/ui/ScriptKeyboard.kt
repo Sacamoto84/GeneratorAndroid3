@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.scripting.VMScripting
 import com.example.generator2.vm.Script
 import com.example.generator2.theme.NoRippleTheme
 import com.example.generator2.theme.colorDarkBackground
@@ -129,7 +130,7 @@ class ScriptKeyboard(private val s: Script) {
     }
 
     @Composable
-    fun Core(global : VMMain4) {
+    fun Core() {
         println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc} list.lastIndex:${list.lastIndex}" )
         if (selectIndex <  0 ) selectIndex = 0
         if (s.pc < 0 ) s.pc = 0
@@ -151,9 +152,9 @@ class ScriptKeyboard(private val s: Script) {
             RouteKeyboardEnum.FMValue    -> ScreenFMValue(route.value.argument)
             RouteKeyboardEnum.Comparison -> ScreenComparison(route.value.argument)
             RouteKeyboardEnum.IFValue    -> ScreenIFValue(route.value.argument)
-            RouteKeyboardEnum.MODCR      -> ScreenMod(route.value.argument, "CR", global)
-            RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM", global)
-            RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM", global)
+            RouteKeyboardEnum.MODCR      -> ScreenMod(route.value.argument, "CR")
+            RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM")
+            RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM")
         }
 
 
@@ -182,7 +183,7 @@ class ScriptKeyboard(private val s: Script) {
 
 
     @Composable
-    fun ScreenMod(arg: Int, type: String = "CR", global : VMMain4) {
+    fun ScreenMod(arg: Int, type: String = "CR") {
 
         //val global : Global = viewModel()
 

@@ -17,9 +17,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.generator2.screens.ui.ScriptItem
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.scripting.VMScripting
 
 @Composable
-fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: VMMain4) {
+fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: VMScripting) {
 
     println("ScriptConsole selectLine:$selectLine" )
 
@@ -37,19 +38,17 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
-    Box(
-        Modifier.fillMaxSize().background(Color(0xFF090909)).then(modifier),
-        contentAlignment = Alignment.CenterStart
-    ) {
+    Box( Modifier.fillMaxSize().background(Color(0xFF090909)).then(modifier), contentAlignment = Alignment.CenterStart )
+    {
+
         LazyColumn(
             modifier = Modifier.fillMaxSize(), state = lazyListState
         ) {
-            itemsIndexed(
-                l,
-            ) { index, item ->
-                Row( //Modifier.background(Color.Magenta)
-                    horizontalArrangement = Arrangement.Start
-                ) {
+
+            itemsIndexed(l)
+            { index, item ->
+                Row( horizontalArrangement = Arrangement.Start )
+                {
                     Box(
                         modifier = Modifier.selectable(
                             selected = indexSelect.value == index,
@@ -63,6 +62,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                     }
                 }
             }
+
         }
     }
 

@@ -13,11 +13,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.scripting.VMScripting
 
 
 //Блок регистров
 @Composable
-fun RegisterViewDraw(modifier: Modifier = Modifier, global: VMMain4) {
+fun RegisterViewDraw(modifier: Modifier = Modifier, global: VMScripting) {
     Box(
         modifier = Modifier.padding(start = 6.dp, end = 6.dp)
             .fillMaxWidth() //.background(Color.Red)
@@ -45,7 +46,7 @@ fun RegisterViewDraw(modifier: Modifier = Modifier, global: VMMain4) {
 
 //Ячейка регистра
 @Composable
-private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: VMMain4) {
+private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: VMScripting) {
 
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()

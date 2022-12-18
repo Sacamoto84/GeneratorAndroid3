@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.generator2.*
 import com.example.generator2.R
 import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
@@ -25,308 +26,107 @@ import com.example.generator2.screens.scripting.dialog.DialogSaveAs
 import com.example.generator2.screens.scripting.ui.ScriptConsole
 import com.example.generator2.vm.StateCommandScript
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.scripting.VMScripting
 import java.util.*
 
 val refresh = mutableStateOf(0)
 
-private val files : MutableList<String> = mutableListOf()
+private val files: MutableList<String> = mutableListOf()
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ScriptTable(global: VMMain4) {
-
-
-    val openDialogSaveAs = remember { mutableStateOf(false) }
-    val openDialogDeleteRename = remember { mutableStateOf(false) }
-
-    //val context = LocalContext.current
+fun ScriptTable(vm: VMScripting) {
 
     var filename by remember { mutableStateOf("") }  //Имя выбранного файла в списке
 
-    //val files =  mutableStateListOf<String>()
-
-    //val composition1 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.delete))
-
-    //var nonce by remember { mutableStateOf(1) }
-    //val animatable = rememberLottieAnimatable()
-
-
-    //    LaunchedEffect(composition1, nonce) {
-    //        composition1 ?: return@LaunchedEffect
-    //        animatable.animate(
-    //            composition1,
-    //            continueFromPreviousAnimate = false,
-    //        )
-    //    }
-
-    //    LottieAnimation(composition1,
-    //        { animatable.progress },
-    //        modifier = Modifier.clickable { nonce++ })
-
-
-
-
     Box(modifier = Modifier.fillMaxSize(1f)) {
-          Column() {
-              Row(
-                modifier = Modifier.fillMaxSize().weight(1f)
-            ) {
-                Box(
-                    modifier = Modifier.fillMaxSize().weight(1f),
-                    contentAlignment = Alignment.BottomEnd
+        Column() {
+            Row( modifier = Modifier.fillMaxSize().weight(1f) )
+            {
+                Box( modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.BottomEnd
                 ) {
+                    if (vm.hub.script.pc_ex > vm.hub.script.list.lastIndex) vm.hub.script.pc_ex =
+                        vm.hub.script.list.lastIndex
 
-                    if (global.hub.script.pc_ex > global.hub.script.list.lastIndex) global.hub.script.pc_ex =
-                        global.hub.script.list.lastIndex
-
-                    ScriptConsole(global.hub.script.list, global.hub.script.pc_ex, global = global)
-
-                    Text(text = "PC:${global.hub.script.pc_ex}", color = Color.Red)
+                    ScriptConsole(vm.hub.script.list, vm.hub.script.pc_ex, global = vm)
+                    Text(text = "PC:${vm.hub.script.pc_ex}", color = Color.Red)
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxHeight().width(160.dp).background(Color.LightGray),
-                    contentAlignment = Alignment.TopCenter
-                ) {
+                    modifier = Modifier.fillMaxHeight().width(160.dp).background(Color.LightGray), contentAlignment = Alignment.TopCenter )
+                {
 
                     Column(
-                        modifier = Modifier.fillMaxHeight().background(Color.DarkGray),
-                        verticalArrangement = Arrangement.SpaceEvenly
-                    ) {
+                        modifier = Modifier.fillMaxHeight().background(Color.DarkGray), verticalArrangement = Arrangement.SpaceEvenly )
+                    {
 
-                        if (global.hub.script.state != StateCommandScript.ISEDITTING) {
+                        if (vm.hub.script.state != StateCommandScript.ISEDITTING) {
 
                             //Кнопка New
-                            TemplateButtonBottomBar(str = "Новый", onClick = {
-
-                                global.hub.script.command(StateCommandScript.STOP)
-                                global.hub.script.list.clear()
-                                global.hub.script.list.add("New")
-                                global.hub.script.list.add("?")
-                                global.hub.script.list.add("END")
-
-                                global.hub.script.command(StateCommandScript.EDIT)
-
-                            })
-
-                            TemplateButtonBottomBarAndLottie(
-                                str = "Изменить", onClick = {
-                                    global.hub.script.command(StateCommandScript.EDIT)
-                                }, resId = R.raw.paper_notebook_writing_animation, autostart = false
-                            ) //
+                            TemplateButtonBottomBar(str = "New",   onClick = { vm.bNewClick() })
+                            TemplateButtonBottomBar( str = "Edit", onClick = { vm.bEditClick() } )
 
                             // Создать список названий файлов из папки /Script
-                            if (global.hub.script.state == StateCommandScript.ISTOPPING) {
+                            if (vm.hub.script.state == StateCommandScript.ISTOPPING) {
                                 println("Читаем файлы")
                                 files.clear()
-                                files.addAll(global.hub.utils.filesInDirToList(
-                                    "/Script"
-                                ).map { it.dropLast(3) }) //
+                                files.addAll(vm.hub.utils.filesInDirToList( "/Script" ).map { it.dropLast(3) }) //
                             }
 
                             //Отображение списка названия скриптов
                             Column(
-                                Modifier.fillMaxSize().weight(1f).padding(4.dp)
-                                    .background(Color(0x8B1D1C1C)).border(1.dp, Color.DarkGray)
-                                    .verticalScroll(rememberScrollState())
+                                Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C)).border(1.dp, Color.DarkGray).verticalScroll(rememberScrollState())
                             ) {
-
                                 Spacer(modifier = Modifier.height(4.dp))
-
                                 for (index in files.indices) {
                                     Text(
-                                        text = files[index],
-                                        color = Color.DarkGray,
-                                        modifier = Modifier.fillMaxWidth().height(32.dp)
-                                            .padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(
-                                                RoundedCornerShape(8.dp)
-                                            ).background(Color.LightGray)
-                                            .combinedClickable(onClick = {
-                                                global.hub.script.command(StateCommandScript.STOP)
-                                                val l =
-                                                    global.hub.utils.readScriptFileToList(files[index])
-                                                global.hub.script.list.clear()
-                                                global.hub.script.list.addAll(l)
+                                        text = files[index], color = Color.DarkGray,
+                                        modifier = Modifier.fillMaxWidth().height(32.dp).padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(RoundedCornerShape(8.dp)).background(Color.LightGray)
+                                            .combinedClickable(
+                                                onClick = {
+
+                                                vm.hub.script.command(StateCommandScript.STOP)
+                                                val l = vm.hub.utils.readScriptFileToList(files[index])
+                                                vm.hub.script.list.clear()
+                                                vm.hub.script.list.addAll(l)
+
                                             }, onLongClick = {
-                                                openDialogDeleteRename.value = true
+
+                                                vm.openDialogDeleteRename.value = true
                                                 filename = files[index]
-                                            }).offset(0.dp, (0).dp),
-                                        fontFamily = FontFamily(Font(R.font.jetbrains)),
-                                        fontWeight = FontWeight.Bold,
-                                        textAlign = TextAlign.Center,
-                                        fontSize = 18.sp
+
+                                            }).offset(0.dp, (0).dp), fontFamily = FontFamily(Font(R.font.jetbrains)), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, fontSize = 18.sp
                                     )
                                 }
-
                             } //
 
                             //Текущее состояние
-                            Text(
-                                text = global.hub.script.stateToString(),
-                                modifier = Modifier.fillMaxWidth(),
-                                textAlign = TextAlign.Center,
-                                fontSize = 14.sp,
-                                color = Color.LightGray
-                            )
-
+                            Text( text = vm.hub.script.stateToString(), modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center, fontSize = 14.sp, color = Color.LightGray )
                             //Консоль Логов
                             ConsoleLogDraw(Modifier.weight(0.4f))
-
-
                         }
 
-                        if (global.hub.script.state == StateCommandScript.ISEDITTING) {
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp),
-                                str = "Назад",
-                                onClick = { global.hub.script.command(StateCommandScript.STOP) },
-                                resId = R.raw.back
-                            )
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp),
-                                str = "Save",
-                                onClick = {
-                                    if (global.hub.script.list[0] == "New") openDialogSaveAs.value =
-                                        true
-                                    else {
-                                        global.hub.utils.saveListToScriptFile(
-                                            global.hub.script.list, global.hub.script.list[0]
-                                        )
-                                        //MToast(contex = global.contextActivity!!, "Сохранено")
-                                    }
-                                },
-
-                                resId = R.raw.lf30_editor_loddotda,
-                                iterationsInfitity = true,
-                                autostart = true,
-                                size = 26.dp,
-                                paddingStart = 5.dp,
-                                paddingStartText = 12.dp
-
-                            )
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp),
-                                str = "Save As",
-                                onClick = {
-                                    openDialogSaveAs.value = true
-                                },
-
-                                resId = R.raw.lf30_editor_loddotda,
-                                iterationsInfitity = false,
-                                size = 26.dp,
-                                paddingStart = 5.dp,
-                                paddingStartText = 12.dp
-                            )
-
-                            TemplateButtonBottomBar(
-                                modifier = Modifier.height(50.dp),
-                                str = "Add",
-                                onClick = {
-                                    global.hub.script.list.add(global.hub.script.pc + 1, "?")
-                                    global.hub.script.pc_ex = global.hub.script.pc
-                                })
-
-                            TemplateButtonBottomBarAndLottie(
-
-                                modifier = Modifier.height(50.dp),
-
-                                str = "Add END",
-                                onClick = {
-                                    global.hub.script.list.add(global.hub.script.pc + 1, "END")
-                                    global.hub.script.pc_ex = global.hub.script.pc
-                                },
-
-                                resId = R.raw.add2,
-                                iterationsInfitity = false,
-                                size = 50.dp,
-                                paddingStart = 5.dp,
-                                paddingStartText = 12.dp
-
-                            )
-
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp), str = "Delete",
-                                onClick = {
-
-                                    if (global.hub.script.list.size > 1) {
-
-                                        global.hub.script.list.removeAt(global.hub.script.pc)
-
-                                        if (global.hub.script.pc > global.hub.script.list.lastIndex) {
-                                            global.hub.script.pc = global.hub.script.list.lastIndex
-                                        }
-
-                                        global.hub.script.pc_ex = global.hub.script.pc
-                                    }
-
-                                },
-                                resId = R.raw.delete, size = 50.dp,
-                            )
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp), str = "Up",
-                                onClick = {
-
-                                    if (global.hub.script.pc > 1) {
-                                        Collections.swap(
-                                            global.hub.script.list,
-                                            global.hub.script.pc - 1,
-                                            global.hub.script.pc
-                                        )
-                                        global.hub.script.pc--
-                                    }
-
-                                    global.hub.script.pc_ex = global.hub.script.pc
-                                },
-
-                                resId = R.raw.up,
-                                size = 50.dp,
-
-                                )
-
-                            TemplateButtonBottomBarAndLottie(
-                                modifier = Modifier.height(50.dp), str = "Down",
-                                onClick = {
-                                    if ((global.hub.script.pc > 0) && (global.hub.script.pc < global.hub.script.list.lastIndex)) {
-                                        Collections.swap(
-                                            global.hub.script.list,
-                                            global.hub.script.pc + 1,
-                                            global.hub.script.pc
-                                        )
-                                        global.hub.script.pc++
-                                    }
-                                    global.hub.script.pc_ex = global.hub.script.pc
-                                },
-                                resId = R.raw.down,
-                                size = 50.dp,
-                            )
-
-
-                            //TemplateButtonBottomBar(str = StateToString())
-
+                        if (vm.hub.script.state == StateCommandScript.ISEDITTING) {
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Back",    onClick = { vm.hub.script.command(StateCommandScript.STOP) })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Save",    onClick = { vm.bSaveClick() })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Save As", onClick = { vm.openDialogSaveAs.value = true })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Add",     onClick = { vm.bAddClick() })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Add END", onClick = { vm.bAddEndClick() })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Delete",  onClick = { vm.bDeleteClick() })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Up",      onClick = { vm.bUpClick() })
+                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Down",    onClick = { vm.bDownClick() })
                         }
-
-
                     }
                 }
             }
 
-            if (openDialogSaveAs.value) DialogSaveAs(openDialogSaveAs, global)
+            if (vm.openDialogSaveAs.value)       DialogSaveAs(vm)
+            if (vm.openDialogDeleteRename.value) DialogDeleteRename( vm.openDialogDeleteRename, filename, vm)
 
-            if (openDialogDeleteRename.value) DialogDeleteRename(
-                openDialogDeleteRename,
-                filename,
-                global
-            )
-
-            if (global.hub.script.state == StateCommandScript.ISEDITTING) {
+            if (vm.hub.script.state == StateCommandScript.ISEDITTING) {
                 Column(
                 ) {
-                    global.hub.keyboard.Core(global)
+                    vm.hub.keyboard.Core()
                 }
             }
         }

@@ -32,23 +32,28 @@ import com.example.generator2.R
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
 import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.scripting.VMScripting
+import com.example.generator2.theme.colorLightBackground2
 import kotlinx.coroutines.delay
 import libs.MToast
 
+private val Corner = 8.dp
+
 @Composable
-fun DialogSaveAs(openDialog : MutableState<Boolean>, global: VMMain4) {
+fun DialogSaveAs(vm: VMScripting) {
 
     val context = LocalContext.current
     var value by remember { mutableStateOf("")}
     val focusRequester = remember { FocusRequester() }
 
-    if (openDialog.value) Dialog(onDismissRequest = { openDialog.value = false }) {
+    if (vm.openDialogSaveAs.value) Dialog(onDismissRequest = { vm.openDialogSaveAs.value = false }) {
 
         Card(
-            Modifier.height(400.dp).width(220.dp), elevation = 8.dp, border = BorderStroke(
-                1.dp, Color.Gray
-            ), shape = RoundedCornerShape(36.dp), backgroundColor = colorDarkBackground
-        ) {
+            Modifier
+                .height(400.dp)
+                .width(220.dp), elevation = 8.dp, border = BorderStroke( 1.dp, Color.Gray ), shape = RoundedCornerShape(Corner), backgroundColor = colorLightBackground2
+        )
+        {
 
             LaunchedEffect(Unit) {
                 delay(500)
@@ -56,72 +61,56 @@ fun DialogSaveAs(openDialog : MutableState<Boolean>, global: VMMain4) {
             }
 
             Column() {
+
                 Text(
-                    text = "Сохранить как",
-                    modifier = Modifier.fillMaxWidth()
-                        .padding(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 8.dp)
-                        .clip(RoundedCornerShape(36.dp)).background(Color.DarkGray),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp,
-                    fontFamily = FontFamily(Font(R.font.jetbrains)),
-                    color = Color.LightGray
+                    text = "Save As",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
+                        //.clip(RoundedCornerShape(Corner)).background(Color.DarkGray)
+                    ,
+                    textAlign = TextAlign.Center, fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.jetbrains)), color = Color.LightGray
                 )
 
-                val files = global.hub.utils.filesInDirToList("/Script")
+                OutlinedTextField(
+                    value = value, onValueChange = { value = it },
+                    modifier = Modifier
+                        .padding(start = 8.dp, end = 8.dp, bottom = 8.dp)
+                        .focusRequester(focusRequester),
+                    colors = TextFieldDefaults.textFieldColors( textColor = Color.LightGray, leadingIconColor = Color.LightGray,
+                        backgroundColor = Color.Black, focusedIndicatorColor = Color.Transparent ),
+                    placeholder = { Text(text = "File Name", color = Color.Gray) }, singleLine = true, shape = RoundedCornerShape(Corner),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { vm.bDialogSaveAsDone( value ) }),
+                    textStyle = TextStyle( fontSize = 18.sp, fontFamily = FontFamily(Font(R.font.jetbrains))))
+
+                val files = vm.hub.utils.filesInDirToList("/Script")
 
                 Column(
-                    Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C))
-                        .verticalScroll(rememberScrollState())
-                ) {
-
+                    Modifier
+                        .fillMaxSize()
+                        .weight(1f)
+                        //.padding(4.dp)
+                        .background(Color(0x8B1D1C1C))
+                        //.clip(RoundedCornerShape(8.dp))
+                        .verticalScroll(rememberScrollState()))
+                {
                     Spacer(modifier = Modifier.height(4.dp))
-
                     for (index in files.indices) {
                         Text(
-                            text = " " + files[index],
-                            color = Color.DarkGray,
-                            modifier = Modifier.fillMaxWidth()
-                                .padding(start = 8.dp, top = 2.dp, end = 8.dp).clip(
-                                    RoundedCornerShape(8.dp)
-                                )
-                                .background( Color.LightGray ),
-                            fontFamily = FontFamily(Font(R.font.jetbrains)),
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
+                            text = " " + files[index], color = Color.DarkGray,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 8.dp, top = 2.dp, end = 8.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color.LightGray),
+                            fontFamily = FontFamily(Font(R.font.jetbrains)), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center )
                     }
                 }
 
-                Spacer(modifier = Modifier.height(8.dp))
+                //Spacer(modifier = Modifier.height(8.dp))
 
-                OutlinedTextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    modifier = Modifier.height(72.dp)
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
-                        .focusRequester(focusRequester),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.LightGray,
-                        leadingIconColor = Color.LightGray,
-                        backgroundColor = colorLightBackground,
-                        focusedIndicatorColor = Color.Transparent
 
-                    ),
-                    placeholder = { Text(text = "Имя файла", color = Color.Gray) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(36.dp),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-                        global.hub.script.list[0] = value
-                        global.saveListToScript(value)
-                        openDialog.value = false
-                        MToast(context, "Сохранено")
-                    }),
-                    textStyle = TextStyle(
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.jetbrains)),
-                    ),
-                    )
             }
         }
     }

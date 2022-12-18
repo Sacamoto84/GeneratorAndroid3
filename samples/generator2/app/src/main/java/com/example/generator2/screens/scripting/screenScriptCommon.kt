@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,14 +20,14 @@ import com.example.generator2.theme.colorLightBackground
 
 //Основной экран для скриптов
 @Composable
-fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltViewModel()) {
+fun ScreenScriptCommon(navController: NavHostController, global: VMScripting = hiltViewModel()) {
     Column( //Modifier
         //  .recomposeHighlighter()
         //.background(Color.Cyan)
     ) {
 
         Box(Modifier.weight(1f)) {
-            ScriptTable(global = global)
+            ScriptTable(vm = global)
         }
 
         //Блок регистров
@@ -44,7 +45,8 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
 
 
             //Кнопка назад
-            IconButton(onClick = { navController.popBackStack() }) {
+            IconButton( modifier = Modifier.testTag("buttonM4ScriptGoBack"),
+                onClick = { navController.popBackStack() }) {
                 Icon(painter = painterResource(R.drawable.back4), contentDescription = null)
             }
 
@@ -54,7 +56,6 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
 
                 //Пауза
                 IconButton(onClick = {
-
                     if (global.hub.script.state != StateCommandScript.ISPAUSE) global.hub.script.command(
                         StateCommandScript.PAUSE
                     )
@@ -62,9 +63,7 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
                         global.hub.script.state = StateCommandScript.ISRUNNING
                         global.hub.script.end = false
                     }
-
                 }) {
-
                     if (global.hub.script.state != StateCommandScript.ISPAUSE)
                         Icon(
                         painter = painterResource(
@@ -77,7 +76,6 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
                                 R.drawable.play
                             ), contentDescription = null
                         )
-
                 }
             } else {
                 //Старт
@@ -87,7 +85,6 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
                     Icon(painter = painterResource(R.drawable.play), contentDescription = null)
                 }
             }
-
 
             Spacer(modifier = Modifier.weight(0.1f))
 
@@ -99,11 +96,9 @@ fun ScreenScriptCommon(navController: NavHostController, global: VMMain4 = hiltV
             }
 
             Spacer(modifier = Modifier.weight(1f))
-
             IconButton(onClick = { navController.navigate("scriptinfo") }) {
                 Icon(painter = painterResource(R.drawable.info4), contentDescription = null)
             }
-
 
         }
 
