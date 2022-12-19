@@ -16,6 +16,8 @@ data class metadataBackup(var size: Long, var datetime: Date, var str: String)
 
 class Backup(val context: Context) {
 
+    val json = Json(context)
+
     //Получить путь до Файла Бекап
     fun getPathToBackup(): String = context.externalCacheDir.toString() + "/backup.zip"
 
@@ -67,29 +69,8 @@ class Backup(val context: Context) {
     }
 
 /////////////////////////
-//    //Адресс файла текущей конфигурации
-//    val iniCurrentConfig = context.getExternalFilesDir("/Config").toString() + "/CurrentConfig.ini"
-//    val iniCurrentVolume = context.getExternalFilesDir("/Config").toString() + "/Volume.ini"
-//    val iniCurrentConstrain = context.getExternalFilesDir("/Config").toString() + "/Constrain.ini"
-/////////////////////////
-//    val iniVolume = Ini()
-//    fun readINIVolume() {
-//        if (!File(iniCurrentVolume).exists())
-//        {
-//            saveINIVolume()
-//            return
-//        }
-//        iniVolume.load(FileInputStream(iniCurrentVolume))
-//        val volume0 = iniVolume.getValue("current", "volume0")?.toString()
-//        if (volume0 != null) { LiveData.volume0.update { volume0.toFloat() } }
-//        val volume1 = iniVolume.getValue("current", "volume1")?.toString()
-//        if (volume1 != null) { LiveData.volume1.update { volume1.toFloat() } }
-//    }
-//    fun saveINIVolume() {
-//        iniVolume.putValue("current", "volume0", LiveData.volume0.value.toString())
-//        iniVolume.putValue("current", "volume1", LiveData.volume1.value.toString())
-//        iniVolume.store(FileOutputStream(iniCurrentVolume),"some comments at the top of the file");
-//    }
+
+
 ///////////////////////////////
 //    val iniConfig = Ini()
 //    fun readINIConfig() {

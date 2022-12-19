@@ -159,7 +159,8 @@ dependencies {
     implementation 'com.github.SmartToolFactory:Compose-Extended-Gestures:1.0.0'
 
     //implementation 'com.github.seniorjoinu:reliable-udp:0.3.1' //Udp
-    //implementation 'com.google.code.gson:gson:2.9.0'
+
+    implementation 'com.google.code.gson:gson:2.10'
 
     //Цвета
     //https://materialui.co/colors/

@@ -3,16 +3,21 @@ package com.example.generator2.screens.mainscreen4
 import CardCarrier
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.generator2.screens.mainscreen4.ui.DrawerContentBottom
@@ -20,9 +25,8 @@ import com.example.generator2.screens.mainscreen4.ui.M4BottomAppBarComponent
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.vm.LiveData
 import kotlinx.coroutines.*
-import libs.modifier.recomposeHighlighter
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalAnimationApi::class)
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun mainsreen4(
@@ -67,53 +71,67 @@ fun mainsreen4(
 
             val mono by LiveData.mono.collectAsState()
 
+
+
+            val animateHeight by animateDpAsState(
+                    targetValue = if (!mono) 314.dp  else 0.dp,
+                animationSpec = tween(durationMillis = 250)
+            )
+
+            val animateAlpha by animateFloatAsState(
+                targetValue = if (!mono) 1f else 0.0f,
+                animationSpec = tween(durationMillis = 250)
+            )
+
             Column(
                 Modifier
-                    .animateContentSize()
                     .fillMaxSize()
                     .padding(bottom = it.calculateBottomPadding())
                     .background(colorDarkBackground)
                     .verticalScroll(rememberScrollState()),
                 //verticalArrangement = Arrangement.SpaceEvenly
             ) {
-                Spacer(modifier = Modifier
-                    .animateContentSize()
+                Box(modifier = Modifier
                     .fillMaxHeight()
-                    .weight(1f))
-                CardCarrier("CH0", global)
+                    .fillMaxWidth()
+                    .weight(1f)
+                    //.background(Color.Green)
+                        )
+
+
+                Box()
+                {
+                    CardCarrier("CH0", global)
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 CardCommander(global)
                 Spacer(modifier = Modifier.height(8.dp))
 
-//                Crossfade(targetState = mono) { screen ->
-//                    when (screen) {
-//                        false -> {
-//                            CardCarrier("CH1", global)
-//                            Spacer(modifier = Modifier.fillMaxHeight().weight(1f))
-//                        }
-//
-//                        else -> { }
-//                    }
-//                }
-
-                //   if(mono)
-                //       Spacer(modifier = Modifier.fillMaxHeight().weight(1f))
-
-//                else
-//                    Spacer(modifier = Modifier.fillMaxHeight().weight(0.1f))
-
-                    AnimatedVisibility(
-                        visible = !mono,
-                        enter = slideInVertically(initialOffsetY = { (1.5f * it).toInt() }),
-                        exit = slideOutVertically(targetOffsetY = { (1.5f * it).toInt() })
-                    ) {
-                        Box() {
-                            CardCarrier("CH1", global)
-                        }
+                    Box(modifier = Modifier
+                        .height(animateHeight)
+                        .graphicsLayer(
+                            alpha = animateAlpha,
+                            //scaleY = animateAlpha
+                            translationY = 500f*(1f-animateAlpha), clip = true
+                        )
+                    )
+                    {
+                        CardCarrier("CH1", global)
                     }
-                Box(modifier = Modifier
-                    .fillMaxHeight().weight(1f))
 
+
+
+
+
+
+
+
+                Box(modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth()
+                    .weight(1f)
+                    //.background(Color.Red)
+                )
             }
         }
     }
