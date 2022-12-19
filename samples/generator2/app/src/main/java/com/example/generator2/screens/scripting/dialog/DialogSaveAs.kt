@@ -98,7 +98,7 @@ fun DialogSaveAs(vm: VMScripting) {
                     Spacer(modifier = Modifier.height(4.dp))
                     for (index in files.indices) {
                         Text(
-                            text = " " + files[index], color = Color.DarkGray,
+                            text = " " + files[index].dropLast(3), color = Color.DarkGray,
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(start = 8.dp, top = 2.dp, end = 8.dp)

@@ -121,7 +121,7 @@ fun ScriptTable(vm: VMScripting) {
             }
 
             if (vm.openDialogSaveAs.value)       DialogSaveAs(vm)
-            if (vm.openDialogDeleteRename.value) DialogDeleteRename( vm.openDialogDeleteRename, filename, vm)
+            if (vm.openDialogDeleteRename.value) DialogDeleteRename( filename, vm)
 
             if (vm.hub.script.state == StateCommandScript.ISEDITTING) {
                 Column(

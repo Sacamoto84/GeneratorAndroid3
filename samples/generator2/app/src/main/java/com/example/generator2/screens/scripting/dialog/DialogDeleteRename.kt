@@ -14,6 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -25,9 +26,10 @@ import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
 import libs.MToast
 
+private val Corner = 8.dp
 
 @Composable
-fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global: VMScripting) {
+fun DialogDeleteRename(name: String,   vm: VMScripting) {
 
     val context = LocalContext.current
 
@@ -38,24 +40,66 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global
     value = name
 
     //var valueDelete by remember { mutableStateOf("") }
-    if (openDialog.value) Dialog(onDismissRequest = { openDialog.value = false }) {
+    if (vm.openDialogDeleteRename.value) Dialog(onDismissRequest = { vm.openDialogDeleteRename.value = false }) {
         Card(
             Modifier.width(220.dp), elevation = 8.dp, border = BorderStroke(
                 1.dp, Color.Gray
-            ), shape = RoundedCornerShape(36.dp), backgroundColor = colorDarkBackground
+            ), shape = RoundedCornerShape(Corner), backgroundColor = colorDarkBackground
         ) {
 
             Column {
 
+
+                Text(
+                    text = "Rename",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
+                    //.clip(RoundedCornerShape(Corner)).background(Color.DarkGray)
+                    ,
+                    textAlign = TextAlign.Center, fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.jetbrains)), color = Color.LightGray
+                )
+
+                OutlinedTextField(
+                    value = value,
+                    onValueChange = { value = it },
+                    modifier = Modifier.height(58.dp).padding(start = 16.dp, end = 16.dp, bottom = 0.dp),
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = Color.LightGray, leadingIconColor = Color.LightGray,
+                        backgroundColor = colorLightBackground, focusedIndicatorColor = Color.Transparent ),
+                    placeholder = { Text(text = "File Name", color = Color.Gray) },
+                    singleLine = true,
+                    shape = RoundedCornerShape(Corner),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = {
+                        vm.hub.utils.renameScriptFile(name, value)
+                        vm.openDialogDeleteRename.value = false
+                        MToast(context, "Renamed")
+                    }),
+                    textStyle = TextStyle(
+                        fontSize = 18.sp, fontFamily = FontFamily(Font(R.font.jetbrains)),
+                    ),
+                )
+
+                Text(
+                    text = "or",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 0.dp)
+                    //.clip(RoundedCornerShape(Corner)).background(Color.DarkGray)
+                    ,
+                    textAlign = TextAlign.Center, fontSize = 16.sp, fontFamily = FontFamily(Font(R.font.jetbrains)), color = Color.LightGray
+                )
+
                 Button(
                     onClick = {
-                        global.hub.utils.deleteScriptFile(name)
-                        openDialog.value = false
+                        vm.hub.utils.deleteScriptFile(name)
+                        vm.openDialogDeleteRename.value = false
                         refresh.value++
                     },
-                    modifier = Modifier.fillMaxWidth().height(88.dp)
-                        .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 16.dp),
-                    shape = RoundedCornerShape(36.dp),
+                    modifier = Modifier.fillMaxWidth().height(72.dp)
+                        .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp),
+                    shape = RoundedCornerShape(Corner),
                     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Red)
                 ) {
                     Text(
@@ -66,39 +110,11 @@ fun DialogDeleteRename(openDialog: MutableState<Boolean>, name: String,   global
                     )
                 }
 
-                Divider(color = Color.Gray, thickness = 2.dp)
+                //Divider(color = Color.Gray, thickness = 2.dp)
 
-                Spacer(modifier = Modifier.height(16.dp))
+                //Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = value,
-                    onValueChange = { value = it },
-                    modifier = Modifier.height(72.dp)
-                        .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                    colors = TextFieldDefaults.textFieldColors(
-                        textColor = Color.LightGray,
-                        leadingIconColor = Color.LightGray,
-                        backgroundColor = colorLightBackground,
-                        focusedIndicatorColor = Color.Transparent
 
-                    ),
-                    placeholder = { Text(text = "Имя файла", color = Color.Gray) },
-                    singleLine = true,
-                    shape = RoundedCornerShape(36.dp),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(onDone = {
-
-                        global.hub.utils.renameScriptFile(name, value)
-
-                        openDialog.value = false
-                        MToast(context, "Переименовали")
-
-                    }),
-                    textStyle = TextStyle(
-                        fontSize = 18.sp,
-                        fontFamily = FontFamily(Font(R.font.jetbrains)),
-                    ),
-                )
 
 
             }

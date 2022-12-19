@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.generator2.ui.ConfigOnOff
-import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
+import libs.modifier.UImodifier.noRippleClickable
 import libs.ImageAsset
 
 object UIswitch {

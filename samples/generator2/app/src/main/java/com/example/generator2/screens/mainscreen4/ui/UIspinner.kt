@@ -1,7 +1,6 @@
-package com.example.generator2.ui.wiget
+package com.example.generator2.screens.mainscreen4.ui
 
 import android.annotation.SuppressLint
-import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,6 +18,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.PopupProperties
 import com.example.generator2.itemList
 import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.LiveData
@@ -97,25 +97,12 @@ object UIspinner {
                         .padding(start = 4.dp, end = 4.dp) //128 64
                 )
 
-//                        Text(text = currentValue, modifier = Modifier.fillMaxWidth().padding(start=8.dp).weight(1f)
-//                            , color = Color(0xFFE7E1D5)
-//                            , fontSize = 24.sp, textAlign = TextAlign.Center)
-
-                //Icon(
-                //    imageVector = Icons.Filled.ArrowDropDown,
-                //    contentDescription = null,
-                //    modifier = Modifier.width(8.dp), //32
-                //    tint = Color(0xFFE7E1D5)
-                //)
-
                 DropdownMenu(
                     expanded = expanded.value,
-                    onDismissRequest = {
-                        expanded.value = false
-                    },
-                    modifier = Modifier.background(
-                        color = if (transparrent) Color(0) else Color(0xFF454954)
-                    )
+                    onDismissRequest = { expanded.value = false },
+                    modifier = Modifier.background( color = if (transparrent) Color(0) else Color(0xFF454954)),
+                    properties = PopupProperties()
+
                 )
                 {
 
@@ -142,11 +129,6 @@ object UIspinner {
                                     }
                                 }
 
-                                //Utils.Spinner_Send_Buffer(
-                                //    CH,
-                                //    Mod,
-                                //    it.name
-                                //) //Читае м отсылаем массив
                             }
                         ) {
                             Image(

@@ -1,4 +1,4 @@
-package com.example.generator2.ui.wiget
+package com.example.generator2.screens.mainscreen4.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectDragGestures

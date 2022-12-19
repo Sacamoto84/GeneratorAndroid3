@@ -16,12 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground2
-import com.example.generator2.ui.wiget.InfinitySlider
-import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
-import com.example.generator2.ui.wiget.UIspinner
+import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
+import com.example.generator2.screens.mainscreen4.ui.UIspinner
 import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
+import libs.modifier.noRippleClickable
 
 @Composable
 fun CardFM(str: String = "CH0", global: VMMain4) {
@@ -60,22 +60,12 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                 .fillMaxWidth()
         )
 
-
         Row(
             Modifier
                 .padding(top = 8.dp)
                 .height(48.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-
-
-//            Switch(
-//                modifier = Modifier.width(ms4SwitchWidth),
-//                checked = fmEN.value!!, onCheckedChange = {
-//                    if (str == "CH0") global.liveData.ch1_FM_EN.value = it else global.liveData.ch2_FM_EN.value = it
-//                })
-
-
 
             //ON OFF
             Box(modifier = Modifier.padding(start = 8.dp).height(24.dp).width(ms4SwitchWidth)
@@ -92,17 +82,6 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                         !LiveData.ch1_FM_EN.value
                     else LiveData.ch2_FM_EN.value = !LiveData.ch2_FM_EN.value
                 })) {}
-
-
-
-//            MainscreenTextBox(
-//                String.format("%.1f", fmFr.value),
-//                modifier = Modifier
-//                    .padding(start = 8.dp)
-//                    .fillMaxHeight()
-//                    .fillMaxWidth()
-//                    .weight(1f)
-//            )
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             var expanded by remember { mutableStateOf(false) }
@@ -147,9 +126,6 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                 }
             }
             //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
             InfinitySlider(
                 value = fmFr.value,
                 sensing = if (fmFr.value!! < 10.0F) LiveConstrain.sensetingSliderAmFm.value else LiveConstrain.sensetingSliderAmFm.value * 10f,

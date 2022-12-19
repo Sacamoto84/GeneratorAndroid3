@@ -14,12 +14,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.example.generator2.theme.*
-import com.example.generator2.ui.wiget.InfinitySlider
-import com.example.generator2.ui.wiget.UImodifier.noRippleClickable
-import com.example.generator2.ui.wiget.UIspinner
+import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
+import com.example.generator2.screens.mainscreen4.ui.UIspinner
 import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
+import libs.modifier.noRippleClickable
 
 
 @Composable
@@ -41,7 +41,7 @@ fun CardCarrier(str: String = "CH0", global: VMMain4) {
 
         backgroundColor = colorLightBackground,
         modifier = Modifier //.wrapContentHeight()
-            .fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 4.dp, bottom = 4.dp),
+            .fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 0.dp),
         elevation = 0.dp
     ) {
 
