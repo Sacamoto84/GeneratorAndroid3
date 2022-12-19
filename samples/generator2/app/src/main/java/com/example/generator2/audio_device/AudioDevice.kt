@@ -193,6 +193,10 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
         utils.Spinner_Send_Buffer("CH1", "CR", LiveData.ch2_Carrier_Filename.value )
         utils.Spinner_Send_Buffer("CH1", "AM", LiveData.ch2_AM_Filename.value )
         utils.Spinner_Send_Buffer("CH1", "FM", LiveData.ch2_FM_Filename.value )
+
+        playbackEngine.setMono(LiveData.mono.value)
+        playbackEngine.setInvertPhase(LiveData.invert.value)
+
     }
 
 }

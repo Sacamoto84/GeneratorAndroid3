@@ -1,5 +1,6 @@
 package com.example.generator2.screens.mainscreen4
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -20,6 +21,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.IOException
@@ -38,9 +40,9 @@ class VMMain4 @Inject constructor(
 
         println("global init{}")
 
-        hub.backup.readINIConfig()
-        hub.backup.readINIVolume()
-        hub.backup.readINIConstrain()
+        //hub.backup.readINIConfig()
+        //hub.backup.readINIVolume()
+        //hub.backup.readINIConstrain()
 
         //utils.context = contextActivity!!
 
@@ -139,28 +141,125 @@ class VMMain4 @Inject constructor(
         val dispatchers = Dispatchers.IO
         viewModelScope.launch(dispatchers) { LiveData.volume0.collect {  hub.playbackEngine.setVolume(0, it) } }
         viewModelScope.launch(dispatchers) { LiveData.volume1.collect {  hub.playbackEngine.setVolume(1, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_EN.collect {  hub.playbackEngine.setEN(0, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch2_EN.collect {  hub.playbackEngine.setEN(1, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_EN.collect {  hub.playbackEngine.setAM_EN(0, it) } }
+
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_EN.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_EN.value = it
+            hub.playbackEngine.setEN(0, it)
+        }}
+
+        viewModelScope.launch(dispatchers) { LiveData.ch2_EN.collect {  hub.playbackEngine.setEN(1, it)}}
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_EN.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_AM_EN.value = it
+            hub.playbackEngine.setAM_EN(0, it)
+        } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_AM_EN.collect {  hub.playbackEngine.setAM_EN(1, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_EN.collect {  hub.playbackEngine.setFM_EN(0, it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_EN.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_FM_EN.value = it
+            hub.playbackEngine.setFM_EN(0, it) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_FM_EN.collect {  hub.playbackEngine.setFM_EN(1, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_Carrier_Fr.collect {  hub.playbackEngine.setCarrier_fr(0, it.toInt().toFloat()) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_Carrier_Fr.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_Carrier_Fr.value = it
+            hub.playbackEngine.setCarrier_fr(0, it.toInt().toFloat()) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_Carrier_Fr.collect {  hub.playbackEngine.setCarrier_fr(1, it.toInt().toFloat()) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_Fr.collect {  hub.playbackEngine.setAM_fr(0, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch2_AM_Fr.collect {  hub.playbackEngine.setAM_fr(1, it)         }    }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Base.collect {  hub.playbackEngine.setFM_Base(0, it.toInt().toFloat()) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_Fr.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_AM_Fr.value = it
+            hub.playbackEngine.setAM_fr(0, it) } }
+
+        viewModelScope.launch(dispatchers) { LiveData.ch2_AM_Fr.collect {  hub.playbackEngine.setAM_fr(1, it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Base.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_FM_Base.value = it
+            hub.playbackEngine.setFM_Base(0, it.toInt().toFloat()) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_FM_Base.collect { hub.playbackEngine.setFM_Base(1, it.toInt().toFloat()  ) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Dev.collect { hub.playbackEngine.setFM_Dev(0, it.toInt().toFloat()) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Dev.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_FM_Dev.value = it
+            hub.playbackEngine.setFM_Dev(0, it.toInt().toFloat()) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_FM_Dev.collect {  hub.playbackEngine.setFM_Dev(1, it.toInt().toFloat()) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Fr.collect {  hub.playbackEngine.setFM_fr(0, it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Fr.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_FM_Fr.value = it
+            hub.playbackEngine.setFM_fr(0, it) } }
         viewModelScope.launch(dispatchers) { LiveData.ch2_FM_Fr.collect {  hub.playbackEngine.setFM_fr(1, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_Carrier_Filename.collect { hub.utils.Spinner_Send_Buffer("CH0", "CR", it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_Carrier_Filename.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_Carrier_Filename.value = it
+            hub.utils.Spinner_Send_Buffer("CH0", "CR", it) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_Carrier_Filename.collect { hub.utils.Spinner_Send_Buffer("CH1", "CR", it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_Filename.collect { hub.utils.Spinner_Send_Buffer("CH0", "AM", it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_AM_Filename.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_AM_Filename.value = it
+            hub.utils.Spinner_Send_Buffer("CH0", "AM", it) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_AM_Filename.collect { hub.utils.Spinner_Send_Buffer("CH1", "AM", it) } }
-        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Filename.collect { hub.utils.Spinner_Send_Buffer("CH0", "FM", it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.ch1_FM_Filename.collect {
+            if (LiveData.link.value)
+                LiveData.ch2_FM_Filename.value = it
+            hub.utils.Spinner_Send_Buffer("CH0", "FM", it) } }
+
         viewModelScope.launch(dispatchers) { LiveData.ch2_FM_Filename.collect { hub.utils.Spinner_Send_Buffer("CH1", "FM", it) } }
+        //
+        viewModelScope.launch(dispatchers) { LiveData.link.collect { linkAllOn(it) } }
+
+        //Включение моно в самом драйвере Oboe, второй канал игнорируется
+        viewModelScope.launch(dispatchers) { LiveData.mono.collect {
+            hub.audioDevice.playbackEngine.setMono(it)
+        } }
+
+        viewModelScope.launch(dispatchers) { LiveData.invert.collect {
+            hub.audioDevice.playbackEngine.setInvertPhase(it)
+        } }
+
     }
+
+
+
+
+
+
+
+}
+
+
+
+
+
+@SuppressLint("SuspiciousIndentation")
+fun linkAllOn(on : Boolean)
+{
+  if (!on) return
+    LiveData.ch2_EN.update        { LiveData.ch1_EN.value }
+    LiveData.ch2_AM_EN.update     { LiveData.ch1_AM_EN.value }
+    LiveData.ch2_FM_EN.update     { LiveData.ch1_FM_EN.value }
+    LiveData.ch2_Carrier_Fr.update{ LiveData.ch1_Carrier_Fr.value }
+    LiveData.ch2_AM_Fr.update     { LiveData.ch1_AM_Fr.value }
+    LiveData.ch2_FM_Base.update   { LiveData.ch1_FM_Base.value }
+    LiveData.ch2_FM_Dev.update    { LiveData.ch1_FM_Dev.value }
+    LiveData.ch2_FM_Fr.update     { LiveData.ch1_FM_Fr.value }
+    LiveData.ch2_Carrier_Filename.update{ LiveData.ch1_Carrier_Filename.value }
+    LiveData.ch2_AM_Filename.update     { LiveData.ch1_AM_Filename.value}
+    LiveData.ch2_FM_Filename.update     { LiveData.ch1_FM_Filename.value}
 
 }

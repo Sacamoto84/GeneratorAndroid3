@@ -195,18 +195,17 @@ fun ScreenConfig(
                 editConfig(Modifier.weight(1f), "min CR", value = minCR, min = 50f, max = 10000f, toInt = true,
                     onDone = {
                         LiveConstrain.minCR.value = it
-                        vm.toastText("min CR Saved") //Сохранить громкоcть
-                        vm.saveINIConstrain()})
+                        vm.toastText("min CR Saved")
+                        //vm.saveINIConstrain()
+                    })
 
                 val maxCR = LiveConstrain.maxCR
                 editConfig(Modifier.weight(1f), "max CR", value = maxCR, min = 50f, max = 10000f, toInt = true,
                     onDone = {
                         LiveConstrain.maxCR.value = it
-                        vm.toastText("max CR Saved") //Сохранить громкоcть
-                        vm.saveINIConstrain()})
-
-
-
+                        vm.toastText("max CR Saved")
+                        //vm.saveINIConstrain()
+                    })
             }
 
 
@@ -216,14 +215,16 @@ fun ScreenConfig(
                 val value0 = LiveData.volume0.collectAsState()
                 editConfig(Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
                     onDone = {LiveData.volume0.value = it
-                        vm.toastSaveVolume() //Сохранить громкоcть
-                        vm.saveINIVolume()} )
+                        vm.toastSaveVolume()
+                        //vm.saveINIVolume()
+                        })
 
                 val value1 = LiveData.volume1.collectAsState()
                 editConfig(Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
                     onDone = {LiveData.volume1.value = it
-                        vm.toastSaveVolume() //Сохранить громкоcть
-                        vm.saveINIVolume()} )
+                        vm.toastSaveVolume()
+                        //vm.saveINIVolume()
+                    } )
 
             }
 

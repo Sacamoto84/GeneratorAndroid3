@@ -48,14 +48,33 @@ public:
         //CH1.Volume = 0.65F;
         //CH2.Volume = 0.55F;
 
-        renderChanel(&CH1, numFrames);
-        renderChanel(&CH2, numFrames);
+        if (!Mono) {
+            renderChanel(&CH1, numFrames);
+            renderChanel(&CH2, numFrames);
 
-        for (int i = 0; i < numFrames; i++) {
-            audioData[i * 2]     = CH1.mBuffer[i];
-            audioData[i * 2 + 1] = CH2.mBuffer[i];
+            for (int i = 0; i < numFrames; i++) {
+                audioData[i * 2] = CH1.mBuffer[i];
+                audioData[i * 2 + 1] = CH2.mBuffer[i];
+            }
         }
-
+        else
+        {
+            renderChanel(&CH1, numFrames);
+            if (!Invert)
+            {
+                for (int i = 0; i < numFrames; i++) {
+                    audioData[i * 2] = CH1.mBuffer[i];
+                    audioData[i * 2 + 1] = CH1.mBuffer[i];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < numFrames; i++) {
+                    audioData[i * 2] = CH1.mBuffer[i];
+                    audioData[i * 2 + 1] = CH1.mBuffer[i]* (-1.0f);
+                }
+            }
+        }
     }
 
     //std::unique_ptr<float[]> mBuffer = std::make_unique<float[]>(4096);
@@ -130,6 +149,9 @@ public:
         CH1.Volume = 0.65F;
         CH2.Volume = 0.55F;
 
+        setToStereo();
+        resetAllPhase();
+
     }
 
     //std::unique_ptr<uint16_t[]> buffer_carrier1 = std::make_unique<uint16_t[]>(1024);
@@ -156,6 +178,7 @@ public:
         for (i = 0; i < 1024; i++)
             CH2.buffer_fm[i] = x + (y * CH2.source_buffer_fm[i] / 4095.0F);
     }
+
 };
 
 

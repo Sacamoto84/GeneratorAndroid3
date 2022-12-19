@@ -223,6 +223,73 @@ Java_com_example_generator2_PlaybackEngine_native_1setDefaultStreamValues(
 //Мои функции
 
 
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1resetAllPhase(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle
+        ){
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:resetAllPhase");
+
+    resetAllPhase();
+
+}
+
+
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setMono(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jboolean mono) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setMono: %d", mono);
+
+    if (mono)
+    {
+        setToMono();
+        resetAllPhase();
+    }
+    else
+    {
+        setToStereo();
+        resetAllPhase();
+    }
+
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setInvertPhase(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jboolean invert) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setInvertPhase: %d", invert);
+
+    Invert = invert;
+
+}
+
 
 //CH EN
 JNIEXPORT void JNICALL

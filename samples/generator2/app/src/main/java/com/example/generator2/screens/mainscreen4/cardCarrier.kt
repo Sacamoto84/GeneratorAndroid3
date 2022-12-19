@@ -13,6 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.generator2.recomposeHighlighterOneLine
 import com.example.generator2.theme.*
 import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
 import com.example.generator2.screens.mainscreen4.ui.UIspinner
@@ -20,6 +21,7 @@ import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.LiveConstrain
 import com.example.generator2.vm.LiveData
 import libs.modifier.noRippleClickable
+import libs.modifier.recomposeHighlighter
 
 
 @Composable
@@ -38,15 +40,13 @@ fun CardCarrier(str: String = "CH0", global: VMMain4) {
     }
 
     Card(
-
         backgroundColor = colorLightBackground,
-        modifier = Modifier //.wrapContentHeight()
-            .fillMaxWidth().padding(start = 8.dp, end = 8.dp, top = 0.dp, bottom = 0.dp),
-        elevation = 0.dp
-    ) {
+        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp)
+    )
+    {
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            //modifier = Modifier.fillMaxSize()
         ) {
             Box(
                 modifier = Modifier.background(if (str == "CH0") colorGreen else colorOrange)

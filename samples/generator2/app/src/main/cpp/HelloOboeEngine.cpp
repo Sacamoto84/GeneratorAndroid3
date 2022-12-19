@@ -59,7 +59,7 @@ double HelloOboeEngine::getCurrentOutputLatencyMillis() {
 }
 
 //Установка буффера
-void HelloOboeEngine::setBufferSizeInBursts(int32_t numBursts) {
+void HelloOboeEngine::setBufferSizeInBursts(int32_t numBursts) const {
     LOGI("┌-----------------------------------------------------------┐");
     LOGI("│ Функция изменения размера буффера > setBufferSizeInBursts │");
     //std::lock_guard<std::mutex> lock(mLock);

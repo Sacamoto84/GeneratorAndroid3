@@ -58,28 +58,12 @@ fun InfinitySlider(
                     onDragStart = { },
                     onDrag =
                     { change, dragAmount ->
-
                         change.consumeAllChanges()
-                        //offX += dragAmount.x
-
-                        if (vertical) {
-                            if (invert)
-                                icrementalAngle -= dragAmount.y * _sensing.value
-                            else
-                                icrementalAngle += dragAmount.y * _sensing.value
-                        } else {
-                            if (invert)
-                                icrementalAngle -= dragAmount.x * _sensing.value
-                            else
-                                icrementalAngle += dragAmount.x * _sensing.value
-                        }
-
+                        icrementalAngle -= dragAmount.y * _sensing.value - dragAmount.x * _sensing.value
                         if (icrementalAngle > range.endInclusive) icrementalAngle =
                             range.endInclusive
                         if (icrementalAngle < range.start) icrementalAngle = range.start
-
                         onValueChangeState.value.invoke(icrementalAngle)
-
                     },
                     onDragEnd = {
                         offX = 0f

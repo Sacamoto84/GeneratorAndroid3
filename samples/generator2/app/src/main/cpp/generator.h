@@ -56,4 +56,14 @@ typedef struct {
 extern _structure_ch CH1;
 extern _structure_ch CH2;
 
+extern bool Mono;
+extern bool Invert;
+
+extern void setToMono();   // Перевод в режим моно
+extern void setToStereo(); // Перевод в режим стерео
+
+extern void resetCarrierPhase();    //Сброс фазы несущей
+extern void resetAllPhase();
+
+
 #endif

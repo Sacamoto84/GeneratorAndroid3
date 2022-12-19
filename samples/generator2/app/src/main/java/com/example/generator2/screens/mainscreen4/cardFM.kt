@@ -1,3 +1,4 @@
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -68,7 +69,10 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
         ) {
 
             //ON OFF
-            Box(modifier = Modifier.padding(start = 8.dp).height(24.dp).width(ms4SwitchWidth)
+            Box(modifier = Modifier
+                .padding(start = 8.dp)
+                .height(24.dp)
+                .width(ms4SwitchWidth)
                 .border(
                     2.dp,
                     color = if (fmEN.value!!) Color(0xFF1B5E20) else Color.DarkGray,
@@ -77,7 +81,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                 .clip(RoundedCornerShape(8.dp))
                 .background(
                     color = if (fmEN.value!!) Color(0xFF01AE0F) else colorDarkBackground
-                ).noRippleClickable(onClick = {
+                )
+                .noRippleClickable(onClick = {
                     if (str == "CH0") LiveData.ch1_FM_EN.value =
                         !LiveData.ch1_FM_EN.value
                     else LiveData.ch2_FM_EN.value = !LiveData.ch2_FM_EN.value
@@ -87,11 +92,20 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
             var expanded by remember { mutableStateOf(false) }
             var selectedIndex by remember {  mutableStateOf(0) }
 
-            Box(Modifier.padding(start = 0.dp).height(48.dp).fillMaxWidth().weight(1f).noRippleClickable {  expanded = true }) {
+            Box(
+                Modifier
+                    .padding(start = 0.dp)
+                    .height(48.dp)
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .noRippleClickable { expanded = true }) {
 
                 MainscreenTextBox(
                     String.format("%.1f", fmFr.value),
-                    Modifier.padding(start = 8.dp).height(48.dp).fillMaxSize()
+                    Modifier
+                        .padding(start = 8.dp)
+                        .height(48.dp)
+                        .fillMaxSize()
                 )
 
                 val items = listOf("0.1","1.0","5.5","10.0","40.0", "100.0")
@@ -104,7 +118,8 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                         //.width(80.dp)
                         .background(
                             colorLightBackground2
-                        ).border(1.dp, color = Color.DarkGray, shape = RoundedCornerShape(16.dp))
+                        )
+                        .border(1.dp, color = Color.DarkGray, shape = RoundedCornerShape(16.dp))
                 ) {
 
                     items.forEachIndexed { index, s ->
@@ -157,134 +172,139 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
 /////////////////////////
 
 
-        //База 
-        Row(
-            Modifier
-                .padding(top = 8.dp, end = 8.dp)
-                .height(48.dp),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
+       Row() {
 
-            Box(
-                modifier = Modifier
-                    .padding(start=8.dp)
-                    .height(48.dp)
-                    .width(ms4SwitchWidth)
-                    //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(colorDarkBackground)
-                    .clickable { }
-                , contentAlignment = Alignment.Center
-            ) {
-                Text("Save", fontSize = 12.sp, color = Color.LightGray )
-            }
+           Box(
+               modifier = Modifier
+                   .padding(start = 8.dp, top = 8.dp)
+                   .height(104.dp)
+                   .width(ms4SwitchWidth)
+                   //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
+                   .clip(RoundedCornerShape(8.dp))
+                   .background(colorDarkBackground)
+               , contentAlignment = Alignment.Center
+           ) {
 
-            MainscreenTextBoxPlus2Line(
-                String.format("%d", fmBase.value!!.toInt()),
-                String.format("%d", fmBase.value!!.toInt() + fmDev.value!!.toInt()),
-                String.format("%d", fmBase.value!!.toInt() - fmDev.value!!.toInt()),
-                Modifier.padding(start=8.dp)
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
+               Canvas(modifier = Modifier.fillMaxSize(), onDraw ={
 
-            InfinitySlider(
-                value = fmBase.value,
-                sensing = LiveConstrain.sensetingSliderFmBase.value * 8,
-                range = LiveConstrain.rangeSliderFmBase,
-                onValueChange = {
-                    if (str == "CH0") LiveData.ch1_FM_Base.value =
-                        it else LiveData.ch2_FM_Base.value = it
-                },
-                modifier = modifierInfinitySlider,
-                vertical = true,
-                invert = true,
-                visibleText = false
-            )
+                   drawRect(color = Color.Black, )
+
+               })
+
+           }
 
 
-            InfinitySlider(
-                value = fmBase.value,
-                sensing = LiveConstrain.sensetingSliderFmBase.value,
-                range = LiveConstrain.rangeSliderFmBase,
-                onValueChange = {
-                    if (str == "CH0") LiveData.ch1_FM_Base.value =
-                        it else LiveData.ch2_FM_Base.value = it
-                },
-                modifier = modifierInfinitySlider,
-                vertical = true,
-                invert = true,
-                visibleText = false
-            )
+
+           Column() {
+
+               //База
+               Row(
+                   Modifier
+                       .padding(top = 8.dp, end = 8.dp)
+                       .height(48.dp),
+                   verticalAlignment = Alignment.CenterVertically
+               )
+               {
+
+                   MainscreenTextBoxPlus2Line(
+                       String.format("%d", fmBase.value!!.toInt()),
+                       String.format("%d", fmBase.value!!.toInt() + fmDev.value!!.toInt()),
+                       String.format("%d", fmBase.value!!.toInt() - fmDev.value!!.toInt()),
+                       Modifier
+                           .padding(start = 8.dp)
+                           .fillMaxHeight()
+                           .fillMaxWidth()
+                           .weight(1f)
+                   )
+
+                   InfinitySlider(
+                       value = fmBase.value,
+                       sensing = LiveConstrain.sensetingSliderFmBase.value * 8,
+                       range = LiveConstrain.rangeSliderFmBase,
+                       onValueChange = {
+                           if (str == "CH0") LiveData.ch1_FM_Base.value =
+                               it else LiveData.ch2_FM_Base.value = it
+                       },
+                       modifier = modifierInfinitySlider,
+                       vertical = true,
+                       invert = true,
+                       visibleText = false
+                   )
 
 
-        }
+                   InfinitySlider(
+                       value = fmBase.value,
+                       sensing = LiveConstrain.sensetingSliderFmBase.value,
+                       range = LiveConstrain.rangeSliderFmBase,
+                       onValueChange = {
+                           if (str == "CH0") LiveData.ch1_FM_Base.value =
+                               it else LiveData.ch2_FM_Base.value = it
+                       },
+                       modifier = modifierInfinitySlider,
+                       vertical = true,
+                       invert = true,
+                       visibleText = false
+                   )
+
+
+               }
 
 ////////
-        Row(
-            Modifier
-                .padding(top = 8.dp, start = 0.dp, end = 8.dp)
-                .height(48.dp),
-            verticalAlignment = Alignment.CenterVertically
-        )
-        {
+               Row(
+                   Modifier
+                       .padding(top = 8.dp, start = 0.dp, end = 8.dp)
+                       .height(48.dp),
+                   verticalAlignment = Alignment.CenterVertically
+               )
+               {
 
-            Box(
-                modifier = Modifier
-                    .padding(start=8.dp)
-                    .height(48.dp)
-                    .width(ms4SwitchWidth)
-                    //.border(1.dp, Color.White, RoundedCornerShape(8.dp))
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(colorDarkBackground)
-                    .clickable { }
-                , contentAlignment = Alignment.Center
-            ) {
-                Text("Load", fontSize = 12.sp, color = Color.LightGray )
-            }
-
-            MainscreenTextBox(
-                String.format("± %d", fmDev.value!!.toInt()),
-                Modifier
-                    .padding(start=8.dp)
-                    .fillMaxHeight()
-                    .fillMaxWidth()
-                    .weight(1f)
-            )
+                   MainscreenTextBox(
+                       String.format("± %d", fmDev.value!!.toInt()),
+                       Modifier
+                           .padding(start = 8.dp)
+                           .fillMaxHeight()
+                           .fillMaxWidth()
+                           .weight(1f)
+                   )
 
 
-            InfinitySlider(
-                value = fmDev.value,
-                sensing = LiveConstrain.sensetingSliderFmDev.value * 8,
-                range = LiveConstrain.rangeSliderFmDev,
-                onValueChange = {
-                    if (str == "CH0") LiveData.ch1_FM_Dev.value =
-                        it else LiveData.ch2_FM_Dev.value = it
-                },
-                modifier = modifierInfinitySlider,
-                vertical = true,
-                invert = true,
-                visibleText = false
-            )
+                   InfinitySlider(
+                       value = fmDev.value,
+                       sensing = LiveConstrain.sensetingSliderFmDev.value * 8,
+                       range = LiveConstrain.rangeSliderFmDev,
+                       onValueChange = {
+                           if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                               it else LiveData.ch2_FM_Dev.value = it
+                       },
+                       modifier = modifierInfinitySlider,
+                       vertical = true,
+                       invert = true,
+                       visibleText = false
+                   )
 
-            InfinitySlider(
-                value = fmDev.value,
-                sensing = LiveConstrain.sensetingSliderFmDev.value,
-                range = LiveConstrain.rangeSliderFmDev,
-                onValueChange = {
-                    if (str == "CH0") LiveData.ch1_FM_Dev.value =
-                        it else LiveData.ch2_FM_Dev.value = it
-                },
-                modifier = modifierInfinitySlider,
-                vertical = true,
-                invert = true,
-                visibleText = false
-            )
+                   InfinitySlider(
+                       value = fmDev.value,
+                       sensing = LiveConstrain.sensetingSliderFmDev.value,
+                       range = LiveConstrain.rangeSliderFmDev,
+                       onValueChange = {
+                           if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                               it else LiveData.ch2_FM_Dev.value = it
+                       },
+                       modifier = modifierInfinitySlider,
+                       vertical = true,
+                       invert = true,
+                       visibleText = false
+                   )
 
 
-        }
+               }
+
+
+
+           }
+
+       }
+
 
 
         Spacer(modifier = Modifier.height(8.dp))

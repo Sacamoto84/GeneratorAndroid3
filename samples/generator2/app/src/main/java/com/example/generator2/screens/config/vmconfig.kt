@@ -39,8 +39,8 @@ class VMConfig @Inject constructor(
     //var LVolume by  mutableStateOf(0.55F)
     //var RVolume by  mutableStateOf(0.65F)
 
-    fun saveINIVolume() = backup.saveINIVolume()
-    fun saveINIConstrain() = backup.saveINIConstrain()
+    //fun saveINIVolume() = backup.saveINIVolume()
+    //fun saveINIConstrain() = backup.saveINIConstrain()
 
     fun toastSaveVolume()
     {

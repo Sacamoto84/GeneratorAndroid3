@@ -40,8 +40,11 @@ object LiveData {
         var itemlistAM: ArrayList<itemList> = ArrayList() //Создать список
         var itemlistFM: ArrayList<itemList> = ArrayList() //Создать список
 
+        var mono       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
+        var invert     = MutableStateFlow<Boolean>(false) //Инверсия фазы во втором канале
 
 
+        var link       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
 
 
 
