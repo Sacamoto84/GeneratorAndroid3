@@ -41,7 +41,7 @@ fun CardCarrier(str: String = "CH0", global: VMMain4) {
 
     Card(
         backgroundColor = colorLightBackground,
-        modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp)
+        modifier = Modifier.height(314.dp).fillMaxWidth().padding(start = 8.dp, end = 8.dp)
     )
     {
 
@@ -57,14 +57,6 @@ fun CardCarrier(str: String = "CH0", global: VMMain4) {
             Row(
                 Modifier.padding(top = 8.dp), verticalAlignment = Alignment.CenterVertically
             ) {
-
-
-                //                Switch(
-                //                    modifier = Modifier.width(ms4SwitchWidth),
-                //                    checked = chEN.value!!,
-                //                    onCheckedChange = {
-                //                        if (str == "CH0") global.liveData.ch1_EN.value = it else global.liveData.ch2_EN.value = it
-                //                    })
 
                 Box(modifier = Modifier.padding(start = 8.dp).height(24.dp).width(ms4SwitchWidth)
                     .border(

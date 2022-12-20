@@ -3,10 +3,7 @@ package com.example.generator2.screens.mainscreen4
 import CardCarrier
 import android.annotation.SuppressLint
 import androidx.compose.animation.*
-import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -14,10 +11,13 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.generator2.screens.mainscreen4.ui.DrawerContentBottom
@@ -75,12 +75,12 @@ fun mainsreen4(
 
             val animateHeight by animateDpAsState(
                     targetValue = if (!mono) 314.dp  else 0.dp,
-                animationSpec = tween(durationMillis = 250)
+                animationSpec = tween(durationMillis = 7050)
             )
 
             val animateAlpha by animateFloatAsState(
                 targetValue = if (!mono) 1f else 0.0f,
-                animationSpec = tween(durationMillis = 250)
+                animationSpec = tween(durationMillis = 7050)
             )
 
             Column(
@@ -94,38 +94,48 @@ fun mainsreen4(
                 Box(modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
-                    .weight(1f)
-                    //.background(Color.Green)
-                        )
+                    .weight(1f))
 
 
-                Box()
+                Column()
                 {
                     CardCarrier("CH0", global)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    CardCommander(global)
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
-                CardCommander(global)
-                Spacer(modifier = Modifier.height(8.dp))
 
-                    Box(modifier = Modifier
-                        .height(animateHeight)
-                        .graphicsLayer(
-                            alpha = animateAlpha,
-                            //scaleY = animateAlpha
-                            translationY = 500f*(1f-animateAlpha), clip = true
-                        )
-                    )
-                    {
-                        CardCarrier("CH1", global)
+
+
+                AnimatedContent(
+                    targetState = mono,
+                    transitionSpec = {
+                        val time = 400
+
+                        //Появление
+                        ( fadeIn(animationSpec = tween(time/2)) + expandVertically(animationSpec = tween(time)))
+                            .with(
+                                //slideOutVertically(animationSpec = tween(time))
+                                ( fadeOut(animationSpec = tween(time)) + shrinkVertically(animationSpec = tween(time)))
+                            ).using(
+                                SizeTransform(
+                                    clip = true,
+                                    sizeAnimationSpec = { initialSize, targetSize ->
+                                        tween(time)
+                                    }
+                                )
+                            )
                     }
-
-
-
-
-
-
-
-
+                )
+                {
+                    if (!it)
+                      CardCarrier("CH1", global)
+                    else
+                    {
+                        Spacer(modifier = Modifier.height(1.dp).fillMaxWidth())
+                    }
+                }
+                
                 Box(modifier = Modifier
                     .fillMaxHeight()
                     .fillMaxWidth()
