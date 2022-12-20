@@ -66,7 +66,7 @@ fun ScreenConfig(
             else {
                 "Time file creation : ${f.str}\nsize: ${f.size} byte"
             }
-            println(backupMessage)
+            //println(backupMessage)
             delay(2000)
         }
     })
@@ -196,7 +196,7 @@ fun ScreenConfig(
                     onDone = {
                         LiveConstrain.minCR.value = it
                         vm.toastText("min CR Saved")
-                        //vm.saveINIConstrain()
+                        vm.saveConstrain()
                     })
 
                 val maxCR = LiveConstrain.maxCR
@@ -204,7 +204,7 @@ fun ScreenConfig(
                     onDone = {
                         LiveConstrain.maxCR.value = it
                         vm.toastText("max CR Saved")
-                        //vm.saveINIConstrain()
+                        vm.saveConstrain()
                     })
             }
 
@@ -216,30 +216,23 @@ fun ScreenConfig(
                 editConfig(Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
                     onDone = {LiveData.volume0.value = it
                         vm.toastSaveVolume()
-                        //vm.saveINIVolume()
+                        vm.saveVolume()
                         })
 
                 val value1 = LiveData.volume1.collectAsState()
                 editConfig(Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
                     onDone = {LiveData.volume1.value = it
                         vm.toastSaveVolume()
-                        //vm.saveINIVolume()
+                        vm.saveVolume()
                     } )
 
             }
 
-
-
             Spacer(modifier = Modifier.height(400.dp))
-
-
-
 
         }
 
-
     }
-
 
 }
 
@@ -251,7 +244,6 @@ fun Config_header(str: String) {
         textAlign = TextAlign.Center,
         modifier = Modifier.fillMaxWidth()
     )
-
 }
 
 @Composable

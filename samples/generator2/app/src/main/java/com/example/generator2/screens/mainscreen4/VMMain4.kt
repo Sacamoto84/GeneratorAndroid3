@@ -41,8 +41,8 @@ class VMMain4 @Inject constructor(
         println("global init{}")
 
         hub.backup.json.readJsonVolume()
-        //hub.backup.readINIConfig()
-        //hub.backup.readINIConstrain()
+        hub.backup.json.readJsonConfig()
+        hub.backup.json.readJsonConstrain()
 
         //utils.context = contextActivity!!
 
