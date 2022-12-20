@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.screens.scripting.VMScripting
 
 

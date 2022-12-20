@@ -1,4 +1,4 @@
-package com.example.generator2.screens.config
+package com.example.generator2.screens.config.vm
 
 import android.annotation.SuppressLint
 import android.content.Context

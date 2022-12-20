@@ -25,15 +25,13 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.generator2.R
+import com.example.generator2.screens.config.Config_Green_button
 import com.example.generator2.screens.config.DefScreenConfig
 import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.config.DefScreenConfig.textSizeGreenButton
-import com.example.generator2.screens.config.VMConfig
+import com.example.generator2.screens.config.vm.VMConfig
 import com.example.generator2.screens.config.readMetaBackupFromFirebase
-import com.example.generator2.screens.config.Config_Green_button
-import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.theme.colorLightBackground2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException

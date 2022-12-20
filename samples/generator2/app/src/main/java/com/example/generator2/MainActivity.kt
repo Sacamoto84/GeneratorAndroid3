@@ -4,37 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.animation.*
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.background
+import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
-import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat
-import androidx.core.graphics.drawable.toBitmap
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
-import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.screens.mainscreen4.mainsreen4
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
 import com.example.generator2.screens.scripting.ScreenScriptInfo
 import com.example.generator2.theme.Generator2Theme
@@ -79,7 +63,7 @@ class MainActivity : ComponentActivity() {
         // Initialize Firebase Auth
         global.hub.firebase.auth = Firebase.auth
         global.hub.firebase.componentActivity = this
-        val storage = Firebase.storage
+        //val storage = Firebase.storage
 
         //        //gs://test-e538d.appspot.com/
 //        val storageRef = global.storage.reference //Коjрневая папка
@@ -125,7 +109,7 @@ class MainActivity : ComponentActivity() {
             //targetState   -переходит на
             //enterTransition - управляет тем, что EnterTransition выполняется, когда targetState  NavBackStackEntry на экране появляется значок .
             //exitTransition  - управляет тем, что ExitTransition  запускается, когда initialState NavBackStackEntry исчезает с экрана.
-            Generator2Theme(darkTheme = true) {
+            Generator2Theme() {
                 val navController = rememberAnimatedNavController()
 
                 AnimatedNavHost(

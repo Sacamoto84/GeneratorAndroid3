@@ -1,4 +1,4 @@
-package com.example.generator2.screens.mainscreen4
+package com.example.generator2.screens.scripting.ui
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -17,72 +17,6 @@ import androidx.compose.ui.unit.sp
 import com.example.generator2.R
 import com.example.generator2.theme.colorDarkBackground
 
-//Шаблон на 6 кнопок
-@Composable
-fun TemplateBottomBar6Key(
-    key0: (@Composable () -> Unit)? = null,
-    key1: (@Composable () -> Unit)? = null,
-    key2: (@Composable () -> Unit)? = null,
-    key3: (@Composable () -> Unit)? = null,
-    key4: (@Composable () -> Unit)? = null,
-    key5: (@Composable () -> Unit)? = null,
-) {
-    Column(modifier = Modifier.fillMaxWidth()) {
-        Row(horizontalArrangement = Arrangement.SpaceAround) {
-
-            if (key0 != null) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key0()
-                }
-            }
-
-            if (key1 != null) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key1()
-                }
-            }
-
-            if (key2 != null) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key2()
-                }
-            }
-        }
-        Row() {
-
-            if (key3 != null) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key3()
-                }
-            }
-
-            if (key4 != null) {
-
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key4()
-                }
-            }
-
-            if (key5 != null) {
-                Box(
-                    modifier = Modifier.fillMaxWidth().weight(1f)
-                ) {
-                    key5()
-                }
-            }
-        }
-    }
-}
 
 @Composable
 fun TemplateButtonBottomBar(
@@ -120,26 +54,12 @@ fun TemplateButtonBottomBarAndLottie(
 
 
     var nonce by remember { mutableStateOf(0) }
-  //  val animatable = rememberLottieAnimatable()
-  //  val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resId))
+    //  val animatable = rememberLottieAnimatable()
+    //  val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(resId))
 
     if (autostart) {
         nonce = 100
     }
-
-//    LaunchedEffect(composition, nonce) {
-//        composition ?: return@LaunchedEffect
-//
-//        if (nonce > 0) animatable.animate(
-//            composition,
-//            continueFromPreviousAnimate = false,
-//            iterations = if (iterationsInfitity) Int.MAX_VALUE else 1,
-//
-//
-//
-//        )
-//
-//    }
 
     OutlinedButton(
         onClick = {

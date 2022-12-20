@@ -1,26 +1,22 @@
-package com.example.generator2.screens.mainscreen4
+package com.example.generator2.screens.mainscreen4.card
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentColor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.generator2.R
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.theme.colorLightBackground2
-import com.example.generator2.vm.LiveData
+import com.example.generator2.data.LiveData
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.siddroid.holi.colors.MaterialColor
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun CardCommander( vm : VMMain4) {

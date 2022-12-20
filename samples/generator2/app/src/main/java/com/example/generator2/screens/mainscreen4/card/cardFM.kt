@@ -1,7 +1,6 @@
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
@@ -14,18 +13,17 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground2
 import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
 import com.example.generator2.screens.mainscreen4.ui.UIspinner
-import com.example.generator2.screens.mainscreen4.VMMain4
-import com.example.generator2.vm.LiveConstrain
-import com.example.generator2.vm.LiveData
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
+import com.example.generator2.data.LiveConstrain
+import com.example.generator2.data.LiveData
 import libs.modifier.noRippleClickable
 
 @Composable
-fun CardFM(str: String = "CH0", global: VMMain4) {
+fun CardFM(str: String = "CH0") {
 
 
     val fmEN: State<Boolean?> = if (str == "CH0") {
@@ -165,7 +163,7 @@ fun CardFM(str: String = "CH0", global: VMMain4) {
                     //.fillMaxWidth()
                     .clip(shape = RoundedCornerShape(4.dp))
                     .background(Color.Black)
-                , global = global)
+            )
 
         }
 

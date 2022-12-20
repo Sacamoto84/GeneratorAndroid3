@@ -3,9 +3,8 @@ package com.example.generator2.screens.scripting
 import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.lifecycle.ViewModel
-import com.example.generator2.vm.Hub
+import com.example.generator2.di.Hub
 import com.example.generator2.vm.StateCommandScript
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

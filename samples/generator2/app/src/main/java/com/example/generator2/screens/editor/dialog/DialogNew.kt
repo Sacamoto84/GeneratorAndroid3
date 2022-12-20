@@ -7,7 +7,8 @@ import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +19,6 @@ import androidx.compose.ui.window.Dialog
 import com.example.generator2.R
 import com.example.generator2.screens.editor.ComboBox
 import com.example.generator2.screens.editor.ui.model
-import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.theme.colorDarkBackground
 
 

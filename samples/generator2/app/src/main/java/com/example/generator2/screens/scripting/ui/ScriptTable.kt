@@ -1,4 +1,4 @@
-package com.example.generator2.screens.ui
+package com.example.generator2.screens.scripting.ui
 
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
@@ -15,18 +15,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.generator2.*
 import com.example.generator2.R
-import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBarAndLottie
 import com.example.generator2.screens.ConsoleLogDraw
+import com.example.generator2.screens.scripting.VMScripting
 import com.example.generator2.screens.scripting.dialog.DialogDeleteRename
 import com.example.generator2.screens.scripting.dialog.DialogSaveAs
-import com.example.generator2.screens.scripting.ui.ScriptConsole
 import com.example.generator2.vm.StateCommandScript
-import com.example.generator2.screens.mainscreen4.VMMain4
-import com.example.generator2.screens.scripting.VMScripting
 import java.util.*
 
 val refresh = mutableStateOf(0)

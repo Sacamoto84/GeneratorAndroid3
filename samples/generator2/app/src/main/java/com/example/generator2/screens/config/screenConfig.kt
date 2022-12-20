@@ -1,13 +1,11 @@
 package com.example.generator2.screens.config
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -16,26 +14,21 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.generator2.R
 import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.firebase.ConfigLoginScreen
-import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.theme.colorLightBackground2
-import com.example.generator2.vm.LiveConstrain
-import com.example.generator2.vm.LiveData
-import com.example.generator2.vm.StateCommandScript
-import kotlinx.coroutines.Dispatchers
+import com.example.generator2.data.LiveConstrain
+import com.example.generator2.data.LiveData
+import com.example.generator2.screens.config.vm.VMConfig
+import com.example.generator2.screens.config.vm.progressMetadata
+import com.example.generator2.screens.config.vm.strMetadata
+import com.example.generator2.screens.config.vm.strMetadataError
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.update
 
 
 val modifierGreenButton = Modifier
@@ -214,14 +207,16 @@ fun ScreenConfig(
 
                 val value0 = LiveData.volume0.collectAsState()
                 editConfig(Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
-                    onDone = {LiveData.volume0.value = it
+                    onDone = {
+                        LiveData.volume0.value = it
                         vm.toastSaveVolume()
                         vm.saveVolume()
                         })
 
                 val value1 = LiveData.volume1.collectAsState()
                 editConfig(Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
-                    onDone = {LiveData.volume1.value = it
+                    onDone = {
+                        LiveData.volume1.value = it
                         vm.toastSaveVolume()
                         vm.saveVolume()
                     } )

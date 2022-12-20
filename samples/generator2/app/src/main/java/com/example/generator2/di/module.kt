@@ -7,7 +7,6 @@ import com.example.generator2.backup.Backup
 import com.example.generator2.screens.firebase.Firebas
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import com.example.generator2.util.UtilsKT
-import com.example.generator2.vm.Hub
 import com.example.generator2.vm.Script
 import dagger.Module
 import dagger.Provides

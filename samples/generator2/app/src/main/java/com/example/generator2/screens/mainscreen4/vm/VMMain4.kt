@@ -1,4 +1,4 @@
-package com.example.generator2.screens.mainscreen4
+package com.example.generator2.screens.mainscreen4.vm
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -6,16 +6,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.generator2.*
-import com.example.generator2.audio_device.AudioDevice
-import com.example.generator2.backup.Backup
-import com.example.generator2.console.Console2
-import com.example.generator2.screens.firebase.Firebas
-import com.example.generator2.screens.scripting.ui.ScriptKeyboard
+import com.example.generator2.element.Console2
 import com.example.generator2.util.Utils
-import com.example.generator2.util.UtilsKT
-import com.example.generator2.vm.Hub
-import com.example.generator2.vm.LiveData
-import com.example.generator2.vm.Script
+import com.example.generator2.di.Hub
+import com.example.generator2.data.LiveData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import flipagram.assetcopylib.AssetCopier

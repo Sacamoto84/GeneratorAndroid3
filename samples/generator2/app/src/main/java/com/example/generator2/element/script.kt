@@ -1,10 +1,8 @@
 package com.example.generator2.vm
 
 import androidx.compose.runtime.*
-import androidx.lifecycle.viewModelScope
-import com.example.generator2.screens.consoleLog
+import com.example.generator2.data.LiveData
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.update
 
 /*
@@ -147,7 +145,8 @@ class Script() {
     @OptIn(DelicateCoroutinesApi::class)
     fun log(str: String) { //
 
-        GlobalScope.launch(Dispatchers.Main) { //consoleLog.println(str)
+        GlobalScope.launch(Dispatchers.Main) {
+          //consoleLog.println(str)
         }
 
     }

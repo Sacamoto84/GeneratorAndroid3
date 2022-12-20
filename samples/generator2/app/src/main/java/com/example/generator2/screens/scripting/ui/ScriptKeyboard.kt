@@ -27,13 +27,10 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.generator2.screens.mainscreen4.TemplateButtonBottomBar
-import com.example.generator2.screens.mainscreen4.VMMain4
-import com.example.generator2.screens.scripting.VMScripting
 import com.example.generator2.vm.Script
 import com.example.generator2.theme.NoRippleTheme
 import com.example.generator2.theme.colorDarkBackground
-import com.example.generator2.vm.LiveData
+import com.example.generator2.data.LiveData
 import java.util.*
 
 //Экраны для нижнего меню

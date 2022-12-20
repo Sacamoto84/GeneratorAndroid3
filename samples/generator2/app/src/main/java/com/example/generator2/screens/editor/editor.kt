@@ -21,7 +21,7 @@ import com.example.generator2.R
 import com.example.generator2.screens.editor.dialog.DialogNew
 import com.example.generator2.screens.editor.ui.*
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 
 private val sizeCanvaChar = 8f
 private val strokeWidth = 6f

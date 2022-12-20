@@ -20,19 +20,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.PopupProperties
 import com.example.generator2.itemList
-import com.example.generator2.screens.mainscreen4.VMMain4
-import com.example.generator2.vm.LiveData
+import com.example.generator2.data.LiveData
 
 object UIspinner {
 
-    @SuppressLint("StateFlowValueCalledInComposition")
+    @SuppressLint("ModifierParameter")
     @Composable
     fun Spinner(
         CH: String,
         Mod: String,
-        transparrent: Boolean = false,
-        modifier: Modifier = Modifier,
-        global: VMMain4
+        transparent: Boolean = false,
+        modifier: Modifier = Modifier
     ) {
 
         val expanded = remember { mutableStateOf(false) }
@@ -80,7 +78,7 @@ object UIspinner {
                 .clickable {
                     expanded.value = !expanded.value
                 }
-                .background(color = if (transparrent) Color(0x00000000) else Color(0xFF13161B)),
+                .background(color = if (transparent) Color(0x00000000) else Color(0xFF13161B)),
                 //horizontalAlignment = Alignment.CenterHorizontally,
                 verticalAlignment = Alignment.CenterVertically
                 //,
@@ -100,7 +98,7 @@ object UIspinner {
                 DropdownMenu(
                     expanded = expanded.value,
                     onDismissRequest = { expanded.value = false },
-                    modifier = Modifier.background( color = if (transparrent) Color(0) else Color(0xFF454954)),
+                    modifier = Modifier.background( color = if (transparent) Color(0) else Color(0xFF454954)),
                     properties = PopupProperties()
 
                 )

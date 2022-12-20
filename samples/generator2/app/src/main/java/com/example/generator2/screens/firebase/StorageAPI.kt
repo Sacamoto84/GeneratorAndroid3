@@ -2,6 +2,9 @@ package com.example.generator2.screens.config
 
 import android.util.Log
 import com.example.generator2.backup.Backup
+import com.example.generator2.screens.config.vm.progressMetadata
+import com.example.generator2.screens.config.vm.strMetadata
+import com.example.generator2.screens.config.vm.strMetadataError
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.File

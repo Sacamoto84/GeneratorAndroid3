@@ -1,10 +1,7 @@
-package com.example.generator2.vm
+package com.example.generator2.data
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import com.example.generator2.itemList
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 
 object LiveData {
 
@@ -41,15 +38,14 @@ object LiveData {
         var itemlistFM: ArrayList<itemList> = ArrayList() //Создать список
 
         var mono       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
-        var invert     = MutableStateFlow<Boolean>(false) //Инверсия фазы во втором канале
+        var invert     = MutableStateFlow<Boolean>(false) //Инверсия сигнала во втором канале, только при моно
 
+        var shuffle    = MutableStateFlow<Boolean>(false) //меняем левый и правый канал в стерео режиме
 
         var link       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
 
 
-
-
-    }
+}
 
 
 

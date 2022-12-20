@@ -340,7 +340,7 @@ class AppFileManager(packageName: String) : FileManager, ZipManager, EncryptionM
     private fun addFolderToZip(path: String, srcFolder: String, zip: ZipOutputStream) {
         val folder = File(srcFolder)
         if (folder.list() != null)
-            for (fileName in folder.list()) {
+            for (fileName in folder.list()!!) {
                 if (path == "") {
                     addFileToZip(folder.name, "$srcFolder/$fileName", zip)
                 } else {

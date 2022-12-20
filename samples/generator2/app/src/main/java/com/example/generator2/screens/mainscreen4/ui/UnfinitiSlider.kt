@@ -43,7 +43,7 @@ fun InfinitySlider(
         icrementalAngle = ValueRemember.value!!
     }
 
-    var lastAngle = 0f //При старте устанавливаем стартовый угол
+    //var lastAngle = 0f //При старте устанавливаем стартовый угол
 
     var offX by remember { mutableStateOf(0f) }    //Смещени, координаты текущего начала Box
 

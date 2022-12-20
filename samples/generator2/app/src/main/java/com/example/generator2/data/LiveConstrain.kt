@@ -1,8 +1,6 @@
-package com.example.generator2.vm
+package com.example.generator2.data
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 
 object LiveConstrain {
 

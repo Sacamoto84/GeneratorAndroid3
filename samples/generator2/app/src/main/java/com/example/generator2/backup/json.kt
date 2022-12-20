@@ -1,56 +1,112 @@
 package com.example.generator2.backup
 
 import android.content.Context
-import com.example.generator2.vm.LiveConstrain
-import com.example.generator2.vm.LiveData
+import com.example.generator2.data.LiveConstrain
+import com.example.generator2.data.LiveData
 import com.google.gson.Gson
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.google.gson.annotations.SerializedName
 import java.io.File
 
-data class DataJsonVolume(var volume0: Float = 0f, var volume1: Float = 0f)
+data class DataJsonVolume(
+    @SerializedName("volume0")
+    var volume0: Float = 0f,
+    @SerializedName("volume1")
+    var volume1: Float = 0f
+)
 
 data class DataJsonConstrain(
+    @SerializedName("sensetingSliderCr")
     var sensetingSliderCr: Float = 0f,
+
+    @SerializedName("sensetingSliderFmDev")
     var sensetingSliderFmDev: Float = 0f,
+
+    @SerializedName("sensetingSliderFmBase")
     var sensetingSliderFmBase: Float = 0f,
+
+    @SerializedName("sensetingSliderAmFm")
     var sensetingSliderAmFm: Float = 0f,
+
+    @SerializedName("minCR")
     var minCR: Float = 0f,
+
+    @SerializedName("maxCR")
     var maxCR: Float = 0f,
+
+    @SerializedName("minModAmFm")
     var minModAmFm: Float = 0f,
+
+    @SerializedName("maxModAmFm")
     var maxModAmFm: Float = 0f,
+
+    @SerializedName("minFMBase")
     var minFMBase: Float = 0f,
+
+    @SerializedName("maxFMBase")
     var maxFMBase: Float = 0f,
+
+    @SerializedName("minFMDev")
     var minFMDev: Float = 0f,
+
+    @SerializedName("maxFMDev")
     var maxFMDev: Float = 0f,
 )
 
 data class DataJsonConfig(
+
+    @SerializedName("ch1_EN")
     var ch1_EN: Boolean = false,
+    @SerializedName("ch1_Carrier_Filename")
     var ch1_Carrier_Filename: String = "Sine",
+    @SerializedName("ch1_Carrier_Fr")
     var ch1_Carrier_Fr: Float = 400.0f,
+    @SerializedName("ch1_AM_EN")
     var ch1_AM_EN: Boolean = false,
+    @SerializedName("ch1_AM_Filename")
     var ch1_AM_Filename: String = "09_Ramp",
+    @SerializedName("ch1_AM_Fr")
     var ch1_AM_Fr: Float = 8.7f,
+    @SerializedName("ch1_FM_EN")
     var ch1_FM_EN: Boolean = false,
+    @SerializedName("ch1_FM_Filename")
     var ch1_FM_Filename: String = "06_CHIRP",
+    @SerializedName("ch1_FM_Base")
     var ch1_FM_Base: Float = 2500f,
+    @SerializedName("ch1_FM_Dev")
     var ch1_FM_Dev: Float = 1100f,
+    @SerializedName("ch1_FM_Fr")
     var ch1_FM_Fr: Float = 5.1f,
 
+    @SerializedName("ch2_EN")
     var ch2_EN: Boolean = false,
+    @SerializedName("ch2_Carrier_Filename")
     var ch2_Carrier_Filename: String = "Sine",
+    @SerializedName("ch2_Carrier_Fr")
     var ch2_Carrier_Fr: Float = 2000.0f,
+    @SerializedName("ch2_AM_EN")
     var ch2_AM_EN: Boolean = false,
+    @SerializedName("ch2_AM_Filename")
     var ch2_AM_Filename: String = "09_Ramp",
+    @SerializedName("ch2_AM_Fr")
     var ch2_AM_Fr: Float = 8.7f,
+    @SerializedName("ch2_FM_EN")
     var ch2_FM_EN: Boolean = false,
+    @SerializedName("ch2_FM_Filename")
     var ch2_FM_Filename: String = "06_CHIRP",
+    @SerializedName("ch2_FM_Base")
     var ch2_FM_Base: Float = 2500f,
+    @SerializedName("ch2_FM_Dev")
     var ch2_FM_Dev: Float = 1100f,
+    @SerializedName("ch2_FM_Fr")
     var ch2_FM_Fr: Float = 5.1f,
 
+    @SerializedName("mono")
     var mono: Boolean = false,
+    @SerializedName("invert")
     var invert: Boolean = false,
+
+    @SerializedName("shuffle")
+    var shuffle: Boolean = false,
 
     )
 
@@ -139,6 +195,7 @@ class Json(val context: Context) {
         print("saveJsonConfig..")
 
         val dataJsonConstrain = DataJsonConfig(
+
             ch1_EN = LiveData.ch1_EN.value,
             ch1_Carrier_Filename = LiveData.ch1_Carrier_Filename.value,
             ch1_Carrier_Fr = LiveData.ch1_Carrier_Fr.value,
@@ -165,6 +222,8 @@ class Json(val context: Context) {
 
             mono = LiveData.mono.value,
             invert = LiveData.invert.value,
+            shuffle = LiveData.shuffle.value,
+
         )
         val jsonString = Gson().toJson(dataJsonConstrain)  // json string
         File(iniCurrentConfig).writeText(jsonString)
@@ -210,6 +269,7 @@ class Json(val context: Context) {
 
         LiveData.mono.value = dataJsonVolume.mono
         LiveData.invert.value = dataJsonVolume.invert
+        LiveData.shuffle.value = dataJsonVolume.shuffle
 
         println("ok")
     }

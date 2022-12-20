@@ -25,7 +25,7 @@ private val DarkColorPalette = darkColors(
 
 
 @Composable
-fun Generator2Theme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
+fun Generator2Theme(content: @Composable () -> Unit) {
     val colors = DarkColorPalette
 
     MaterialTheme(

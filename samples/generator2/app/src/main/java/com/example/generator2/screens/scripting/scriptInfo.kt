@@ -1,9 +1,8 @@
 package com.example.generator2.screens.scripting
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
-import com.example.generator2.console.Console2
+import com.example.generator2.element.Console2
 
 //Экран описания языка
 @Composable

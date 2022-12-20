@@ -1,4 +1,4 @@
-package com.example.generator2.console
+package com.example.generator2.element
 
 //import androidx.compose.runtime.*
 //import androidx.compose.runtime.R
@@ -13,7 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.Font
@@ -208,8 +207,7 @@ class Console2 {
 
                             for (i in 0 until s) {
 
-                                val colorSelect =
-                                    if (SelectLine.value == index) Color.Magenta else Color.DarkGray
+                                //val colorSelect = if (SelectLine.value == index) Color.Magenta else Color.DarkGray
 
                                 Box(
                                     Modifier.fillMaxWidth() //.background(colorSelect)

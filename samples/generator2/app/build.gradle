@@ -246,6 +246,10 @@ dependencies {
 
     implementation 'com.github.yagmurerdogan:Toastic:1.0.1'
 
+    //Поддержка md
+    //https://github.com/jeziellago/compose-markdown
+    implementation 'com.github.jeziellago:compose-markdown:0.3.1'
+
 }
 
 

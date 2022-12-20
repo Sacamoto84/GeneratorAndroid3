@@ -11,10 +11,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.generator2.R
-import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.vm.StateCommandScript
 import com.example.generator2.screens.scripting.ui.RegisterViewDraw
-import com.example.generator2.screens.ui.ScriptTable
+import com.example.generator2.screens.scripting.ui.ScriptTable
 import com.example.generator2.theme.colorLightBackground
 
 

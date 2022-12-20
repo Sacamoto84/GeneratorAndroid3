@@ -272,14 +272,14 @@ class ScriptItem {
 
 }
 
-@Preview
-@Composable
-fun Xxx_preview() {
-    val items = ScriptItem()
-    Column() {
+//@Preview
+//@Composable
+//fun Xxx_preview() {
+//    val items = ScriptItem()
+//    Column() {
 //        items.Draw("CH1 CR ON")
 //        items.Draw("CH1 CR ON")
 //        items.Draw("CH1 CR ON")
 //        items.Draw("CH1 CR ON")
-    }
-}
+//    }
+//}

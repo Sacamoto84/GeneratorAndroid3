@@ -19,9 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.generator2.R
-import com.example.generator2.screens.mainscreen4.VMMain4
 import com.example.generator2.screens.scripting.VMScripting
-import com.example.generator2.screens.ui.refresh
+import com.example.generator2.screens.scripting.ui.refresh
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground
 import libs.MToast

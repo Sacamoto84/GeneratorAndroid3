@@ -11,8 +11,6 @@ import androidx.compose.ui.unit.dp
 //Ширина переключателей
 val ms4SwitchWidth = 72.dp
 
-
-
 val modifierInfinitySlider =
     Modifier
         .padding(start = 8.dp)

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.generator2.R
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.screens.mainscreen4.VMMain4
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.vm.StateCommandScript
 import kotlin.system.exitProcess
 

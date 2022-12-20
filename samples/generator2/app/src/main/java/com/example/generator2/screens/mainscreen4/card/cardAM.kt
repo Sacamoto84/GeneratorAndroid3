@@ -12,18 +12,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.example.generator2.data.LiveConstrain
+import com.example.generator2.data.LiveData
+import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
+import com.example.generator2.screens.mainscreen4.ui.UIspinner
+import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.theme.colorLightBackground2
-import com.example.generator2.screens.mainscreen4.ui.UIspinner
-import com.example.generator2.screens.mainscreen4.VMMain4
-import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
-import com.example.generator2.vm.LiveConstrain
-import com.example.generator2.vm.LiveData
 import libs.modifier.noRippleClickable
 
 
 @Composable
-fun CardAM(str: String = "CH0", global: VMMain4) {
+fun CardAM(str: String = "CH0") {
 
     val amEN: State<Boolean?> = if (str == "CH0") {
         LiveData.ch1_AM_EN.collectAsState()
@@ -65,7 +65,6 @@ fun CardAM(str: String = "CH0", global: VMMain4) {
             ) {
 
             }
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
             var expanded by remember { mutableStateOf(false)}
@@ -110,8 +109,6 @@ fun CardAM(str: String = "CH0", global: VMMain4) {
                 }
             }
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
             InfinitySlider(
                 value = amFr.value,
                 sensing = if (amFr.value!! < 10.0F) LiveConstrain.sensetingSliderAmFm.value else LiveConstrain.sensetingSliderAmFm.value * 10f,
@@ -130,28 +127,12 @@ fun CardAM(str: String = "CH0", global: VMMain4) {
                 str,
                 "AM",
                 modifier = Modifier.padding(top = 0.dp, start = 8.dp, end = 8.dp).wrapContentWidth()
-                    .clip(shape = RoundedCornerShape(4.dp)),
-                global = global
+                    .clip(shape = RoundedCornerShape(4.dp))
             )
-
 
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-
-        //        Slider(
-        //            valueRange = 0.1f..100f,
-        //            value = amFr.value!!,
-        //            onValueChange = {
-        //                if (str == "CH0") Global.ch1_AM_Fr.value =
-        //                    it else Global.ch2_AM_Fr.value = it
-        //            },
-        //            modifier = Modifier
-        //                .fillMaxWidth()
-        //                .padding(start = 8.dp, end = 8.dp),
-        //            colors = SliderDefaults.colors(thumbColor = Color.LightGray)
-        //        )
-
 
     } //}
 }
