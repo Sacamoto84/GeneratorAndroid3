@@ -244,6 +244,57 @@ Java_com_example_generator2_PlaybackEngine_native_1resetAllPhase(
 
 
 JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setShuffle(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jboolean value) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setShuffle: %d", value);
+    shuffle = value;
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setEnL(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jboolean value) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setEnL: %d", value);
+    enL = value;
+}
+
+JNIEXPORT void JNICALL
+Java_com_example_generator2_PlaybackEngine_native_1setEnR(
+        JNIEnv *env,
+        jclass,
+        jlong engineHandle,
+        jboolean value) {
+
+    HelloOboeEngine *engine = reinterpret_cast<HelloOboeEngine *>(engineHandle);
+    if (engine == nullptr) {
+        LOGE("Engine handle is invalid, call createHandle() to create a new one");
+        return;
+    }
+
+    LOGI("JNI:setEnR: %d", value);
+    enR = value;
+}
+
+JNIEXPORT void JNICALL
 Java_com_example_generator2_PlaybackEngine_native_1setMono(
         JNIEnv *env,
         jclass,

@@ -9,9 +9,15 @@ _structure_ch CH2;
 
 bool Mono   = false; //Моно режим
 bool Invert = false; //Инверсия фазы
+bool shuffle = false; //Меняем местами левый и правый канал для стерео
+
+bool enL = true;
+bool enR = true;
 
 void setToMono()   { Mono = true;  } // Перевод в режим моно
 void setToStereo() { Mono = false; } // Перевод в режим стерео
+
+
 
 void resetAllPhase(){
     CH1.rC = 0; CH2.rC = 0; CH1.rAM = 0; CH2.rAM = 0; CH1.rFM = 0; CH2.rFM = 0;

@@ -42,6 +42,9 @@ object LiveData {
 
         var shuffle    = MutableStateFlow<Boolean>(false) //меняем левый и правый канал в стерео режиме
 
+        var enL  = MutableStateFlow<Boolean>(true)
+        var enR  = MutableStateFlow<Boolean>(true)
+
         var link       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
 
 

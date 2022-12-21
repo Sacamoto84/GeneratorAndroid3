@@ -58,6 +58,7 @@ extern _structure_ch CH2;
 
 extern bool Mono;
 extern bool Invert;
+extern bool shuffle; //Меняем местами левый и правый канал для стерео
 
 extern void setToMono();   // Перевод в режим моно
 extern void setToStereo(); // Перевод в режим стерео
@@ -65,5 +66,7 @@ extern void setToStereo(); // Перевод в режим стерео
 extern void resetCarrierPhase();    //Сброс фазы несущей
 extern void resetAllPhase();
 
+extern bool enL;
+extern bool enR;
 
 #endif

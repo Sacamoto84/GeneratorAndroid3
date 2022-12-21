@@ -92,6 +92,10 @@ class PlaybackEngine(val context: Context) {
     fun setMono(mono: Boolean) { if (mEngineHandle != 0L) native_setMono( mEngineHandle, mono ) }
     fun setInvertPhase(invert: Boolean) { if (mEngineHandle != 0L) native_setInvertPhase  ( mEngineHandle, invert ) }
 
+    fun setEnL(enL: Boolean)         {if (mEngineHandle != 0L) native_setEnL    ( mEngineHandle, enL ) }
+    fun setEnR(enR: Boolean)         {if (mEngineHandle != 0L) native_setEnR    ( mEngineHandle, enR ) }
+    fun setShuffle(shuffle : Boolean){if (mEngineHandle != 0L) native_setShuffle( mEngineHandle, shuffle ) }
+
     //Внешняя функция
     //Включалки
     fun setEN(CH: Int, EN: Boolean)    { if (mEngineHandle != 0L) native_setCH_EN  ( mEngineHandle, CH, EN ) }
@@ -125,8 +129,9 @@ class PlaybackEngine(val context: Context) {
     //Мои функции
     //Переключалка
 
-
-
+    private external fun native_setEnL           ( engineHandle: Long, value: Boolean)
+    private external fun native_setEnR           ( engineHandle: Long, value: Boolean)
+    private external fun native_setShuffle       ( engineHandle: Long, value: Boolean)
     private external fun native_resetAllPhase    ( engineHandle: Long)
     private external fun native_setInvertPhase   ( engineHandle: Long, invert: Boolean)
     private external fun native_setMono          ( engineHandle: Long, mono: Boolean)

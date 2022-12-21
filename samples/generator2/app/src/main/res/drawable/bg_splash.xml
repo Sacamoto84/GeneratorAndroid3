@@ -9,8 +9,6 @@
         android:height="192dp"
         android:gravity="center"
         >
-        <bitmap
-            android:src="@drawable/elec" />
 
     </item>
 </layer-list>

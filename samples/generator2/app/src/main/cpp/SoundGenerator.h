@@ -49,29 +49,60 @@ public:
         //CH2.Volume = 0.55F;
 
         if (!Mono) {
+            //stereo
             renderChanel(&CH1, numFrames);
             renderChanel(&CH2, numFrames);
 
-            for (int i = 0; i < numFrames; i++) {
-                audioData[i * 2] = CH1.mBuffer[i];
-                audioData[i * 2 + 1] = CH2.mBuffer[i];
-            }
+            //Нормальный режим
+            if (!shuffle)
+                for (int i = 0; i < numFrames; i++) {
+                    if (enL) audioData[i * 2]     = CH1.mBuffer[i]; else audioData[i * 2] = 0;
+                    if (enR) audioData[i * 2 + 1] = CH2.mBuffer[i]; else audioData[i * 2 + 1] = 0;
+                }
+            else
+                for (int i = 0; i < numFrames; i++) {
+                    if (enL) audioData[i * 2]     = CH2.mBuffer[i]; else audioData[i * 2] = 0;
+                    if (enR) audioData[i * 2 + 1] = CH1.mBuffer[i]; else audioData[i * 2 + 1] = 0;
+                }
+
+
         }
         else
         {
+            //Mono
             renderChanel(&CH1, numFrames);
+
             if (!Invert)
             {
+
                 for (int i = 0; i < numFrames; i++) {
-                    audioData[i * 2] = CH1.mBuffer[i];
-                    audioData[i * 2 + 1] = CH1.mBuffer[i];
+                    if (enL)
+                        audioData[i * 2] = CH1.mBuffer[i];
+                    else
+                        audioData[i * 2] = 0;
+
+                    if (enR)
+                        audioData[i * 2 + 1] = CH1.mBuffer[i];
+                    else
+                        audioData[i * 2 + 1] = 0;
                 }
+
             }
             else
             {
+                //Invert
                 for (int i = 0; i < numFrames; i++) {
-                    audioData[i * 2] = CH1.mBuffer[i];
-                    audioData[i * 2 + 1] = CH1.mBuffer[i]* (-1.0f);
+
+                    if (enL)
+                        audioData[i * 2] = CH1.mBuffer[i];
+                    else
+                        audioData[i * 2] = 0;
+
+                    if (enR)
+                        audioData[i * 2 + 1] = CH1.mBuffer[i]* (-1.0f);
+                    else
+                        audioData[i * 2 + 1] = 0;
+
                 }
             }
         }
@@ -151,6 +182,9 @@ public:
 
         setToStereo();
         resetAllPhase();
+
+        enL = true;
+        enR = true;
 
     }
 

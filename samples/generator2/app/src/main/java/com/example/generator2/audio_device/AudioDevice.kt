@@ -196,6 +196,10 @@ class AudioDevice(private var context: Context, var playbackEngine: PlaybackEngi
         playbackEngine.setMono(LiveData.mono.value)
         playbackEngine.setInvertPhase(LiveData.invert.value)
 
+        playbackEngine.setEnL(LiveData.enL.value)
+        playbackEngine.setEnR(LiveData.enR.value)
+        playbackEngine.setShuffle(LiveData.shuffle.value)
+
     }
 
 }

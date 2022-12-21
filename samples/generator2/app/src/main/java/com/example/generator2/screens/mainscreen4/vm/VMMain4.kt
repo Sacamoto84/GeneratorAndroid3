@@ -226,6 +226,18 @@ class VMMain4 @Inject constructor(
             hub.audioDevice.playbackEngine.setInvertPhase(it)
         } }
 
+        viewModelScope.launch(dispatchers) { LiveData.enL.collect {
+            hub.audioDevice.playbackEngine.setEnL(it)
+        } }
+
+        viewModelScope.launch(dispatchers) { LiveData.enR.collect {
+            hub.audioDevice.playbackEngine.setEnR(it)
+        } }
+
+        viewModelScope.launch(dispatchers) { LiveData.shuffle.collect {
+            hub.audioDevice.playbackEngine.setShuffle(it)
+        } }
+
     }
 
 

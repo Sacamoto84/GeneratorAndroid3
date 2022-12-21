@@ -108,6 +108,12 @@ data class DataJsonConfig(
     @SerializedName("shuffle")
     var shuffle: Boolean = false,
 
+    @SerializedName("enL")
+    var enL: Boolean = true,
+
+    @SerializedName("enR")
+    var enR: Boolean = true,
+
     )
 
 
@@ -223,7 +229,8 @@ class Json(val context: Context) {
             mono = LiveData.mono.value,
             invert = LiveData.invert.value,
             shuffle = LiveData.shuffle.value,
-
+            enL = LiveData.enL.value,
+            enR = LiveData.enR.value,
         )
         val jsonString = Gson().toJson(dataJsonConstrain)  // json string
         File(iniCurrentConfig).writeText(jsonString)
@@ -270,6 +277,9 @@ class Json(val context: Context) {
         LiveData.mono.value = dataJsonVolume.mono
         LiveData.invert.value = dataJsonVolume.invert
         LiveData.shuffle.value = dataJsonVolume.shuffle
+
+        LiveData.enL.value = dataJsonVolume.enL
+        LiveData.enR.value = dataJsonVolume.enR
 
         println("ok")
     }
