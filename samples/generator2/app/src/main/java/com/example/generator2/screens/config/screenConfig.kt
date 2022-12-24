@@ -20,10 +20,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.generator2.R
 import com.example.generator2.screens.config.DefScreenConfig.caption
-import com.example.generator2.screens.firebase.ConfigLoginScreen
+import com.example.generator2.screens.config.molecule.ConfigLoginScreen
 import com.example.generator2.theme.colorLightBackground
 import com.example.generator2.data.LiveConstrain
 import com.example.generator2.data.LiveData
+import com.example.generator2.screens.config.molecule.ConfigConstrain
 import com.example.generator2.screens.config.vm.VMConfig
 import com.example.generator2.screens.config.vm.progressMetadata
 import com.example.generator2.screens.config.vm.strMetadata
@@ -102,11 +103,7 @@ fun ScreenConfig(
                         else "Time file creation : ${f.str}\nsize: ${f.size} byte"
                     }, label = "Create Local"
                 )
-                Config_Green_button(
-                    modifierGreenButton.weight(1f),
-                    onClick = { vm.backup.unZipFileFromCache() },
-                    label = "UnZip Local"
-                )
+                Config_Green_button(modifierGreenButton.weight(1f), onClick = { vm.backup.unZipFileFromCache() }, label = "UnZip Local" )
             }
 
             //При авторизации, есть токен
@@ -181,27 +178,7 @@ fun ScreenConfig(
 
             Divider()
 
-            //CR min max
-            Row(modifier = Modifier.fillMaxWidth()) {
-
-                val minCR = LiveConstrain.minCR
-                editConfig(Modifier.weight(1f), "min CR", value = minCR, min = 50f, max = 10000f, toInt = true,
-                    onDone = {
-                        LiveConstrain.minCR.value = it
-                        vm.toastText("min CR Saved")
-                        vm.saveConstrain()
-                    })
-
-                val maxCR = LiveConstrain.maxCR
-                editConfig(Modifier.weight(1f), "max CR", value = maxCR, min = 50f, max = 10000f, toInt = true,
-                    onDone = {
-                        LiveConstrain.maxCR.value = it
-                        vm.toastText("max CR Saved")
-                        vm.saveConstrain()
-                    })
-            }
-
-
+            ConfigConstrain(vm)
 
             Row(modifier = Modifier.fillMaxWidth()) {
 

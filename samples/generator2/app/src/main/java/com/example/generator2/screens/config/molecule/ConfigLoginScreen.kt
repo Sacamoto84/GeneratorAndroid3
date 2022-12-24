@@ -1,4 +1,4 @@
-package com.example.generator2.screens.firebase
+package com.example.generator2.screens.config.molecule
 
 import android.annotation.SuppressLint
 import android.util.Log
@@ -31,6 +31,7 @@ import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.config.DefScreenConfig.textSizeGreenButton
 import com.example.generator2.screens.config.vm.VMConfig
 import com.example.generator2.screens.config.readMetaBackupFromFirebase
+import com.example.generator2.screens.firebase.LoadingState
 import com.example.generator2.theme.colorLightBackground
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -77,7 +78,7 @@ fun ConfigLoginScreen(vm: VMConfig) {
                 //vm.toastSuccess()
                 state.msg = ""
             }
-            LoadingState.Status.FAILED  -> {
+            LoadingState.Status.FAILED -> {
                 var s = state.msg ?: "Error"
                 s = if (s.indexOf("Error 403") != -1) "Error 403 Forbidden, please use VPN"
                 else s
