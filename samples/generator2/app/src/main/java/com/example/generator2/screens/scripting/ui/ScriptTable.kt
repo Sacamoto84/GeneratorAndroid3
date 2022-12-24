@@ -36,9 +36,13 @@ fun ScriptTable(vm: VMScripting) {
 
     Box(modifier = Modifier.fillMaxSize(1f)) {
         Column() {
-            Row( modifier = Modifier.fillMaxSize().weight(1f) )
+            Row( modifier = Modifier
+                .fillMaxSize()
+                .weight(1f) )
             {
-                Box( modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.BottomEnd
+                Box( modifier = Modifier
+                    .fillMaxSize()
+                    .weight(1f), contentAlignment = Alignment.BottomEnd
                 ) {
                     if (vm.hub.script.pc_ex > vm.hub.script.list.lastIndex) vm.hub.script.pc_ex =
                         vm.hub.script.list.lastIndex
@@ -48,19 +52,29 @@ fun ScriptTable(vm: VMScripting) {
                 }
 
                 Box(
-                    modifier = Modifier.fillMaxHeight().width(160.dp).background(Color.LightGray), contentAlignment = Alignment.TopCenter )
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(160.dp)
+                        .background(Color.LightGray), contentAlignment = Alignment.TopCenter )
                 {
 
                     Column(
-                        modifier = Modifier.fillMaxHeight().background(Color.DarkGray), verticalArrangement = Arrangement.SpaceEvenly )
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(Color.DarkGray), verticalArrangement = Arrangement.SpaceEvenly )
                     {
 
                         if (vm.hub.script.state != StateCommandScript.ISEDITTING) {
 
+                            Spacer(modifier = Modifier.height(8.dp))
                             //Кнопка New
-                            TemplateButtonBottomBar(str = "New",   onClick = { vm.bNewClick() })
-                            TemplateButtonBottomBar( str = "Edit", onClick = { vm.bEditClick() } )
+                            OutlinedButtonTextAndIcon(  str = "New",   onClick = { vm.bNewClick() }, resId = R.drawable.page2, paddingStartText = 10.dp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon(  str = "Edit",   onClick = { vm.bEditClick()}, resId = R.drawable.edit,
+                            paddingStartIcon = 3.dp, paddingStartText = 9.dp
+                            )
 
+                            Spacer(modifier = Modifier.height(4.dp))
                             // Создать список названий файлов из папки /Script
                             if (vm.hub.script.state == StateCommandScript.ISTOPPING) {
                                 println("Читаем файлы")
@@ -70,27 +84,40 @@ fun ScriptTable(vm: VMScripting) {
 
                             //Отображение списка названия скриптов
                             Column(
-                                Modifier.fillMaxSize().weight(1f).padding(4.dp).background(Color(0x8B1D1C1C)).border(1.dp, Color.DarkGray).verticalScroll(rememberScrollState())
+                                Modifier
+                                    .fillMaxSize()
+                                    .weight(1f)
+                                    .padding(4.dp)
+                                    .background(Color(0x8B1D1C1C))
+                                    .border(1.dp, Color.DarkGray)
+                                    .verticalScroll(rememberScrollState())
                             ) {
                                 Spacer(modifier = Modifier.height(4.dp))
                                 for (index in files.indices) {
                                     Text(
                                         text = files[index], color = Color.DarkGray,
-                                        modifier = Modifier.fillMaxWidth().height(32.dp).padding(start = 8.dp, top = 4.dp, end = 4.dp).clip(RoundedCornerShape(8.dp)).background(Color.LightGray)
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(32.dp)
+                                            .padding(start = 8.dp, top = 4.dp, end = 4.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color.LightGray)
                                             .combinedClickable(
                                                 onClick = {
 
-                                                vm.hub.script.command(StateCommandScript.STOP)
-                                                val l = vm.hub.utils.readScriptFileToList(files[index])
-                                                vm.hub.script.list.clear()
-                                                vm.hub.script.list.addAll(l)
+                                                    vm.hub.script.command(StateCommandScript.STOP)
+                                                    val l =
+                                                        vm.hub.utils.readScriptFileToList(files[index])
+                                                    vm.hub.script.list.clear()
+                                                    vm.hub.script.list.addAll(l)
 
-                                            }, onLongClick = {
+                                                }, onLongClick = {
 
-                                                vm.openDialogDeleteRename.value = true
-                                                filename = files[index]
+                                                    vm.openDialogDeleteRename.value = true
+                                                    filename = files[index]
 
-                                            }).offset(0.dp, (0).dp), fontFamily = FontFamily(Font(R.font.jetbrains)), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, fontSize = 18.sp
+                                                })
+                                            .offset(0.dp, (0).dp), fontFamily = FontFamily(Font(R.font.jetbrains)), fontWeight = FontWeight.Bold, textAlign = TextAlign.Center, fontSize = 18.sp
                                     )
                                 }
                             } //
@@ -101,16 +128,30 @@ fun ScriptTable(vm: VMScripting) {
                             ConsoleLogDraw(Modifier.weight(0.4f))
                         }
 
+
+
                         if (vm.hub.script.state == StateCommandScript.ISEDITTING) {
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Back",    onClick = { vm.hub.script.command(StateCommandScript.STOP) })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Save",    onClick = { vm.bSaveClick() })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Save As", onClick = { vm.openDialogSaveAs.value = true })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Add",     onClick = { vm.bAddClick() })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Add END", onClick = { vm.bAddEndClick() })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Delete",  onClick = { vm.bDeleteClick() })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Up",      onClick = { vm.bUpClick() })
-                            TemplateButtonBottomBar( modifier = Modifier.height(50.dp), str = "Down",    onClick = { vm.bDownClick() })
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Back",    onClick = { vm.hub.script.command(StateCommandScript.STOP) }, resId = R.drawable.left)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Save",    onClick = { vm.bSaveClick() }, resId = R.drawable.save)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Save As", onClick = { vm.openDialogSaveAs.value = true }, resId = R.drawable.save_as)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Add",     onClick = { vm.bAddClick() }, resId = R.drawable.add)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Add END", onClick = { vm.bAddEndClick() }, resId = R.drawable.end,
+                            paddingStartIcon = 4.dp, paddingStartText = 12.dp)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Delete",  onClick = { vm.bDeleteClick() } , resId = R.drawable.delete)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Up",      onClick = { vm.bUpClick() }, resId = R.drawable.up)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            OutlinedButtonTextAndIcon( str = "Down",    onClick = { vm.bDownClick() }, resId = R.drawable.down)
+                            Spacer(modifier = Modifier.fillMaxHeight().weight(1f))
                         }
+
+
                     }
                 }
             }

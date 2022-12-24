@@ -66,10 +66,10 @@ fun CardCommander( vm : VMMain4) {
                     }
                 }
             }
-            Spacer(modifier = Modifier.width(8.dp))
+            //Spacer(modifier = Modifier.width(8.dp))
 
-            IconButton(onClick = { LiveData.invert.value = !LiveData.invert.value }) {
-                Icon(painter = painterResource(R.drawable.circle_small), contentDescription = null, tint = Color.LightGray)
+            IconButton(onClick = { vm.hub.audioDevice.playbackEngine.resetAllPhase() }) {
+                Icon(painter = painterResource(R.drawable.reset_phase), contentDescription = null, tint = Color.LightGray)
             }
 
         }
