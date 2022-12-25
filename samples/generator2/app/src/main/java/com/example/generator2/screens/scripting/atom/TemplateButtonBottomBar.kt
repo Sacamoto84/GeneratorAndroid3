@@ -1,4 +1,4 @@
-package com.example.generator2.screens.scripting.ui
+package com.example.generator2.screens.scripting.atom
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.R
 import com.example.generator2.theme.colorDarkBackground
-
 
 @Composable
 fun TemplateButtonBottomBar(
@@ -46,7 +45,6 @@ fun OutlinedButtonTextAndIcon(
     backgroundColor: Color = colorDarkBackground,
     contentColor: Color = Color.White,
     resId: Int, //Ресурс для анимации
-    size: Dp = 36.dp, //Размер анимации,
     paddingStart : Dp = 4.dp,
     paddingEnd : Dp = 4.dp,
     paddingStartText : Dp = 8.dp,

@@ -31,6 +31,7 @@ import com.example.generator2.vm.Script
 import com.example.generator2.theme.NoRippleTheme
 import com.example.generator2.theme.colorDarkBackground
 import com.example.generator2.data.LiveData
+import com.example.generator2.screens.scripting.atom.TemplateButtonBottomBar
 import java.util.*
 
 //Экраны для нижнего меню
@@ -127,10 +128,10 @@ class ScriptKeyboard(private val s: Script) {
     }
 
     @Composable
-    fun Core() {
-        println("Keyboard Core..start selectIndex:$selectIndex pc:${s.pc} list.lastIndex:${list.lastIndex}" )
+    fun Core(pc : () -> Int ) {
+
         if (selectIndex <  0 ) selectIndex = 0
-        if (s.pc < 0 ) s.pc = 0
+        if (pc() < 0 ) s.pc = 0
 
         if (selectIndex >  list.lastIndex ) selectIndex = list.lastIndex
         if (s.pc > list.lastIndex) s.pc = list.lastIndex
@@ -141,8 +142,8 @@ class ScriptKeyboard(private val s: Script) {
 
         when (route.value.route) {
             RouteKeyboardEnum.HOME       -> ScreenHOME()
-            RouteKeyboardEnum.NUMBER     -> ScreenNUMBERPAD(route.value.argument)
-            RouteKeyboardEnum.F          -> ScreenFPAD(route.value.argument)
+            RouteKeyboardEnum.NUMBER     -> ScreenNUMBERPAD { route.value.argument }
+            RouteKeyboardEnum.F          -> ScreenFPAD { route.value.argument }
             RouteKeyboardEnum.ONOFF      -> ScreenONOFF(route.value.argument)
             RouteKeyboardEnum.CRAMFM     -> ScreenCRAMFM(route.value.argument)
             RouteKeyboardEnum.CRAMValue  -> ScreenCRAMValue(route.value.argument)
@@ -153,9 +154,6 @@ class ScriptKeyboard(private val s: Script) {
             RouteKeyboardEnum.MODAM      -> ScreenMod(route.value.argument, "AM")
             RouteKeyboardEnum.MODFM      -> ScreenMod(route.value.argument, "FM")
         }
-
-
-        println("Keyboard Core..end" )
 
     }
 
@@ -357,20 +355,20 @@ class ScriptKeyboard(private val s: Script) {
 
     //Экран числовой клавиатуры
     @Composable
-    fun ScreenNUMBERPAD(arg: Int) {
+    fun ScreenNUMBERPAD(arg: () -> Int) {
 
-        while (listCommand.lastIndex < arg) {
+        while (listCommand.lastIndex < arg()) {
             listCommand.add("")
         }
 
-        var s: String = listCommand[arg]
+        var s: String = listCommand[arg()]
 
         list[selectIndex] = listCommandToText()
 
         Draw(k0 = {
             KeyX("1", onClick = {
                 s += "1"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
 
@@ -378,67 +376,67 @@ class ScriptKeyboard(private val s: Script) {
         }, k1 = {
             KeyX("2", onClick = {
                 s += "2"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k2 = {
             KeyX("3", onClick = {
                 s += "3"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k3 = {
             KeyX("DEL", onClick = {
                 s = s.dropLast(1)
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k4 = {
             KeyX("4", onClick = {
                 s += "4"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k5 = {
             KeyX("5", onClick = {
                 s += "5"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k6 = {
             KeyX("6", onClick = {
                 s += "6"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k7 = { KeyBack() }, k8 = {
             KeyX("7", onClick = {
                 s += "7"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k9 = {
             KeyX("8", onClick = {
                 s += "8"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k10 = {
             KeyX("9", onClick = {
                 s += "9"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k11 = { }, k12 = {
             KeyX(".", onClick = {
                 s += "."
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k13 = {
             KeyX("0", onClick = {
                 s += "0"
-                listCommandAddToIndex(arg, s)
+                listCommandAddToIndex(arg(), s)
                 list[selectIndex] = listCommandToText()
             })
         }, k14 = { }, k15 = { KeyEnter() })
@@ -446,45 +444,45 @@ class ScriptKeyboard(private val s: Script) {
 
     //Экран выбора регистра
     @Composable
-    fun ScreenFPAD(arg: Int) {
+    fun ScreenFPAD(arg: () -> Int) {
 
         Draw(k0 = {
             KeyX("F1", onClick = {
 
-                listCommandAddToIndex(arg, "F1")
+                listCommandAddToIndex(arg(), "F1")
                 list[selectIndex] = listCommandToText()
 
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k1 = {
             KeyX("F2", onClick = {
 
-                listCommandAddToIndex(arg, "F2")
+                listCommandAddToIndex(arg(), "F2")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k2 = {
             KeyX("F3", onClick = {
 
-                listCommandAddToIndex(arg, "F3")
+                listCommandAddToIndex(arg(), "F3")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
             })
         }, k3 = {
@@ -492,91 +490,91 @@ class ScriptKeyboard(private val s: Script) {
         }, k4 = {
             KeyX("F4", onClick = {
 
-                listCommandAddToIndex(arg, "F4")
+                listCommandAddToIndex(arg(), "F4")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k5 = {
             KeyX("F5", onClick = {
 
-                listCommandAddToIndex(arg, "F5")
+                listCommandAddToIndex(arg(), "F5")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k6 = {
             KeyX("F6", onClick = {
 
-                listCommandAddToIndex(arg, "F6")
+                listCommandAddToIndex(arg(), "F6")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k7 = { }, k8 = {
             KeyX("F7", onClick = {
 
-                listCommandAddToIndex(arg, "F7")
+                listCommandAddToIndex(arg(), "F7")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k9 = {
             KeyX("F8", onClick = {
 
-                listCommandAddToIndex(arg, "F8")
+                listCommandAddToIndex(arg(), "F8")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k10 = {
             KeyX("F9", onClick = {
 
-                listCommandAddToIndex(arg, "F9")
+                listCommandAddToIndex(arg(), "F9")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })
         }, k11 = { }, k12 = { }, k13 = {
             KeyX("F0", onClick = {
 
-                listCommandAddToIndex(arg, "F0")
+                listCommandAddToIndex(arg(), "F0")
                 list[selectIndex] = listCommandToText()
                 if (route.value.NoHomeRoute == null) {
                     routeTo(RouteKeyboard(0, RouteKeyboardEnum.HOME))
                     routeStack.clear()
                 } else {
-                    routeTo(RouteKeyboard(arg + 1, route.value.NoHomeRoute!!))
+                    routeTo(RouteKeyboard(arg() + 1, route.value.NoHomeRoute!!))
                 }
 
             })

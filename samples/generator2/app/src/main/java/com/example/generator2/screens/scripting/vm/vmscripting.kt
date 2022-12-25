@@ -1,7 +1,8 @@
-package com.example.generator2.screens.scripting
+package com.example.generator2.screens.scripting.vm
 
 import android.annotation.SuppressLint
 import android.content.Context
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.generator2.di.Hub
@@ -12,6 +13,7 @@ import libs.MToast
 import java.util.*
 import javax.inject.Inject
 
+@Stable
 @SuppressLint("StaticFieldLeak")
 @HiltViewModel
 class VMScripting @Inject constructor(

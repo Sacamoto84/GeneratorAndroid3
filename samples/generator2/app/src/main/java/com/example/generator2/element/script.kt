@@ -69,7 +69,7 @@ enum class StateCommandScript {
     ISRUNNING, ISPAUSE, ISTOPPING, ISEDITTING, //Сейчас режим редактирования
 }
 
-//Основной класс скриптовой системы
+@Stable
 class Script() {
 
     //╭─ Генератор ───────────────────────╮

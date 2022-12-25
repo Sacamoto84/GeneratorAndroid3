@@ -18,7 +18,8 @@ import androidx.compose.ui.unit.sp
 import com.example.generator2.*
 import com.example.generator2.R
 import com.example.generator2.screens.ConsoleLogDraw
-import com.example.generator2.screens.scripting.VMScripting
+import com.example.generator2.screens.scripting.vm.VMScripting
+import com.example.generator2.screens.scripting.atom.OutlinedButtonTextAndIcon
 import com.example.generator2.screens.scripting.dialog.DialogDeleteRename
 import com.example.generator2.screens.scripting.dialog.DialogSaveAs
 import com.example.generator2.vm.StateCommandScript
@@ -48,7 +49,8 @@ fun ScriptTable(vm: VMScripting) {
                         vm.hub.script.list.lastIndex
 
                     ScriptConsole(vm.hub.script.list, vm.hub.script.pc_ex, global = vm)
-                    Text(text = "PC:${vm.hub.script.pc_ex}", color = Color.Red)
+
+                    //Text(text = "PC:${vm.hub.script.pc_ex}", color = Color.Red)
                 }
 
                 Box(
@@ -160,10 +162,7 @@ fun ScriptTable(vm: VMScripting) {
             if (vm.openDialogDeleteRename.value) DialogDeleteRename( filename, vm)
 
             if (vm.hub.script.state == StateCommandScript.ISEDITTING) {
-                Column(
-                ) {
-                    vm.hub.keyboard.Core()
-                }
+                vm.hub.keyboard.Core {  vm.hub.script.pc_ex }
             }
         }
     }

@@ -12,41 +12,53 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.generator2.screens.mainscreen4.vm.VMMain4
-import com.example.generator2.screens.scripting.VMScripting
+import com.example.generator2.screens.scripting.vm.VMScripting
 
 
 //Блок регистров
 @Composable
-fun RegisterViewDraw(modifier: Modifier = Modifier, global: VMScripting) {
+fun RegisterViewDraw(global: VMScripting) {
     Box(
-        modifier = Modifier.padding(start = 6.dp, end = 6.dp)
-            .fillMaxWidth() //.background(Color.Red)
-            //.border(width = 2.dp, color = Color.White, shape = RoundedCornerShape(8.dp))
-            //.wrapContentHeight()
-            .then(modifier)
+        modifier = Modifier.padding(start = 6.dp, end = 6.dp).fillMaxWidth()
     ) {
         Column(
             Modifier.height(50.dp)
         ) {
-            Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                repeat(5) {
-                    ComposeBoxForF(it, Modifier.weight(1f), global = global)
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+
+                horizontalArrangement = Arrangement.SpaceBetween) {
+
+                ComposeBoxForF(0, modifier = Modifier.weight(1f), text = {  global.hub.script.f[0].toString() })
+                ComposeBoxForF(1, modifier = Modifier.weight(1f), text = {  global.hub.script.f[1].toString() })
+                ComposeBoxForF(2, modifier = Modifier.weight(1f), text = {  global.hub.script.f[2].toString() })
+                ComposeBoxForF(3, modifier = Modifier.weight(1f), text = {  global.hub.script.f[3].toString() })
+                ComposeBoxForF(4, modifier = Modifier.weight(1f), text = {  global.hub.script.f[4].toString() })
+
+
             }
 
-            Row(modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                repeat(5) {
-                    ComposeBoxForF(it + 5, Modifier.weight(1f), global = global)
-                }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+
+                horizontalArrangement = Arrangement.SpaceBetween) {
+
+                ComposeBoxForF(5, modifier = Modifier.weight(1f), text = {  global.hub.script.f[5].toString() })
+                ComposeBoxForF(6, modifier = Modifier.weight(1f), text = {  global.hub.script.f[6].toString() })
+                ComposeBoxForF(7, modifier = Modifier.weight(1f), text = {  global.hub.script.f[7].toString() })
+                ComposeBoxForF(8, modifier = Modifier.weight(1f), text = {  global.hub.script.f[8].toString() })
+                ComposeBoxForF(9, modifier = Modifier.weight(1f), text = {  global.hub.script.f[9].toString() })
+
+
             }
+
         }
     }
 }
 
 //Ячейка регистра
 @Composable
-private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: VMScripting) {
+private fun ComposeBoxForF(index: Int, text : () -> String , modifier: Modifier = Modifier) {
 
     Box(
         modifier = Modifier.padding(start = 1.dp, end = 1.dp).height(25.dp).fillMaxWidth()
@@ -73,8 +85,10 @@ private fun ComposeBoxForF(index: Int, modifier: Modifier = Modifier, global: VM
                 )
             }
 
+
+
             Text(
-                text = "${global.hub.script.f[index]}",
+                text = text(),
                 color = Color.White,
                 fontSize = 14.sp,
                 modifier = Modifier.fillMaxWidth(),

@@ -38,26 +38,28 @@ class ScriptItem {
     private var pairList = mutableStateListOf<PairTextAndColor>()
 
     @Composable
-    fun Draw(str: String, index: Int = 0, select: Boolean = false) {
+    fun Draw(str: () -> String, index: () -> Int, select: () -> Boolean) {
 
         println("Draw")
 
-
-
-        convertStringToPairTextAndColor(str, index)
+        convertStringToPairTextAndColor(str(), index())
 
         Box(
-            modifier = Modifier.fillMaxWidth()
-                .background(if (select) Color.Blue else Color.Transparent)
-        ) {
+            modifier = Modifier.fillMaxWidth().background(if (select()) Color.Blue else Color.Transparent)
+        )
+        {
             val s = pairList.size
             Row() {
 
                 for (i in 0 until s) {
                     Box(
                         modifier = Modifier.padding(1.dp).height(24.dp)
-                            .clip(shape = RoundedCornerShape(8.dp)).background(pairList[i].colorBg)
+                            .clip(shape = RoundedCornerShape(8.dp))
+                            .background(pairList[i].colorBg)
+
                     ) {
+
+
                         Text(
                             modifier = Modifier.padding(start = 4.dp, top = 2.dp, end = 4.dp)
                                 .offset(x = 0.dp, y = (-2).dp),
@@ -71,7 +73,11 @@ class ScriptItem {
                                 Font(R.font.jetbrains, FontWeight.Normal)
                             )
                         )
+
+
                     }
+
+
                 }
             }
         }

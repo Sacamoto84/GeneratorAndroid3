@@ -14,6 +14,7 @@ import com.example.generator2.R
 import com.example.generator2.vm.StateCommandScript
 import com.example.generator2.screens.scripting.ui.RegisterViewDraw
 import com.example.generator2.screens.scripting.ui.ScriptTable
+import com.example.generator2.screens.scripting.vm.VMScripting
 import com.example.generator2.theme.colorLightBackground
 
 

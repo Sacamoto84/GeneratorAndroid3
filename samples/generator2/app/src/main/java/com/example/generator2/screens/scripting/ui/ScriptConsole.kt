@@ -16,8 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import com.example.generator2.screens.ui.ScriptItem
-import com.example.generator2.screens.mainscreen4.vm.VMMain4
-import com.example.generator2.screens.scripting.VMScripting
+import com.example.generator2.screens.scripting.vm.VMScripting
 
 @Composable
 fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: VMScripting) {
@@ -58,7 +57,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                             })
                     ) {
                         val select = indexSelect.value == index
-                        ScriptItem().Draw( str = item, index = index, select )
+                        ScriptItem().Draw( str = { item }, index = { index }, { select } )
                     }
                 }
             }

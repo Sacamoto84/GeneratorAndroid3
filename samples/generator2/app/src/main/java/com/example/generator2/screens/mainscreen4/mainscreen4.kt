@@ -66,15 +66,15 @@ fun mainsreen4(
 
             val mono by LiveData.mono.collectAsState()
 
-            val animateHeight by animateDpAsState(
-                targetValue = if (!mono) 314.dp else 0.dp,
-                animationSpec = tween(durationMillis = 7050)
-            )
-
-            val animateAlpha by animateFloatAsState(
-                targetValue = if (!mono) 1f else 0.0f,
-                animationSpec = tween(durationMillis = 7050)
-            )
+//            val animateHeight by animateDpAsState(
+//                targetValue = if (!mono) 314.dp else 0.dp,
+//                animationSpec = tween(durationMillis = 7050)
+//            )
+//
+//            val animateAlpha by animateFloatAsState(
+//                targetValue = if (!mono) 1f else 0.0f,
+//                animationSpec = tween(durationMillis = 7050)
+//            )
 
             Column(
                 Modifier
