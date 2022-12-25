@@ -101,7 +101,7 @@ fun mainsreen4(
                         //Появление
                         (fadeIn(animationSpec = tween(time / 2)) + expandVertically( animationSpec = tween( time )))
                             .with( (fadeOut(animationSpec = tween(time)) + shrinkVertically( animationSpec = tween(time))) ).using(
-                                SizeTransform( clip = true, sizeAnimationSpec = { initialSize, targetSize -> tween(time) }))
+                                SizeTransform( clip = true, sizeAnimationSpec = { _, _ -> tween(time) }))
                     }
                 )
                 {
