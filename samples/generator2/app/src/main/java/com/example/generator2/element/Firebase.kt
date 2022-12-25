@@ -1,13 +1,12 @@
-package com.example.generator2.screens.firebase
+package com.example.generator2.element
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
-import com.example.generator2.screens.config.readMetaBackupFromFirebase
+import com.example.generator2.screens.config.vm.readMetaBackupFromFirebase
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -50,14 +49,14 @@ class Firebas(val context: Context) {
     //Firebase
     val loadingState = MutableStateFlow(LoadingState.IDLE)
 
-    fun updateUI(user: FirebaseUser?) {
+    fun updateUI() {
         uid = auth.currentUser?.uid.toString()
     }
 
     fun reload() {
         auth.currentUser!!.reload().addOnCompleteListener { task ->
             if (task.isSuccessful) {
-                updateUI(auth.currentUser)
+                updateUI()
                 //Toast.makeText(context, "Reload successful!", Toast.LENGTH_SHORT).show()
             } else {
                 Log.e("Firebase", "reload", task.exception)
@@ -83,7 +82,7 @@ class Firebas(val context: Context) {
                         "Firebase", "createUserWithEmail:success"
                     ) //Toast.makeText( context, "createUserWithEmail:success", Toast.LENGTH_LONG ).show()
                     val user = auth.currentUser
-                    updateUI(user)
+                    updateUI()
 
                     GlobalScope.launch {
                         loadingState.emit(LoadingState.LOADED)
@@ -127,7 +126,7 @@ class Firebas(val context: Context) {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun signWithCredential(credential: AuthCredential, routine : Unit) = GlobalScope.launch {
+    fun signWithCredential(credential: AuthCredential) = GlobalScope.launch {
         try {
             loadingState.emit(LoadingState.LOADING)
             Firebase.auth.signInWithCredential(credential).await()
@@ -138,12 +137,4 @@ class Firebas(val context: Context) {
             loadingState.emit(LoadingState.error(e.localizedMessage))
         }
     }
-
-
-
-
-
-
-
-
 }

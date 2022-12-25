@@ -30,8 +30,8 @@ import com.example.generator2.screens.config.DefScreenConfig
 import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.config.DefScreenConfig.textSizeGreenButton
 import com.example.generator2.screens.config.vm.VMConfig
-import com.example.generator2.screens.config.readMetaBackupFromFirebase
-import com.example.generator2.screens.firebase.LoadingState
+import com.example.generator2.screens.config.vm.readMetaBackupFromFirebase
+import com.example.generator2.element.LoadingState
 import com.example.generator2.theme.colorLightBackground
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -54,9 +54,7 @@ fun ConfigLoginScreen(vm: VMConfig) {
             try {
                 val account = task.getResult(ApiException::class.java)!!
                 val credential = GoogleAuthProvider.getCredential(account.idToken!!, null)
-                vm.firebase.signWithCredential(credential, readMetaBackupFromFirebase(
-                    vm.firebase.auth.currentUser?.uid
-                ))
+                vm.firebase.signWithCredential(credential)
             } catch (e: ApiException) {
                 Log.w("TAG", "Google sign in failed", e)
             }
@@ -109,7 +107,7 @@ fun ConfigLoginScreen(vm: VMConfig) {
                     content = {Text(text = "Sign Out", fontSize = textSizeGreenButton) },
                     onClick = { //AuthUI.getInstance().signOut(componentActivity!!)
                         Firebase.auth.signOut()
-                        vm.firebase.updateUI(null)
+                        vm.firebase.updateUI()
                     },
                     colors = ButtonDefaults.buttonColors(
                         backgroundColor = DefScreenConfig.backgroundColorGreenButton,

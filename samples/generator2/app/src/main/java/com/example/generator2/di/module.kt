@@ -4,7 +4,7 @@ import android.content.Context
 import com.example.generator2.PlaybackEngine
 import com.example.generator2.audio_device.AudioDevice
 import com.example.generator2.backup.Backup
-import com.example.generator2.screens.firebase.Firebas
+import com.example.generator2.element.Firebas
 import com.example.generator2.screens.scripting.ui.ScriptKeyboard
 import com.example.generator2.util.UtilsKT
 import com.example.generator2.vm.Script

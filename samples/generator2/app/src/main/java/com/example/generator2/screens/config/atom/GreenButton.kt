@@ -9,7 +9,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import com.example.generator2.R
-import com.example.generator2.screens.config.DefScreenConfig
 
 @Composable
 fun Config_Green_button_refresh(

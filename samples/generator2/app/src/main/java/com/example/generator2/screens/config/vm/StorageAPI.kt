@@ -1,10 +1,7 @@
-package com.example.generator2.screens.config
+package com.example.generator2.screens.config.vm
 
 import android.util.Log
 import com.example.generator2.backup.Backup
-import com.example.generator2.screens.config.vm.progressMetadata
-import com.example.generator2.screens.config.vm.strMetadata
-import com.example.generator2.screens.config.vm.strMetadataError
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storageMetadata
 import java.io.File
@@ -62,8 +59,6 @@ fun readMetaBackupFromFirebase(uid : String?) {
     val storage : FirebaseStorage = FirebaseStorage.getInstance()
     val storageRef = storage.reference //Корневая папка
 
-    //val uid = global.firebase.auth.uid
-
     if ((uid != "") && (uid != null)) {
         println("metadata 3 uid:${uid}")
         val s = storageRef.child("/user/${uid}/backup.zip").metadata.addOnCompleteListener {
@@ -99,7 +94,6 @@ fun readMetaBackupFromFirebase(uid : String?) {
             progressMetadata.value = false
         }
     }
-
 
 }
 

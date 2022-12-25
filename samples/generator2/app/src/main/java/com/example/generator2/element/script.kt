@@ -143,7 +143,9 @@ class Script() {
     }
 
     @OptIn(DelicateCoroutinesApi::class)
-    fun log(str: String) { //
+    fun log(
+        str: String
+    ) { //
 
         GlobalScope.launch(Dispatchers.Main) {
           //consoleLog.println(str)

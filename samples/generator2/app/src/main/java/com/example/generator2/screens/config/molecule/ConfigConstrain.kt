@@ -36,9 +36,6 @@ fun ConfigConstrain(vm: VMConfig)
             })
     }
 
-
-
-
     //FMBase min max
     Row(modifier = Modifier.fillMaxWidth()) {
         val minFMBase = LiveConstrain.minFMBase
@@ -97,14 +94,69 @@ fun ConfigConstrain(vm: VMConfig)
     }
 
     Divider()
-    Config_header("Sensing Slider")
+    Config_header("Sensitivity Slider")
+
     //Чувствительность слайдера
     //var sensetingSliderCr =  mutableStateOf( 0.2f)
    // var sensetingSliderFmDev =  mutableStateOf( 0.2f)
    // var sensetingSliderFmBase =  mutableStateOf( 0.2f)
   //  var sensetingSliderAmFm =  mutableStateOf( 0.01f)
 
+    Row(modifier = Modifier.fillMaxWidth()) {
+        val sensetingSliderCr = LiveConstrain.sensetingSliderCr
+        editConfig(Modifier.weight(1f),
+            "Carrier 0.2",
+            value = sensetingSliderCr,
+            min = 0f,
+            max = 1f,
+            toInt = false,
+            onDone = {
+                LiveConstrain.sensetingSliderCr.value = it
+                vm.toastText("sensitivity Slider Carrier Saved")
+                vm.saveConstrain()
+            })
 
+        val sensetingSliderAmFm = LiveConstrain.sensetingSliderAmFm
+        editConfig(Modifier.weight(1f),
+            "Am Fm 0.01",
+            value = sensetingSliderAmFm,
+            min = 0f,
+            max = 1f,
+            toInt = false,
+            onDone = {
+                LiveConstrain.sensetingSliderAmFm.value = it
+                vm.toastText("sensitivity Slider Am Fm Saved")
+                vm.saveConstrain()
+            })
+    }
+
+    Row(modifier = Modifier.fillMaxWidth()) {
+        val sensetingSliderFmBase = LiveConstrain.sensetingSliderFmBase
+        editConfig(Modifier.weight(1f),
+            "Fm Base 0.2",
+            value = sensetingSliderFmBase,
+            min = 0f,
+            max = 1f,
+            toInt = false,
+            onDone = {
+                LiveConstrain.sensetingSliderFmBase.value = it
+                vm.toastText("sensitivity Slider Fm Base Saved")
+                vm.saveConstrain()
+            })
+
+        val sensetingSliderFmDev = LiveConstrain.sensetingSliderFmDev
+        editConfig(Modifier.weight(1f),
+            "Fm Dev 0.2",
+            value = sensetingSliderFmDev,
+            min = 0f,
+            max = 1f,
+            toInt = false,
+            onDone = {
+                LiveConstrain.sensetingSliderFmDev.value = it
+                vm.toastText("sensitivity Slider Fm Dev Saved")
+                vm.saveConstrain()
+            })
+    }
 
 
 

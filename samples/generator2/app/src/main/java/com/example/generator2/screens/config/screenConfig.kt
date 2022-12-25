@@ -1,6 +1,8 @@
 package com.example.generator2.screens.config
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
@@ -8,27 +10,27 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat.startActivity
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.generator2.R
 import com.example.generator2.screens.config.DefScreenConfig.caption
 import com.example.generator2.screens.config.molecule.ConfigLoginScreen
 import com.example.generator2.theme.colorLightBackground
-import com.example.generator2.data.LiveConstrain
-import com.example.generator2.data.LiveData
 import com.example.generator2.screens.config.molecule.ConfigConstrain
-import com.example.generator2.screens.config.vm.VMConfig
-import com.example.generator2.screens.config.vm.progressMetadata
-import com.example.generator2.screens.config.vm.strMetadata
-import com.example.generator2.screens.config.vm.strMetadataError
+import com.example.generator2.screens.config.molecule.ConfigVolume
+import com.example.generator2.screens.config.vm.*
 import kotlinx.coroutines.delay
 
 
@@ -72,12 +74,30 @@ fun ScreenConfig(
 
         Column(
             Modifier
-                .fillMaxSize().background(colorLightBackground).verticalScroll(rememberScrollState()).pointerInput(Unit)
-                { detectTapGestures(onTap = {focusManager.clearFocus() })}
+                .fillMaxSize()
+                .background(colorLightBackground)
+                .verticalScroll(rememberScrollState())
+                .pointerInput(Unit)
+                { detectTapGestures(onTap = { focusManager.clearFocus() }) }
         ) {
 
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Image(
+                    painterResource(R.drawable.telegram),
+                    contentDescription = "",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .padding(8.dp)
+                        .size(48.dp)
+                        .clickable { vm.openTelegram() }
+                )
+
+                Text(text = "https://t.me/GGenerator2", color = Color.White, modifier = Modifier.padding(start = 0.dp))
+            }
+
+
             Divider()
-            Config_header("Version 2.0.3")
+            Config_header("Version 2.2.7")
             Divider()
 
             Divider() ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,35 +193,11 @@ fun ScreenConfig(
             Config_header("Authorization") //Авторизация
             ConfigLoginScreen(vm = vm)
             Divider()
-            Config_header("Version 2.0.3")
-            Divider()
-
-            Divider()
-
             ConfigConstrain(vm)
-
-            Row(modifier = Modifier.fillMaxWidth()) {
-
-                val value0 = LiveData.volume0.collectAsState()
-                editConfig(Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
-                    onDone = {
-                        LiveData.volume0.value = it
-                        vm.toastSaveVolume()
-                        vm.saveVolume()
-                        })
-
-                val value1 = LiveData.volume1.collectAsState()
-                editConfig(Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
-                    onDone = {
-                        LiveData.volume1.value = it
-                        vm.toastSaveVolume()
-                        vm.saveVolume()
-                    } )
-
-            }
-
+            Divider()
+            ConfigVolume(vm)
+            Divider()
             Spacer(modifier = Modifier.height(400.dp))
-
         }
 
     }
