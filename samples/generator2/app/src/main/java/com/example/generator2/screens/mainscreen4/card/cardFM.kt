@@ -20,6 +20,7 @@ import com.example.generator2.screens.mainscreen4.ui.UIspinner
 import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.data.LiveConstrain
 import com.example.generator2.data.LiveData
+import com.example.generator2.screens.mainscreen4.atom.volumeControl
 import libs.modifier.noRippleClickable
 
 @Composable
@@ -172,24 +173,26 @@ fun CardFM(str: String = "CH0") {
 
        Row() {
 
-           Box(
-               modifier = Modifier
-                   .padding(start = 8.dp, top = 8.dp)
-                   .height(104.dp)
-                   .width(ms4SwitchWidth)
-                   //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
-                   .clip(RoundedCornerShape(8.dp))
-                   .background(colorDarkBackground)
-               , contentAlignment = Alignment.Center
-           ) {
+//           Box(
+//               modifier = Modifier
+//                   .padding(start = 8.dp, top = 8.dp)
+//                   .height(104.dp)
+//                   .width(ms4SwitchWidth)
+//                   //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
+//                   .clip(RoundedCornerShape(8.dp))
+//                   .background(colorDarkBackground)
+//               , contentAlignment = Alignment.Center
+//           ) {
+//
+//               Canvas(modifier = Modifier.fillMaxSize(), onDraw ={
+//
+//                   drawRect(color = Color.Black, )
+//
+//               })
+//
+//           }
 
-               Canvas(modifier = Modifier.fillMaxSize(), onDraw ={
-
-                   drawRect(color = Color.Black, )
-
-               })
-
-           }
+           volumeControl()
 
 
 

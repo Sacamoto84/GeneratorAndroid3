@@ -1,4 +1,4 @@
-package com.example.generator2.screens.editor
+package com.example.generator2.screens.editor.atom
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -57,6 +57,5 @@ class ComboBox(val items: List<String>, private val width: Dp = 100.dp) {
         }
 
     }
-
 
 }

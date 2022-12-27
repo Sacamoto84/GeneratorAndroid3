@@ -15,103 +15,103 @@ data class DataJsonVolume(
 )
 
 data class DataJsonConstrain(
-    @SerializedName("sensetingSliderCr")
+  //  @SerializedName("sensetingSliderCr")
     var sensetingSliderCr: Float = 0f,
 
-    @SerializedName("sensetingSliderFmDev")
+  //  @SerializedName("sensetingSliderFmDev")
     var sensetingSliderFmDev: Float = 0f,
 
-    @SerializedName("sensetingSliderFmBase")
+  //  @SerializedName("sensetingSliderFmBase")
     var sensetingSliderFmBase: Float = 0f,
 
-    @SerializedName("sensetingSliderAmFm")
+  //  @SerializedName("sensetingSliderAmFm")
     var sensetingSliderAmFm: Float = 0f,
 
-    @SerializedName("minCR")
+  //  @SerializedName("minCR")
     var minCR: Float = 0f,
 
-    @SerializedName("maxCR")
+   // @SerializedName("maxCR")
     var maxCR: Float = 0f,
 
-    @SerializedName("minModAmFm")
+ //  @SerializedName("minModAmFm")
     var minModAmFm: Float = 0f,
 
-    @SerializedName("maxModAmFm")
+  //  @SerializedName("maxModAmFm")
     var maxModAmFm: Float = 0f,
 
-    @SerializedName("minFMBase")
+  //  @SerializedName("minFMBase")
     var minFMBase: Float = 0f,
 
-    @SerializedName("maxFMBase")
+  //  @SerializedName("maxFMBase")
     var maxFMBase: Float = 0f,
 
-    @SerializedName("minFMDev")
+  // @SerializedName("minFMDev")
     var minFMDev: Float = 0f,
 
-    @SerializedName("maxFMDev")
+   // @SerializedName("maxFMDev")
     var maxFMDev: Float = 0f,
 )
 
 data class DataJsonConfig(
 
-    @SerializedName("ch1_EN")
+   // @SerializedName("ch1_EN")
     var ch1_EN: Boolean = false,
-    @SerializedName("ch1_Carrier_Filename")
+   // @SerializedName("ch1_Carrier_Filename")
     var ch1_Carrier_Filename: String = "Sine",
-    @SerializedName("ch1_Carrier_Fr")
+   // @SerializedName("ch1_Carrier_Fr")
     var ch1_Carrier_Fr: Float = 400.0f,
-    @SerializedName("ch1_AM_EN")
+   // @SerializedName("ch1_AM_EN")
     var ch1_AM_EN: Boolean = false,
-    @SerializedName("ch1_AM_Filename")
+   // @SerializedName("ch1_AM_Filename")
     var ch1_AM_Filename: String = "09_Ramp",
-    @SerializedName("ch1_AM_Fr")
+   // @SerializedName("ch1_AM_Fr")
     var ch1_AM_Fr: Float = 8.7f,
-    @SerializedName("ch1_FM_EN")
+   // @SerializedName("ch1_FM_EN")
     var ch1_FM_EN: Boolean = false,
-    @SerializedName("ch1_FM_Filename")
+   // @SerializedName("ch1_FM_Filename")
     var ch1_FM_Filename: String = "06_CHIRP",
-    @SerializedName("ch1_FM_Base")
+   // @SerializedName("ch1_FM_Base")
     var ch1_FM_Base: Float = 2500f,
-    @SerializedName("ch1_FM_Dev")
+   // @SerializedName("ch1_FM_Dev")
     var ch1_FM_Dev: Float = 1100f,
-    @SerializedName("ch1_FM_Fr")
+   // @SerializedName("ch1_FM_Fr")
     var ch1_FM_Fr: Float = 5.1f,
 
-    @SerializedName("ch2_EN")
+   // @SerializedName("ch2_EN")
     var ch2_EN: Boolean = false,
-    @SerializedName("ch2_Carrier_Filename")
+   // @SerializedName("ch2_Carrier_Filename")
     var ch2_Carrier_Filename: String = "Sine",
-    @SerializedName("ch2_Carrier_Fr")
+   // @SerializedName("ch2_Carrier_Fr")
     var ch2_Carrier_Fr: Float = 2000.0f,
-    @SerializedName("ch2_AM_EN")
+   // @SerializedName("ch2_AM_EN")
     var ch2_AM_EN: Boolean = false,
-    @SerializedName("ch2_AM_Filename")
+   // @SerializedName("ch2_AM_Filename")
     var ch2_AM_Filename: String = "09_Ramp",
-    @SerializedName("ch2_AM_Fr")
+   // @SerializedName("ch2_AM_Fr")
     var ch2_AM_Fr: Float = 8.7f,
-    @SerializedName("ch2_FM_EN")
+   // @SerializedName("ch2_FM_EN")
     var ch2_FM_EN: Boolean = false,
-    @SerializedName("ch2_FM_Filename")
+   // @SerializedName("ch2_FM_Filename")
     var ch2_FM_Filename: String = "06_CHIRP",
-    @SerializedName("ch2_FM_Base")
+   // @SerializedName("ch2_FM_Base")
     var ch2_FM_Base: Float = 2500f,
-    @SerializedName("ch2_FM_Dev")
+   // @SerializedName("ch2_FM_Dev")
     var ch2_FM_Dev: Float = 1100f,
-    @SerializedName("ch2_FM_Fr")
+   // @SerializedName("ch2_FM_Fr")
     var ch2_FM_Fr: Float = 5.1f,
 
-    @SerializedName("mono")
+    //@SerializedName("mono")
     var mono: Boolean = false,
-    @SerializedName("invert")
+    //@SerializedName("invert")
     var invert: Boolean = false,
 
-    @SerializedName("shuffle")
+    //@SerializedName("shuffle")
     var shuffle: Boolean = false,
 
-    @SerializedName("enL")
+    //@SerializedName("enL")
     var enL: Boolean = true,
 
-    @SerializedName("enR")
+    //@SerializedName("enR")
     var enR: Boolean = true,
 
     )
@@ -140,7 +140,7 @@ class Json(val context: Context) {
     fun saveJsonVolume() {
         print("saveJsonVolume..")
         val dataJsonVolume = DataJsonVolume(LiveData.volume0.value, LiveData.volume0.value)
-        val jsonString = Gson().toJson(dataJsonVolume)  // json string
+        val jsonString = Gson().toJson(dataJsonVolume, DataJsonVolume::class.java )  // json string
         File(iniCurrentVolume).writeText(jsonString)
         println("ok")
     }

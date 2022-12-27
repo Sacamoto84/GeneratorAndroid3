@@ -1,9 +1,11 @@
 package com.example.generator2
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -17,6 +19,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.testTagsAsResourceId
 import com.example.generator2.screens.config.ScreenConfig
 import com.example.generator2.screens.editor.ScreenEditor
+import com.example.generator2.screens.mainscreen4.atom.customTypeface
 import com.example.generator2.screens.mainscreen4.mainsreen4
 import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.screens.scripting.ScreenScriptCommon
@@ -52,6 +55,7 @@ class MainActivity : ComponentActivity() {
 
     }
 
+
     @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +68,19 @@ class MainActivity : ComponentActivity() {
         global.hub.firebase.auth = Firebase.auth
         global.hub.firebase.componentActivity = this
         //val storage = Firebase.storage
+
+        global.hub.backup.json.readJsonVolume()
+        global.hub.backup.json.readJsonConfig()
+        global.hub.backup.json.readJsonConstrain()
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
+            customTypeface = resources.getFont(R.font.jetbrains)
+        }
+
+
+
+
 
         //        //gs://test-e538d.appspot.com/
 //        val storageRef = global.storage.reference //Коjрневая папка

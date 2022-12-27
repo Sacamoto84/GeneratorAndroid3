@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.generator2.R
-import com.example.generator2.screens.editor.ComboBox
+import com.example.generator2.screens.editor.atom.ComboBox
 import com.example.generator2.screens.editor.ui.model
 import com.example.generator2.theme.colorDarkBackground
 

@@ -15,15 +15,20 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.generator2.screens.ui.ScriptItem
+import com.example.generator2.screens.scripting.atom.ScriptItem
 import com.example.generator2.screens.scripting.vm.VMScripting
 
 @Composable
-fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Modifier = Modifier, global: VMScripting) {
+fun ScriptConsole(
+    list: SnapshotStateList<String>,
+    selectLine: Int,
+    modifier: Modifier = Modifier,
+    global: VMScripting
+) {
 
-    println("ScriptConsole selectLine:$selectLine" )
+    println("ScriptConsole selectLine:$selectLine")
 
-    val indexSelect = remember { mutableStateOf(selectLine)  }
+    val indexSelect = remember { mutableStateOf(selectLine) }
     indexSelect.value = selectLine
 
     val l = list.toList()
@@ -37,7 +42,12 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
     }
 
     val lazyListState: LazyListState = rememberLazyListState()
-    Box( Modifier.fillMaxSize().background(Color(0xFF090909)).then(modifier), contentAlignment = Alignment.CenterStart )
+    Box(
+        Modifier
+            .fillMaxSize()
+            .background(Color(0xFF283593))
+            .then(modifier), contentAlignment = Alignment.CenterStart
+    )
     {
 
         LazyColumn(
@@ -46,7 +56,7 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
 
             itemsIndexed(l)
             { index, item ->
-                Row( horizontalArrangement = Arrangement.Start )
+                Row(horizontalArrangement = Arrangement.Start)
                 {
                     Box(
                         modifier = Modifier.selectable(
@@ -57,14 +67,15 @@ fun ScriptConsole(list: SnapshotStateList<String>, selectLine: Int, modifier: Mo
                             })
                     ) {
                         val select = indexSelect.value == index
-                        ScriptItem().Draw( str = { item }, index = { index }, { select } )
+                        ScriptItem().Draw(str = { item }, index = { index }, { select })
                     }
                 }
             }
 
         }
+
+
     }
 
-    //println("ScriptConsole..end" )
 }
 

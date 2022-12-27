@@ -34,10 +34,6 @@ class VMMain4 @Inject constructor(
 
         println("global init{}")
 
-        hub.backup.json.readJsonVolume()
-        hub.backup.json.readJsonConfig()
-        hub.backup.json.readJsonConstrain()
-
         //utils.context = contextActivity!!
 
         val file = contextActivity.getExternalFilesDir("") //Создать если нет папку generator2

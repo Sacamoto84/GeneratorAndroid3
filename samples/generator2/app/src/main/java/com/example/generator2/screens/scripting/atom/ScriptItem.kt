@@ -1,291 +1,160 @@
-package com.example.generator2.screens.ui
+package com.example.generator2.screens.scripting.atom
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.R
-import java.text.NumberFormat
-import java.text.ParsePosition
-
-data class PairTextAndColor(
-    var text: String,
-    var colorText: Color,
-    var colorBg: Color,
-    var bold: Boolean = false,
-    var italic: Boolean = false,
-    var underline: Boolean = false,
-    var flash: Boolean = false,
-    var textSize: TextUnit = 16.sp
-)
 
 class ScriptItem {
-
-    private var pairList = mutableStateListOf<PairTextAndColor>()
 
     @Composable
     fun Draw(str: () -> String, index: () -> Int, select: () -> Boolean) {
 
-        println("Draw")
+        println("Draw  ${index()}")
 
-        convertStringToPairTextAndColor(str(), index())
-
-        Box(
-            modifier = Modifier.fillMaxWidth().background(if (select()) Color.Blue else Color.Transparent)
+        val x = convertStringToAnnotatedString({ str() }, { index() })
+        Text(x,
+            modifier = Modifier.fillMaxWidth().padding(top = 0.dp)
+                .background(if (select()) Color.Cyan else Color.Transparent),
+            fontSize = 20.sp
         )
-        {
-            val s = pairList.size
-            Row() {
 
-                for (i in 0 until s) {
-                    Box(
-                        modifier = Modifier.padding(1.dp).height(24.dp)
-                            .clip(shape = RoundedCornerShape(8.dp))
-                            .background(pairList[i].colorBg)
+    }
 
-                    ) {
-
-
-                        Text(
-                            modifier = Modifier.padding(start = 4.dp, top = 2.dp, end = 4.dp)
-                                .offset(x = 0.dp, y = (-2).dp),
-                            text = pairList[i].text,
-                            color = pairList[i].colorText,
-                            textDecoration = if (pairList[i].underline) TextDecoration.Underline else null,
-                            fontWeight = if (pairList[i].bold) FontWeight.Bold else null,
-                            fontStyle = if (pairList[i].italic) FontStyle.Italic else null,
-                            fontSize = pairList[i].textSize,
-                            fontFamily = FontFamily(
-                                Font(R.font.jetbrains, FontWeight.Normal)
-                            )
-                        )
-
-
-                    }
-
-
-                }
+    private fun convertStringToAnnotatedString(str: () -> String, index: () -> Int): AnnotatedString {
+        //lateinit var x : AnnotatedString
+        var x = buildAnnotatedString {
+            withStyle(style = SpanStyle(color = Color.Blue, background = Color.White)) {
+                append("${index()}")
             }
         }
-    }
-
-    fun isNumeric(s: String): Boolean {
-        val pos = ParsePosition(0)
-        NumberFormat.getInstance().parse(s, pos)
-        return s.length == pos.index
-    }
-
-    //Конвертируем строку и индекс в красивый вид
-    private fun convertStringToPairTextAndColor(str: String, index: Int) {
-
-        pairList.clear()
-
-        pairList.add(
-            PairTextAndColor(
-                text = "$index", colorText = Color.Black, colorBg = Color.White
-            )
-        )
 
         //Разобрать строку на список команд
-        val listCMD = str.split(" ")
+        val listCMD = str().split(" ")
         if (listCMD.isEmpty()) {
             println("convertStringToPairTextAndColor: Error listCMD == 0")
-            return
+            return x
         }
+
+        var color: Color = Color.White
+        var background: Color = Color.Black
 
         /////////////////////
         when (listCMD[0]) {
 
-            "CH1", "CH2" -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0], colorText = Color(0xFFF5FFFF), colorBg = Color(0xFF1976D2)
-                )
-            )
-
-            "CR1", "CR2" -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0], colorText = Color(0xFFF5FFFF), colorBg = Color(0xFFB388FF)
-                )
-            )
-
-            "AM1", "AM2" -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0], colorText = Color.Green, colorBg = Color.Magenta
-                )
-            )
-
-            "LOAD"       -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0], colorText = Color.Green, colorBg = Color.Magenta
-                )
-            )
-
-            "GOTO"       -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0], colorText = Color(0xFF2A2A1E), colorBg = Color(0xFF64FFDA)
-                )
-            )
-
-
-            "DELAY"      -> pairList.add(
-                PairTextAndColor(
-                    text = listCMD[0],
-                    colorText = Color(0xFFF5FFFF),
-                    colorBg = Color(0xFF1976D2),
-                    bold = true
-                )
-            )
-
-            else         -> {
-                pairList.add(
-                    PairTextAndColor(
-                        text = listCMD[0],
-                        colorText = Color.Black,
-                        colorBg = Color.Green,
-                        bold = true
-                    )
-                )
+            "CH1", "CH2" -> {
+                color = Color(0xFFFFDF30)
+                background = Color(0xFF012F50)
             }
+
+            "CR1", "CR2" -> {
+                color = Color(0xFF00FFFF)
+            }
+
+            "AM1", "AM2" -> {
+                color = Color.Green
+            }
+
+            "FM1", "FM2" -> {
+                color = Color(0xFFFF7A21)
+            }
+
+            "LOAD" -> {
+                color = Color(0xFFB2EBF2)
+            }
+
+            "GOTO" -> {
+                color = Color.White
+                background = Color(0xFF0D8A71)
+            }
+
+            "DELAY" -> {
+                color = Color(0xFFF5FFFF)
+                background = Color(0xFF10467C)
+            }
+
+            "END" -> {
+                color = Color(0xFF000000)
+                background = Color(0xFFFFEB3B)
+            }
+
+            "ENDIF", "IF", "ELSE" -> {
+                color = Color(0xFFFFFFFF)
+                background = Color(0xFF318792)
+            }
+
+            else -> {
+                color = Color.LightGray
+            }
+
 
         } /////////////////////////////////////
 
+        x += buildAnnotatedString {
+            withStyle(
+                style = SpanStyle(
+                    color = color,
+                    background = background,
+                    fontFamily = FontFamily(Font(R.font.jetbrains))
+                )
+            )
+            { append(" " + listCMD[0] + " ") }
+        }
+
         if (listCMD.size >= 2) {
-
-            if (!isNumeric(listCMD[1])) {
-                when (listCMD[1]) {
-
-                    "CR", "AM", "FM" -> pairList.add(
-                        PairTextAndColor(
-                            text = listCMD[1], colorText = Color.Green, colorBg = Color.Magenta
-                        )
+            x += buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = color,
+                        background = background,
+                        fontFamily = FontFamily(Font(R.font.jetbrains))
                     )
-
-                    else             -> {
-
-                        pairList.add(
-                            PairTextAndColor(
-                                text = listCMD[1], colorText = Color.Black, colorBg = Color.Green
-                            )
-                        )
-                    }
-
-
-                }
-            } else {
-                pairList.add(
-                    PairTextAndColor(
-                        text = listCMD[1],
-                        colorText = Color(0xFF2B2B2B),
-                        colorBg = Color(0xFF81D4FA)
-                    )
-                )
+                ) { append(listCMD[1] + " ") }
             }
-
-
         } /////////////////////////////////////////////////////
+
         if (listCMD.size >= 3) {
-
-
-            if (!isNumeric(listCMD[2])) {
-
-                when (listCMD[2]) {
-
-                    "ON"  -> pairList.add(
-                        PairTextAndColor(
-                            text = listCMD[2], colorText = Color.Black, colorBg = Color.Green
-                        )
+            x += buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = color,
+                        background = background,
+                        fontFamily = FontFamily(Font(R.font.jetbrains))
                     )
-
-                    "OFF" -> pairList.add(
-                        PairTextAndColor(
-                            text = listCMD[2], colorText = Color.White, colorBg = Color.Blue
-                        )
-                    )
-
-                    else  -> {
-                        pairList.add(
-                            PairTextAndColor(
-                                text = listCMD[2], colorText = Color.Black, colorBg = Color.Green
-                            )
-                        )
-                    }
-                }
-            } else {
-
-                pairList.add(
-                    PairTextAndColor(
-                        text = listCMD[2],
-                        colorText = Color(0xFF2B2B2B),
-                        colorBg = Color(0xFF81D4FA)
-                    )
-                )
+                ) { append(listCMD[2] + " ") }
             }
         }
+
 
         ///////////////////////////////
         if (listCMD.size >= 4) {
 
-            if (!isNumeric(listCMD[3])) {
-
-                when (listCMD[3]) {
-
-
-                    "CH1", "CH2" -> pairList.add(
-                        PairTextAndColor(
-                            text = listCMD[3], colorText = Color.Green, colorBg = Color.Magenta
-                        )
+            x += buildAnnotatedString {
+                withStyle(
+                    style = SpanStyle(
+                        color = color,
+                        background = background,
+                        fontFamily = FontFamily(Font(R.font.jetbrains))
                     )
-
-                    else         -> {
-                        pairList.add(
-                            PairTextAndColor(
-                                text = listCMD[3], colorText = Color.Black, colorBg = Color.Green
-                            )
-                        )
-                    }
-                }
-
-            } else {
-                pairList.add(
-                    PairTextAndColor(
-                        text = listCMD[3],
-                        colorText = Color(0xFF2B2B2B),
-                        colorBg = Color(0xFF81D4FA)
-                    )
-                )
-
+                ) { append(listCMD[3] + " ") }
             }
         }
-
         ////////////////////////////
 
 
+        return x
     }
 
 }
-
-//@Preview
-//@Composable
-//fun Xxx_preview() {
-//    val items = ScriptItem()
-//    Column() {
-//        items.Draw("CH1 CR ON")
-//        items.Draw("CH1 CR ON")
-//        items.Draw("CH1 CR ON")
-//        items.Draw("CH1 CR ON")
-//    }
-//}

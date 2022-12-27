@@ -63,9 +63,6 @@ fun EditorCanvasLoop(modifier: Modifier = Modifier) {
         //Рисуем сам сигнал
         val pointsCache = model.createPointLoop(size)
 
-
-
-
         drawPoints(
             color = Color.Green,
             points = pointsCache.first,
