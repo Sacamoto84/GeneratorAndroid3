@@ -129,9 +129,10 @@ class VMMain4 @Inject constructor(
     private fun observe() {
         println("observe()--------------------------------------------------------------")
         val dispatchers = Dispatchers.IO
-        viewModelScope.launch(dispatchers) { LiveData.volume0.collect {  hub.playbackEngine.setVolume(0, it) } }
-        viewModelScope.launch(dispatchers) { LiveData.volume1.collect {  hub.playbackEngine.setVolume(1, it) } }
 
+        viewModelScope.launch(dispatchers) { LiveData.volume0.collect {hub.playbackEngine.setVolume(0, it) } }
+
+        viewModelScope.launch(dispatchers) { LiveData.volume1.collect {hub.playbackEngine.setVolume(1, it) } }
         //
         viewModelScope.launch(dispatchers) { LiveData.ch1_EN.collect {
             if (LiveData.link.value)

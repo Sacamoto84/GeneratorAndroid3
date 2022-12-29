@@ -86,7 +86,7 @@ class PlaybackEngine(val context: Context) {
     fun isLatencyDetectionSupported(): Boolean { return mEngineHandle != 0L && native_isLatencyDetectionSupported( mEngineHandle ) }
 
     //Установка частоты
-    fun setVolume(CH: Int, value: Float) { if (mEngineHandle != 0L) native_setCH_Carrier_fr( mEngineHandle, CH, value ) }
+    fun setVolume(CH: Int, value: Float) { if (mEngineHandle != 0L) native_setVolume( mEngineHandle, CH, value ) }
 
     fun resetAllPhase()        { if (mEngineHandle != 0L) native_resetAllPhase( mEngineHandle) }
     fun setMono(mono: Boolean) { if (mEngineHandle != 0L) native_setMono( mEngineHandle, mono ) }

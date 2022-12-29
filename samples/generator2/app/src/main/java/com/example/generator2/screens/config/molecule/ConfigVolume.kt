@@ -17,20 +17,22 @@ fun ConfigVolume(vm: VMConfig)
 
     Row(modifier = Modifier.fillMaxWidth()) {
 
-        val value0 = LiveData.volume0.collectAsState()
+        val value0 = LiveData.maxVolume0.collectAsState()
         editConfig(
-            Modifier.weight(1f), "Volume CH0 0..1", value = value0, min = 0f, max = 1f,
+            Modifier.weight(1f), "max Volume CH0 0..1", value = value0, min = 0f, max = 1f,
             onDone = {
-                LiveData.volume0.value = it
+                LiveData.maxVolume0.value = it
+                LiveData.volume0.value = LiveData.currentVolume0.value * it
                 vm.toastSaveVolume()
                 vm.saveVolume()
             })
 
-        val value1 = LiveData.volume1.collectAsState()
+        val value1 = LiveData.maxVolume1.collectAsState()
         editConfig(
-            Modifier.weight(1f), "Volume CH1 0..1", value = value1, min = 0f, max = 1f,
+            Modifier.weight(1f), "max Volume CH1 0..1", value = value1, min = 0f, max = 1f,
             onDone = {
-                LiveData.volume1.value = it
+                LiveData.maxVolume1.value = it
+                LiveData.volume1.value = LiveData.currentVolume1.value * it
                 vm.toastSaveVolume()
                 vm.saveVolume()
             } )

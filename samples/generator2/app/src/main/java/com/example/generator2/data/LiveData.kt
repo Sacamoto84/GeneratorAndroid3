@@ -47,6 +47,11 @@ object LiveData {
 
         var link       = MutableStateFlow<Boolean>(false) //Режим повторения настроек второго канала с первым
 
+        var maxVolume0 = MutableStateFlow<Float>(0.9f)
+        var maxVolume1 = MutableStateFlow<Float>(0.9f)
+
+        var currentVolume0 = MutableStateFlow<Float>(1.0f)
+        var currentVolume1 = MutableStateFlow<Float>(1.0f)
 
 }
 

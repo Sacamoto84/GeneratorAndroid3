@@ -1,26 +1,40 @@
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.DropdownMenu
 import androidx.compose.material.DropdownMenuItem
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.example.generator2.theme.colorDarkBackground
-import com.example.generator2.theme.colorLightBackground2
-import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
-import com.example.generator2.screens.mainscreen4.ui.UIspinner
-import com.example.generator2.screens.mainscreen4.vm.VMMain4
 import com.example.generator2.data.LiveConstrain
 import com.example.generator2.data.LiveData
-import com.example.generator2.screens.mainscreen4.atom.volumeControl
+import com.example.generator2.screens.mainscreen4.atom.VolumeControl
+import com.example.generator2.screens.mainscreen4.ui.InfinitySlider
+import com.example.generator2.screens.mainscreen4.ui.UIspinner
+import com.example.generator2.theme.colorDarkBackground
+import com.example.generator2.theme.colorLightBackground2
 import libs.modifier.noRippleClickable
 
 @Composable
@@ -85,11 +99,12 @@ fun CardFM(str: String = "CH0") {
                     if (str == "CH0") LiveData.ch1_FM_EN.value =
                         !LiveData.ch1_FM_EN.value
                     else LiveData.ch2_FM_EN.value = !LiveData.ch2_FM_EN.value
-                })) {}
+                })
+            ) {}
 
             //////////////////////////////////////////////////////////////////////////////////////////////////////
             var expanded by remember { mutableStateOf(false) }
-            var selectedIndex by remember {  mutableStateOf(0) }
+            var selectedIndex by remember { mutableStateOf(0) }
 
             Box(
                 Modifier
@@ -107,7 +122,7 @@ fun CardFM(str: String = "CH0") {
                         .fillMaxSize()
                 )
 
-                val items = listOf("0.1","1.0","5.5","10.0","40.0", "100.0")
+                val items = listOf("0.1", "1.0", "5.5", "10.0", "40.0", "100.0")
 
                 DropdownMenu(
                     offset = DpOffset(8.dp, 4.dp),
@@ -154,14 +169,12 @@ fun CardFM(str: String = "CH0") {
                 visibleText = false
             )
 
-
             UIspinner.Spinner(
                 str,
                 "FM",
                 modifier = Modifier
                     .padding(top = 0.dp, start = 8.dp, end = 8.dp)
                     .wrapContentWidth()
-                    //.fillMaxWidth()
                     .clip(shape = RoundedCornerShape(4.dp))
                     .background(Color.Black)
             )
@@ -170,141 +183,143 @@ fun CardFM(str: String = "CH0") {
 
 /////////////////////////
 
+        Row() {
 
-       Row() {
+            val v =
+                if (str == "CH0")
+                    LiveData.currentVolume0.collectAsState()
+                else
+                    LiveData.currentVolume1.collectAsState()
 
-//           Box(
-//               modifier = Modifier
-//                   .padding(start = 8.dp, top = 8.dp)
-//                   .height(104.dp)
-//                   .width(ms4SwitchWidth)
-//                   //.border(0.dp, Color.White, RoundedCornerShape(8.dp))
-//                   .clip(RoundedCornerShape(8.dp))
-//                   .background(colorDarkBackground)
-//               , contentAlignment = Alignment.Center
-//           ) {
-//
-//               Canvas(modifier = Modifier.fillMaxSize(), onDraw ={
-//
-//                   drawRect(color = Color.Black, )
-//
-//               })
-//
-//           }
+            VolumeControl(
+                value = { v.value },
+                onValueChange = {
 
-           volumeControl()
+                    println("onValueChange $it")
 
+                    if (str == "CH0") {
 
+                        LiveData.currentVolume0.value = it
+                        LiveData.volume0.value =
+                            LiveData.currentVolume0.value * LiveData.maxVolume0.value
 
-           Column() {
+                    } else {
 
-               //База
-               Row(
-                   Modifier
-                       .padding(top = 8.dp, end = 8.dp)
-                       .height(48.dp),
-                   verticalAlignment = Alignment.CenterVertically
-               )
-               {
+                        LiveData.currentVolume1.value = it
+                        LiveData.volume1.value =
+                            LiveData.currentVolume1.value * LiveData.maxVolume1.value
+                    }
 
-                   MainscreenTextBoxPlus2Line(
-                       String.format("%d", fmBase.value!!.toInt()),
-                       String.format("%d", fmBase.value!!.toInt() + fmDev.value!!.toInt()),
-                       String.format("%d", fmBase.value!!.toInt() - fmDev.value!!.toInt()),
-                       Modifier
-                           .padding(start = 8.dp)
-                           .fillMaxHeight()
-                           .fillMaxWidth()
-                           .weight(1f)
-                   )
+                })
 
-                   InfinitySlider(
-                       value = fmBase.value,
-                       sensing = LiveConstrain.sensetingSliderFmBase.value * 8,
-                       range = LiveConstrain.rangeSliderFmBase,
-                       onValueChange = {
-                           if (str == "CH0") LiveData.ch1_FM_Base.value =
-                               it else LiveData.ch2_FM_Base.value = it
-                       },
-                       modifier = modifierInfinitySlider,
-                       vertical = true,
-                       invert = true,
-                       visibleText = false
-                   )
+            Column() {
 
+                //База
+                Row(
+                    Modifier
+                        .padding(top = 8.dp, end = 8.dp)
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
 
-                   InfinitySlider(
-                       value = fmBase.value,
-                       sensing = LiveConstrain.sensetingSliderFmBase.value,
-                       range = LiveConstrain.rangeSliderFmBase,
-                       onValueChange = {
-                           if (str == "CH0") LiveData.ch1_FM_Base.value =
-                               it else LiveData.ch2_FM_Base.value = it
-                       },
-                       modifier = modifierInfinitySlider,
-                       vertical = true,
-                       invert = true,
-                       visibleText = false
-                   )
+                    MainscreenTextBoxPlus2Line(
+                        String.format("%d", fmBase.value!!.toInt()),
+                        String.format("%d", fmBase.value!!.toInt() + fmDev.value!!.toInt()),
+                        String.format("%d", fmBase.value!!.toInt() - fmDev.value!!.toInt()),
+                        Modifier
+                            .padding(start = 8.dp)
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
+
+                    InfinitySlider(
+                        value = fmBase.value,
+                        sensing = LiveConstrain.sensetingSliderFmBase.value * 8,
+                        range = LiveConstrain.rangeSliderFmBase,
+                        onValueChange = {
+                            if (str == "CH0") LiveData.ch1_FM_Base.value =
+                                it else LiveData.ch2_FM_Base.value = it
+                        },
+                        modifier = modifierInfinitySlider,
+                        vertical = true,
+                        invert = true,
+                        visibleText = false
+                    )
 
 
-               }
+                    InfinitySlider(
+                        value = fmBase.value,
+                        sensing = LiveConstrain.sensetingSliderFmBase.value,
+                        range = LiveConstrain.rangeSliderFmBase,
+                        onValueChange = {
+                            if (str == "CH0") LiveData.ch1_FM_Base.value =
+                                it else LiveData.ch2_FM_Base.value = it
+                        },
+                        modifier = modifierInfinitySlider,
+                        vertical = true,
+                        invert = true,
+                        visibleText = false
+                    )
+
+
+                }
 
 ////////
-               Row(
-                   Modifier
-                       .padding(top = 8.dp, start = 0.dp, end = 8.dp)
-                       .height(48.dp),
-                   verticalAlignment = Alignment.CenterVertically
-               )
-               {
+                Row(
+                    Modifier
+                        .padding(top = 8.dp, start = 0.dp, end = 8.dp)
+                        .height(48.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                )
+                {
 
-                   MainscreenTextBox(
-                       String.format("± %d", fmDev.value!!.toInt()),
-                       Modifier
-                           .padding(start = 8.dp)
-                           .fillMaxHeight()
-                           .fillMaxWidth()
-                           .weight(1f)
-                   )
-
-
-                   InfinitySlider(
-                       value = fmDev.value,
-                       sensing = LiveConstrain.sensetingSliderFmDev.value * 8,
-                       range = LiveConstrain.rangeSliderFmDev,
-                       onValueChange = {
-                           if (str == "CH0") LiveData.ch1_FM_Dev.value =
-                               it else LiveData.ch2_FM_Dev.value = it
-                       },
-                       modifier = modifierInfinitySlider,
-                       vertical = true,
-                       invert = true,
-                       visibleText = false
-                   )
-
-                   InfinitySlider(
-                       value = fmDev.value,
-                       sensing = LiveConstrain.sensetingSliderFmDev.value,
-                       range = LiveConstrain.rangeSliderFmDev,
-                       onValueChange = {
-                           if (str == "CH0") LiveData.ch1_FM_Dev.value =
-                               it else LiveData.ch2_FM_Dev.value = it
-                       },
-                       modifier = modifierInfinitySlider,
-                       vertical = true,
-                       invert = true,
-                       visibleText = false
-                   )
+                    MainscreenTextBox(
+                        String.format("± %d", fmDev.value!!.toInt()),
+                        Modifier
+                            .padding(start = 8.dp)
+                            .fillMaxHeight()
+                            .fillMaxWidth()
+                            .weight(1f)
+                    )
 
 
-               }
+                    InfinitySlider(
+                        value = fmDev.value,
+                        sensing = LiveConstrain.sensetingSliderFmDev.value * 8,
+                        range = LiveConstrain.rangeSliderFmDev,
+                        onValueChange = {
+                            if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                                it else LiveData.ch2_FM_Dev.value = it
+                        },
+                        modifier = modifierInfinitySlider,
+                        vertical = true,
+                        invert = true,
+                        visibleText = false
+                    )
+
+                    InfinitySlider(
+                        value = fmDev.value,
+                        sensing = LiveConstrain.sensetingSliderFmDev.value,
+                        range = LiveConstrain.rangeSliderFmDev,
+                        onValueChange = {
+                            if (str == "CH0") LiveData.ch1_FM_Dev.value =
+                                it else LiveData.ch2_FM_Dev.value = it
+                        },
+                        modifier = modifierInfinitySlider,
+                        vertical = true,
+                        invert = true,
+                        visibleText = false
+                    )
 
 
+                }
 
-           }
 
-       }
+            }
+
+        }
 
 
 
