@@ -55,6 +55,11 @@ class MainActivity : ComponentActivity() {
 
     }
 
+    override fun onStop() {
+        super.onStop()
+        println("...................onStop")
+        global.hub.backup.json.saveJsonConfig()
+    }
 
     @OptIn(ExperimentalAnimationApi::class, ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {

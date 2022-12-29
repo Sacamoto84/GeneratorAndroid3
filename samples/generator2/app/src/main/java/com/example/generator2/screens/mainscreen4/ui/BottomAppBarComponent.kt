@@ -32,7 +32,7 @@ fun M4BottomAppBarComponent(
 
         global.hub.audioDevice.getDeviceId()
 
-        IconButton( onClick =  { navController.navigate("config") } ) {
+        IconButton(onClick = { navController.navigate("config") }) {
             Icon(painter = painterResource(R.drawable.line3_2), contentDescription = null)
         }
 
@@ -40,7 +40,7 @@ fun M4BottomAppBarComponent(
         IconButton(
             onClick = toggleDrawer
         ) {
-            val id  = global.hub.audioDevice.mDeviceId
+            val id = global.hub.audioDevice.mDeviceId
             var str = "Auto select"
             global.hub.audioDevice.mDeviceAdapter.forEach {
                 if (id == it.id)
@@ -88,6 +88,7 @@ fun M4BottomAppBarComponent(
                 Icon(painter = painterResource(R.drawable.play), contentDescription = null)
             }
         }
+
         //Стоп
         IconButton(onClick = {
             global.hub.script.command(StateCommandScript.STOP)
@@ -95,20 +96,13 @@ fun M4BottomAppBarComponent(
             Icon(painter = painterResource(R.drawable.stop), contentDescription = null)
         }
 
-
-
-
-
-
         Spacer(modifier = Modifier.weight(1f))
 
         IconButton(modifier = Modifier.testTag("buttonM4GoToScript"),
             onClick = { navController.navigate("script") }) {
             Icon(painter = painterResource(R.drawable.script3), contentDescription = null)
         }
-
-
-
+        
         IconButton(modifier = Modifier.testTag("edit"),
 
 
@@ -116,19 +110,12 @@ fun M4BottomAppBarComponent(
             Icon(painter = painterResource(R.drawable.editor), contentDescription = null)
         }
 
-
         Spacer(modifier = Modifier.weight(0.2f))
 
-        //        IconButton(onClick = { exitProcess(0) }) {
-        //            Icon(painter = painterResource(R.drawable.close), contentDescription = null)
-        //        }
-        //        IconButton(onClick = { exitProcess(0) }) {
-        //            Icon(painter = painterResource(R.drawable.close2), contentDescription = null)
-        //        }
-        //        IconButton(onClick = { exitProcess(0) }) {
-        //            Icon(painter = painterResource(R.drawable.close3), contentDescription = null)
-        //        }
-        IconButton(onClick = { exitProcess(0) }) {
+        IconButton(onClick = {
+            global.hub.backup.json.saveJsonConfig()
+            exitProcess(0)
+        }) {
             Icon(painter = painterResource(R.drawable.close4), contentDescription = null)
         }
 

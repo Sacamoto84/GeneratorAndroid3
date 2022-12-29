@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.generator2.theme.colorDarkBackground
@@ -37,7 +38,6 @@ import ms4SwitchWidth
 
 lateinit var customTypeface: Typeface
 
-
 @Composable
 fun VolumeControl(value : ()-> Float , onValueChange: (Float) -> Unit,) {
 
@@ -45,7 +45,11 @@ fun VolumeControl(value : ()-> Float , onValueChange: (Float) -> Unit,) {
 
     var volume by remember { mutableStateOf(value()) }
 
-    var position by rememberSaveable{ mutableStateOf(0f) }
+
+    //val pxValue = with(LocalDensity.current) { 16.dp.toPx() }
+
+    val pxValue = LocalDensity.current.run { 86.dp.toPx() - 84.dp.toPx() * value() }
+    var position by rememberSaveable{ mutableStateOf(pxValue) }
 
     //Показать инфо
     var showInfo by remember { mutableStateOf(false) }

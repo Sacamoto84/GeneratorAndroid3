@@ -60,6 +60,10 @@ data class DataJsonConfig(
 
     var enL: Boolean = true,
     var enR: Boolean = true,
+
+    var currentVolume0: Float = 1.0f,
+    var currentVolume1: Float = 1.0f,
+
     )
 
 
@@ -182,6 +186,9 @@ class Json(val context: Context) {
             shuffle = LiveData.shuffle.value,
             enL = LiveData.enL.value,
             enR = LiveData.enR.value,
+
+            currentVolume0 = LiveData.currentVolume0.value,
+            currentVolume1 = LiveData.currentVolume1.value
         )
         val jsonString = Gson().toJson(dataJsonConstrain)  // json string
         File(iniCurrentConfig).writeText(jsonString)
@@ -231,6 +238,9 @@ class Json(val context: Context) {
 
         LiveData.enL.value = dataJsonVolume.enL
         LiveData.enR.value = dataJsonVolume.enR
+
+        LiveData.currentVolume0.value = dataJsonVolume.currentVolume0
+        LiveData.currentVolume1.value = dataJsonVolume.currentVolume1
 
         println("ok")
     }
